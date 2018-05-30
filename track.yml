@@ -1,10 +1,10 @@
 parametros:
-  altura: 
-  # intervalos: 
+  #altura: 
+  intervalos: 
     armonia: 
-      superior :
-      superior :
-      inferior:
+      - 3
+      - [1,3,5]  
+      - -4
     trasponer: 60 
     set: range(11)
     octava: 1
@@ -16,11 +16,17 @@ parametros:
     set: [1,.5,1.5,1.5]
 
 estructura:
-  micro:
-    a: [1,3,5] # punteros...
-    b: [2,4,6]
-    c: [5,3,1]
-    d: [6,4,2]
+  # ¿numero = puntero, string = estructura?
+  # ¿if string and not 'otra estructura' then eval?
+  # ¿if string eval if resultado == numeros return punteros?
+  # como saber si es micro? minusculas?
+  # importa si son micro?
+  # si son numeros son micro
+  # micro:
+  a: [1,3,5] # punteros...
+  b: [2,4,6]
+  c: [5,3,1]
+  d: [6,4,2]
 
   A: ['a','b'] # otras estructuras...
   B: ['b','b']
@@ -30,9 +36,13 @@ estructura:
   estribillo: ['C','B','B']
 
   macro: [
-    'estrofa',
+    'estrofa', # otra estructura...
+    3, # puntero...
+    [1,3,5], # punteros...
     'estrofa',
     'estribillo',
+    'C', # otra estructura
+    ['B','A'] # otras estructuras...
   ]
 
 procesos:
