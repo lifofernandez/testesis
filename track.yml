@@ -7,6 +7,10 @@ parametros:
       - -4
     trasponer: 60 
     set: range(11)
+    set: [
+      0,2,3,4,5,7,9,11,
+      # 2,3,4,5,7,9,11,
+    ]
     octava: 1
   dinamica:
     set: [.5,.8]
@@ -15,6 +19,7 @@ parametros:
     bpm: 90
     set: [1,.5,1.5,1.5]
 
+#articulaciones
 estructura:
   # ¿numero = puntero, string = estructura?
   # ¿if string and not 'otra estructura' then eval?
