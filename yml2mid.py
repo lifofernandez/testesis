@@ -17,8 +17,7 @@ class Track:
 
   @property
   def set( self ):
-    
-    return evaluar(self.intervalos['set']) 
+    return evaluar( self.intervalos['set'] ) 
 
   @property
   def trasponer( self ):
@@ -28,13 +27,13 @@ class Track:
   def octava( self ):
     return self.intervalos['octava'] * 12
 
-
-  def params( self ):
-    for param in self.parametros:
-      print( param )
-      for item in self.parametros[param]:
-        print( '  ' + item + ' : ' + item )
-
+  def __str__( self ):
+    output = '' 
+    for x in self.parametros:
+      output += str(x) + '\n'  
+      for y in self.parametros[x]:
+        output += '  ' + str( y )+' : '+ str( self.parametros[x][y] ) + '\n'  
+    return output 
 
 def evaluar(i):
   if type(i) is str:
@@ -47,14 +46,14 @@ pista1 = Track(
   track['estructura'],
 )
 
-pista1.params()
+print(pista1)
 #print( pista1.parametros['intervalos'])
 print( pista1.set[-1])
 #print( pista1.estructura)
 
 
 
-# oa = yaml.dump( eo,  default_flow_style = False )
+#oa = yaml.dump( eo,  default_flow_style = False )
 #with open("data.yml", 'r') as stream:
 #    try:
 #        print( yaml.load( stream ) )

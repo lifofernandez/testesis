@@ -1,31 +1,32 @@
 parametros:
-  intervalos: 
+  altura: 
+  # intervalos: 
+    armonia: 
+      superior :
+      superior :
+      inferior:
     trasponer: 60 
     set: range(11)
     octava: 1
-  dinamicas:
+  dinamica:
     set: [.5,.8]
-  duraciones:
+  duracion:
     metro: 9/8
     bpm: 90
-    set: [1,.5,1.5]
+    set: [1,.5,1.5,1.5]
 
 estructura:
   micro:
-    a:
-      indice: [1,3,5]
-    b:
-      indice: [2,4,6]
-    c:
-      indice: [5,3,1]
-    d:
-      indice: [6,4,2]
+    a: [1,3,5] # punteros...
+    b: [2,4,6]
+    c: [5,3,1]
+    d: [6,4,2]
 
-  A: ['a','b']
+  A: ['a','b'] # otras estructuras...
   B: ['b','b']
   C: ['c','d']
 
-  estrofa: ['A','A','B','B']
+  estrofa: ['A','A','B','B'] # otras estructuras...
   estribillo: ['C','B','B']
 
   macro: [
@@ -33,3 +34,5 @@ estructura:
     'estrofa',
     'estribillo',
   ]
+
+procesos:
