@@ -36,10 +36,16 @@ class Track:
     return output 
 
 def evaluar(i):
+  o = i 
   if type(i) is str:
-    return eval (i)
-  else:
-    return i
+    o = eval(i)
+  elif type(i) is list: 
+    for e in i:
+      print(e)
+      evaluar(e)
+  #else:
+      
+  return o
 
 pista1 = Track( 
   track['parametros'],
@@ -48,7 +54,7 @@ pista1 = Track(
 
 print(pista1)
 #print( pista1.parametros['intervalos'])
-print( pista1.set[-1])
+print( pista1.set[-2])
 #print( pista1.estructura)
 
 
