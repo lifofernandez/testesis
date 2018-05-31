@@ -5,7 +5,6 @@ from dataclasses import dataclass
 data = open("track.yml", 'r')
 track = yaml.load( data )
 
-
 @dataclass
 class Track:
   parametros: dict
@@ -42,19 +41,15 @@ def evaluar(i):
     o = [ evaluar( e ) for e in i ]
   else:
     return False
-      
   return o
 
-
-pista1 = Track( 
+melodia = Track( 
   track['parametros'],
-  track['estructura'],
+  track['estructuras'],
 )
 
-print(pista1)
-#print( pista1.parametros['intervalos'])
-print( pista1.set[-3][-1])
-#print( pista1.estructura )
+print(melodia )
+print(melodia.set[6][-1])
 
 
 

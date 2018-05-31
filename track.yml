@@ -8,8 +8,8 @@ parametros:
     trasponer: 60 
     #set: range(11)
     set: [
-      0,2,4,5,7,[2,3],'range(11)',9-1,11,
-    #  12,2+12,3+12,4+12,5+12,7+12,9+12,11+12,
+      0,2,4,5,7,[2,3],range(11),9-1,11,
+      12,2+12,3+12,4+12,5+12,7+12,9+12,11+12,
     ]
     octava: 1
   dinamica:
@@ -19,9 +19,9 @@ parametros:
     bpm: 90
     set: [1,.5,1.5,1.5]
 
-#articulaciones
-estructura:
-  # ¿numero = puntero, string = estructura or proceso?
+estructuras:
+
+  # ¿numero = puntero, string = estructura o proceso?
   # ¿if string && is not 'otra estructura' then eval?
   # ¿if string 'otra estructura' then read?
   # ¿eval resultado == numeros return punteros?
@@ -43,14 +43,15 @@ estructura:
   estrofa: ['A','A','B','B'] # otras estructuras...
   estribillo: ['C','B','B']
 
-  macro: [
-    'estrofa', # otra estructura...
-    3, # puntero...
-    [1,3,5], # punteros...
-    'estrofa',
-    'estribillo',
-    'C', # otra estructura
-    ['B','A'] # otras estructuras...
-  ]
+# macroestructuras o articulacion de estructuras
+articulacion: [
+  'estrofa', # otra estructura...
+  3, # puntero...
+  [1,3,5], # punteros...
+  'estrofa',
+  'estribillo',
+  'C', # otra estructura
+  ['B','A'] # otras estructuras...
+]
 
 procesos:
