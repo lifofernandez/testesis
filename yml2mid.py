@@ -9,22 +9,18 @@ track = yaml.load( data )
 class Track:
   parametros: dict
   estructura: dict
+  articulacion: dict
+
+  #@property
+  #def altura( self ):
+  #  return self.parametros['altura']
 
   @property
-  def intervalos( self ):
-    return self.parametros['intervalos']
+  # alturas son el resultado de combinar el parametro "altura"
+  def alturas( self ):
+    trasponer = self.parametros['altura']['octava'] * 12
+    return evaluar( self.parametros['altura']['set'] ) 
 
-  @property
-  def set( self ):
-    return evaluar( self.intervalos['set'] ) 
-
-  @property
-  def trasponer( self ):
-    return self.intervalos['trasponer'] 
-
-  @property
-  def octava( self ):
-    return self.intervalos['octava'] * 12
 
   def __str__( self ):
     output = '' 
@@ -33,6 +29,22 @@ class Track:
       for y in self.parametros[x]:
         output += '  ' + str( y )+' : '+ str( self.parametros[x][y] ) + '\n'  
     return output 
+
+  def secuenciar( self ):
+    output = [] 
+    for elem in self.articulacion:
+      if type( elem ) is int or float:
+        output.append( elem )
+      elif type( elem ) is str:
+          estructura = self['estructuras'][ elem ] 
+          output.append( self.secuenciar( estructura ) )
+      elif type(elem ) is list: 
+          output = [ self.secuenciar( elem ) for e in i ]
+    return output 
+
+  @property
+  def secuencia( self ):
+    return self.secuenciar() 
 
 def evaluar(i):
   if type( i ) is str:
@@ -46,16 +58,17 @@ def evaluar(i):
 melodia = Track( 
   track['parametros'],
   track['estructuras'],
+  track['articulacion'],
 )
 
 print(melodia )
-print(melodia.set[6][-1])
+print(melodia.alturas[6][-1])
+print(melodia.secuencia)
 
 
-
-#oa = yaml.dump( eo,  default_flow_style = False )
-#with open("data.yml", 'r') as stream:
-#    try:
-#        print( yaml.load( stream ) )
-#    except yaml.YAMLError as exc:
-#        print(exc)
+# TODO
+# [ ] func/@property: Secuenciar estructuras.
+#     Confeccionar lista de punteros a partir de estructuras contendoras de punteros.
+# [ ] Que las escructuras levanten params por defencto .
+# [ ] Que cada estructura pueda sobreescribir sus parametros.
+# [ ] Agregar herencia entre estructuras.

@@ -1,23 +1,26 @@
 parametros:
-  #altura: 
-  intervalos: 
-    armonia: 
-      - 3
-      - [1,3,5]  
-      - -4
-    trasponer: 60 
+  #intervalos: 
+  altura: 
     #set: range(11)
-    set: [
+    set: [ # set de intervalos
       0,2,4,5,7,[2,3],range(11),9-1,11,
       12,2+12,3+12,4+12,5+12,7+12,9+12,11+12,
     ]
+    trasponer: 60 
     octava: 1
+    estratos: 
+      - 3
+      - [1,3,5]  
+      - -4
   dinamica:
     set: [.5,.8]
   duracion:
-    metro: 9/8
+    METRO: 9/8
     bpm: 90
     set: [1,.5,1.5,1.5]
+  timbre:
+    CANAL: 1
+    PROGRAMA: 'GrandPiano'
 
 estructuras:
 
