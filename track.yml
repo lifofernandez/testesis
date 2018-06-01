@@ -54,7 +54,8 @@ articulacion: [
   'estrofa',
   'estribillo',
   'C', # otra estructura
-  ['B','A'] # otras estructuras...
+  ['B','A'], # otras estructuras...
+  2, # puntero...
 ]
 
 procesos:

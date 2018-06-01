@@ -8,7 +8,7 @@ track = yaml.load( data )
 @dataclass
 class Track:
   parametros: dict
-  estructura: dict
+  estructuras: dict
   articulacion: dict
 
   #@property
@@ -30,21 +30,42 @@ class Track:
         output += '  ' + str( y )+' : '+ str( self.parametros[x][y] ) + '\n'  
     return output 
 
-  def secuenciar( self ):
-    output = [] 
-    for elem in self.articulacion:
-      if type( elem ) is int or float:
-        output.append( elem )
-      elif type( elem ) is str:
-          estructura = self['estructuras'][ elem ] 
-          output.append( self.secuenciar( estructura ) )
-      elif type(elem ) is list: 
-          output = [ self.secuenciar( elem ) for e in i ]
-    return output 
+  #@property
+  #def secuenciar( inp ):
+  #  output = [] 
+  #  for item in inp:
+  #    if type( item ) is int or float:
+  #      puntero = item 
+  #      output.append( puntero )
+  #    elif type( item ) is str:
+  #        estructura = self['estructuras'][ item ] 
+  #        self.secuenciar( estructura )
+  #    elif type( item ) is list: 
+  #      for e in item :
+  #        estructuras = self['estructuras'][ e ] 
+  #        self.secuenciar( e )
+  #        # e = [ self.secuenciar( elem ) for e in i ]
+  #  return output 
 
   @property
   def secuencia( self ):
-    return self.secuenciar() 
+      return secuenciar( self.articulacion, self.estructuras )
+
+
+def secuenciar( articulacion, estructuras ):
+  output = [] 
+  for item in articulacion:
+    if ( isinstance( item, int ) ):
+      puntero = item 
+      output.append( puntero )
+    elif ( isinstance( item, str ) ):
+      estructura = estructuras[ item ] 
+      output.append( secuenciar(estructura , estructuras ) )
+    elif ( isinstance( item, list) ):
+      #for element in item:
+      estructura = item
+      output.append( secuenciar(estructura , estructuras ) )
+  return output 
 
 def evaluar(i):
   if type( i ) is str:
@@ -61,8 +82,9 @@ melodia = Track(
   track['articulacion'],
 )
 
-print(melodia )
-print(melodia.alturas[6][-1])
+#print(melodia )
+#print(melodia.alturas[6][-1])
+#melodia.secuencia
 print(melodia.secuencia)
 
 
