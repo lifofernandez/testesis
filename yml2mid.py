@@ -49,22 +49,22 @@ class Track:
 
   @property
   def secuencia( self ):
-      return secuenciar( self.articulacion, self.estructuras )
+      return aplanar( self.articulacion, self.estructuras )
 
 
-def secuenciar( articulacion, estructuras ):
+def aplanar( articulacion, estructuras ):
   output = [] 
   for item in articulacion:
     if ( isinstance( item, int ) ):
       puntero = item 
       output.append( puntero )
-    elif ( isinstance( item, str ) ):
-      estructura = estructuras[ item ] 
-      output += secuenciar(estructura , estructuras ) 
     elif ( isinstance( item, list) ):
       #for element in item:
       estructura = item
-      output += secuenciar(estructura , estructuras ) 
+      output += secuenciar( estructura , estructuras ) 
+    elif ( isinstance( item, str ) and item in estructuras ):
+      estructura = estructuras[ item ] 
+      output += secuenciar( estructura , estructuras ) 
   return output 
 
 def evaluar(i):

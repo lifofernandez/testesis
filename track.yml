@@ -46,7 +46,7 @@ estructuras:
   estrofa: ['A','A','B','B'] # otras estructuras...
   estribillo: ['C','B','B']
 
-# macroestructuras o articulacion de estructuras
+# macroestructura o articulacion de estructuras
 articulacion: [
   'estrofa', # otra estructura...
   3, # puntero...
@@ -56,6 +56,7 @@ articulacion: [
   'C', # otra estructura
   ['B','A'], # otras estructuras...
   2, # puntero...
+  'perrqdwqwdo'
 ]
 
 procesos:
