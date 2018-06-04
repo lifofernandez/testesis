@@ -60,11 +60,11 @@ def secuenciar( articulacion, estructuras ):
       output.append( puntero )
     elif ( isinstance( item, str ) ):
       estructura = estructuras[ item ] 
-      output.append( secuenciar(estructura , estructuras ) )
+      output += secuenciar(estructura , estructuras ) 
     elif ( isinstance( item, list) ):
       #for element in item:
       estructura = item
-      output.append( secuenciar(estructura , estructuras ) )
+      output += secuenciar(estructura , estructuras ) 
   return output 
 
 def evaluar(i):
