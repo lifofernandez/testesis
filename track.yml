@@ -1,7 +1,6 @@
 parametros:
   #intervalos: 
   altura: 
-    #set: range(11)
     set: [ # set de intervalos
       0,2,4,5,7,[2,3],range(11),9-1,11,
       12,2+12,3+12,4+12,5+12,7+12,9+12,11+12,
@@ -16,23 +15,13 @@ parametros:
     set: [.5,.8]
   duracion:
     METRO: 9/8
-    bpm: 90
+    BPM: 60
     set: [1,.5,1.5,1.5]
   timbre:
     CANAL: 1
     PROGRAMA: 'GrandPiano'
 
 estructuras:
-
-  # ¿numero = puntero, string = estructura o proceso?
-  # ¿if string && is not 'otra estructura' then eval?
-  # ¿if string 'otra estructura' then read?
-  # ¿eval resultado == numeros return punteros?
-  # ¿como saber si es micro? minusculas? 
-  # ¿importa si son micro? 
-  # ¿si es lista de numero es micro, o no?
-  # ¿si son numeros son micro?
-  # micro:
 
   a: [1,3,5] # punteros...
   b: [2,4,6]
@@ -45,6 +34,7 @@ estructuras:
 
   estrofa: ['A','A','B','B'] # otras estructuras...
   estribillo: ['C','B','B']
+  perro: [2,33,'B']
 
 # macroestructura o articulacion de estructuras
 articulacion: [
@@ -56,7 +46,8 @@ articulacion: [
   'C', # otra estructura
   ['B','A'], # otras estructuras...
   2, # puntero...
-  'perrqdwqwdo'
+  'perro',
+  'range(11)'
 ]
 
 procesos:

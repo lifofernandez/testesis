@@ -2,7 +2,7 @@
 import yaml
 from dataclasses import dataclass
 
-data = open("track.yml", 'r')
+data = open( "track.yml", 'r' )
 track = yaml.load( data )
 
 @dataclass
@@ -52,6 +52,16 @@ class Track:
       return aplanar( self.articulacion, self.estructuras )
 
 
+# ¿numero = puntero, string = estructura o proceso?
+# ¿if string && is not 'otra estructura' then eval?
+# ¿if string 'otra estructura' then read?
+# ¿eval resultado == numeros return punteros?
+# ¿como saber si es micro? minusculas? 
+# ¿importa si son micro? 
+# ¿si es lista de numero es micro, o no?
+# ¿si son numeros son micro?
+# micro:
+# Args: lista de estructuras a aplanar, paleta de estructuras
 def aplanar( articulacion, estructuras ):
   output = [] 
   for item in articulacion:
@@ -61,10 +71,14 @@ def aplanar( articulacion, estructuras ):
     elif ( isinstance( item, list) ):
       #for element in item:
       estructura = item
-      output += secuenciar( estructura , estructuras ) 
-    elif ( isinstance( item, str ) and item in estructuras ):
-      estructura = estructuras[ item ] 
-      output += secuenciar( estructura , estructuras ) 
+      output += aplanar( estructura , estructuras ) 
+    elif isinstance( item, str ) :
+       if item in estructuras:
+         estructura = estructuras[ item ] 
+         output += aplanar( estructura , estructuras ) 
+       else:
+         evaluado = evaluar( item ) 
+         output += aplanar( evaluado , estructuras ) 
   return output 
 
 def evaluar(i):
