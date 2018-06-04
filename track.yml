@@ -34,7 +34,7 @@ estructuras:
 
   estrofa: ['A','A','B','B'] # otras estructuras...
   estribillo: ['C','B','B']
-  perro: [2,33,'B']
+  perro: [ 2, 33, 'B']
 
 # macroestructura o articulacion de estructuras
 articulacion: [
@@ -47,6 +47,7 @@ articulacion: [
   ['B','A'], # otras estructuras...
   2, # puntero...
   'perro',
+  #'epepe',
   'range(11)'
 ]
 

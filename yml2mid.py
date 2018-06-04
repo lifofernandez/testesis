@@ -103,8 +103,9 @@ print(melodia.secuencia)
 
 
 # TODO
-# [ ] func/@property: Secuenciar estructuras.
+# [-] func/@property: Secuenciar estructuras.
 #     Confeccionar lista de punteros a partir de estructuras contendoras de punteros.
 # [ ] Que las escructuras levanten params por defencto .
 # [ ] Que cada estructura pueda sobreescribir sus parametros.
 # [ ] Agregar herencia entre estructuras.
+# [ ] proper eval() feature: https://docs.python.org/3/library/ast.html#module-ast
