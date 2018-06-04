@@ -15,13 +15,6 @@ class Track:
   #def altura( self ):
   #  return self.parametros['altura']
 
-  @property
-  # alturas son el resultado de combinar el parametro "altura"
-  def alturas( self ):
-    trasponer = self.parametros['altura']['octava'] * 12
-    return evaluar( self.parametros['altura']['set'] ) 
-
-
   def __str__( self ):
     output = '' 
     for x in self.parametros:
@@ -29,6 +22,15 @@ class Track:
       for y in self.parametros[x]:
         output += '  ' + str( y )+' : '+ str( self.parametros[x][y] ) + '\n'  
     return output 
+
+  @property
+  # alturas son el resultado de combinar el propiedades adentro del parametro "altura"
+  def alturas( self ):
+    #octavar = self.parametros['altura']['octava'] * 12
+    #trasponer = octavar + self.parametros['altura']['trasponer'] 
+    evaluado =  evaluar( self.parametros['altura']['set'] ) 
+    return evaluado 
+
 
   #@property
   #def secuenciar( inp ):
@@ -97,7 +99,7 @@ melodia = Track(
 )
 
 #print(melodia )
-#print(melodia.alturas[6][-1])
+print(melodia.alturas[6])
 #melodia.secuencia
 print(melodia.secuencia)
 
