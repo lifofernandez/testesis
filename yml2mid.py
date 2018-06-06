@@ -1,4 +1,5 @@
 #!/usr/bin/env python3.7
+
 import yaml
 from dataclasses import dataclass
 
@@ -20,7 +21,9 @@ class Track:
     for x in self.parametros:
       output += str(x) + '\n'  
       for y in self.parametros[x]:
-        output += '  ' + str( y )+' : '+ str( self.parametros[x][y] ) + '\n'  
+        name = '  ' + str( y )
+        valu = ': ' + str( self.parametros[x][y] ) 
+        output += name + valu + '\n'  
     return output 
 
   @property
@@ -51,20 +54,23 @@ class Track:
 
   @property
   def secuencia( self ):
-      return aplanar( self.articulacion, self.estructuras )
+      return secuenciar( self.articulacion, self.estructuras )
 
 
-# ¿numero = puntero, string = estructura o proceso?
-# ¿if string && is not 'otra estructura' then eval?
-# ¿if string 'otra estructura' then read?
-# ¿eval resultado == numeros return punteros?
-# ¿como saber si es micro? minusculas? 
-# ¿importa si son micro? 
-# ¿si es lista de numero es micro, o no?
-# ¿si son numeros son micro?
-# micro:
-# Args: lista de estructuras a aplanar, paleta de estructuras
-def aplanar( articulacion, estructuras ):
+
+def secuenciar( articulacion, estructuras ):
+  """
+  numero = puntero, string = estructura o rutina
+  ¿if string && is not 'otra estructura' then eval?
+  ¿if string 'otra estructura' then read?
+  ¿eval resultado == numeros return punteros?
+  ¿como saber si es micro? minusculas? 
+  ¿importa si son micro? 
+  ¿si es lista de numero es micro, o no?
+  ¿si son numeros son micro?
+  micro:
+  Args: lista de estructuras a aplanar, paleta de estructuras
+  """
   output = [] 
   for item in articulacion:
     if ( isinstance( item, int ) ):
@@ -73,17 +79,21 @@ def aplanar( articulacion, estructuras ):
     elif ( isinstance( item, list) ):
       #for element in item:
       estructura = item
-      output += aplanar( estructura , estructuras ) 
+      output += secuenciar( estructura , estructuras ) 
     elif isinstance( item, str ) :
        if item in estructuras:
          estructura = estructuras[ item ] 
-         output += aplanar( estructura , estructuras ) 
+         output += secuenciar( estructura , estructuras ) 
        else:
          evaluado = evaluar( item ) 
-         output += aplanar( evaluado , estructuras ) 
+         output += secuenciar( evaluado , estructuras ) 
   return output 
 
 def evaluar(i):
+  if type( i ) is int :
+      return i
+  if type( i ) is float:
+      return i
   if type( i ) is str:
     o = eval( i )
   elif type( i ) is list: 
@@ -92,22 +102,33 @@ def evaluar(i):
     return False
   return o
 
+'https://stackoverflow.com/questions/2357230'
+aplanar = lambda l: [item for sublist in l for item in sublist]
+
 melodia = Track( 
   track['parametros'],
   track['estructuras'],
   track['articulacion'],
 )
 
-#print(melodia )
-print(melodia.alturas[6])
-#melodia.secuencia
+print(melodia)
+# en realidad melida.motivo['a'].alturas
+print(melodia.alturas)
+# melodia.secuencia
+# ¿sería melida.motivo['a'].secuencia ?
+
 print(melodia.secuencia)
 
+pepe = [[1,[888],2,3],[4,5,6], [7], [8,9]] * 9
+print( aplanar(pepe) )
 
-# TODO
-# [-] func/@property: Secuenciar estructuras.
-#     Confeccionar lista de punteros a partir de estructuras contendoras de punteros.
-# [ ] Que las escructuras levanten params por defencto .
-# [ ] Que cada estructura pueda sobreescribir sus parametros.
-# [ ] Agregar herencia entre estructuras.
-# [ ] proper eval() feature: https://docs.python.org/3/library/ast.html#module-ast
+
+""" TODO
+[-] func/@property: Secuenciar estructuras.
+[ ] Punteros a partir de estructuras contendoras de punteros.
+[ ] Que las escructuras levanten params por defencto .
+[ ] Que cada estructura pueda sobreescribir sus parametros.
+[ ] Agregar herencia entre estructuras.
+[ ] proper eval() https://docs.python.org/3/library/ast.html 
+"""
+
