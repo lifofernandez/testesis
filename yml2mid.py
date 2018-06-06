@@ -80,7 +80,6 @@ def secuenciar( articulacion, estructuras ):
       puntero = item 
       output.append( puntero )
     elif ( isinstance( item, list) ):
-      #for element in item:
       estructura = item
       output += secuenciar( estructura , estructuras ) 
     elif isinstance( item, str ) :
