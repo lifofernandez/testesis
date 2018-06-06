@@ -75,7 +75,8 @@ def secuenciar( articulacion, estructuras ):
   """
   output = [] 
   for item in articulacion:
-    if ( isinstance( item, int ) ):
+    #if ( isinstance( item, int ) ):
+    if type( item ) is int or type( item ) is float:
       puntero = item 
       output.append( puntero )
     elif ( isinstance( item, list) ):
