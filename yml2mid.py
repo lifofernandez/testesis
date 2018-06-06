@@ -58,8 +58,8 @@ class Track:
 
 def secuenciar( articulacion, estructuras ):
   """
-  1ro = evaluar 
-  2do = remplazar string po la lista que representa
+  1ro = evaluar strings que no sean nobres de estructura 
+  2do = remplazar string por la lista/estructura que representa
   3ro = aplanar resultado
 
   numero = puntero, string = estructura o rutina
