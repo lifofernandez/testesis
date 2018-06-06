@@ -12,10 +12,6 @@ class Track:
   estructuras: dict
   articulacion: dict
 
-  #@property
-  #def altura( self ):
-  #  return self.parametros['altura']
-
   def __str__( self ):
     output = '' 
     for x in self.parametros:
@@ -27,10 +23,12 @@ class Track:
     return output 
 
   @property
-  # alturas son el resultado de combinar el propiedades adentro del parametro "altura"
   def alturas( self ):
-    #octavar = self.parametros['altura']['octava'] * 12
-    #trasponer = octavar + self.parametros['altura']['trasponer'] 
+    """
+    alturas son el resultado de combinar 
+    propiedades adentro del parametro altura
+    """
+    #trasponer = octavar + self.parametros['altura']['transporte'] 
     evaluado =  evaluar( self.parametros['altura']['set'] ) 
     return evaluado 
 
@@ -60,6 +58,10 @@ class Track:
 
 def secuenciar( articulacion, estructuras ):
   """
+  1ro = evaluar 
+  2do = remplazar string po la lista que representa
+  3ro = aplanar resultado
+
   numero = puntero, string = estructura o rutina
   ¿if string && is not 'otra estructura' then eval?
   ¿if string 'otra estructura' then read?
@@ -90,9 +92,7 @@ def secuenciar( articulacion, estructuras ):
   return output 
 
 def evaluar(i):
-  if type( i ) is int :
-      return i
-  if type( i ) is float:
+  if type( i ) is int or type( i ) is float:
       return i
   if type( i ) is str:
     o = eval( i )
@@ -102,7 +102,12 @@ def evaluar(i):
     return False
   return o
 
+"""
 'https://stackoverflow.com/questions/2357230'
+for sublist in l:
+    for item in sublist:
+        flat_list.append(item)
+"""
 aplanar = lambda l: [item for sublist in l for item in sublist]
 
 melodia = Track( 
