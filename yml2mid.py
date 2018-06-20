@@ -9,8 +9,8 @@ track = yaml.load( data )
 @dataclass
 class Track:
   parametros: dict
-  estructuras: dict
-  articulacion: dict
+  unidades: dict
+  forma: dict
 
   def __str__( self ):
     output = '' 
@@ -33,68 +33,52 @@ class Track:
     return evaluado 
 
 
-  #@property
-  #def secuenciar( inp ):
-  #  output = [] 
-  #  for item in inp:
-  #    if type( item ) is int or float:
-  #      puntero = item 
-  #      output.append( puntero )
-  #    elif type( item ) is str:
-  #        estructura = self['estructuras'][ item ] 
-  #        self.secuenciar( estructura )
-  #    elif type( item ) is list: 
-  #      for e in item :
-  #        estructuras = self['estructuras'][ e ] 
-  #        self.secuenciar( e )
-  #        # e = [ self.secuenciar( elem ) for e in i ]
-  #  return output 
-
   @property
   def secuencia( self ):
-      return secuenciar( self.articulacion, self.estructuras )
+      return secuenciar( self.forma, self.unidades )
 
 
 
-def secuenciar( articulacion, estructuras ):
+def secuenciar( forma, unidades ):
   """
-  1ro = evaluar strings que no sean nobres de estructura 
-  2do = remplazar string por la lista/estructura que representa
+  1ro = evaluar strings que no sean nobres de unidad 
+  2do = remplazar string por la lista/unidad que representa
   3ro = aplanar resultado
 
-  numero = puntero, string = estructura o rutina
-  ¿if string && is not 'otra estructura' then eval?
-  ¿if string 'otra estructura' then read?
+  numero = puntero, string = unidad o rutina
+  ¿if string && is not 'otra unidad' then eval?
+  ¿if string 'otra unidad' then read?
   ¿eval resultado == numeros return punteros?
   ¿como saber si es micro? minusculas? 
   ¿importa si son micro? 
   ¿si es lista de numero es micro, o no?
   ¿si son numeros son micro?
   micro:
-  Args: lista de estructuras a aplanar, paleta de estructuras
+  Args: lista de unidades a aplanar, paleta de unidades
   """
   output = [] 
-  for item in articulacion:
+  for item in forma:
     #if ( isinstance( item, int ) ):
     if type( item ) is int or type( item ) is float:
       puntero = item 
       output.append( puntero )
     elif ( isinstance( item, list) ):
-      estructura = item
-      output += secuenciar( estructura , estructuras ) 
+      unidad = item
+      output += secuenciar( unidad , unidades ) 
     elif isinstance( item, str ) :
-       if item in estructuras:
-         estructura = estructuras[ item ] 
-         output += secuenciar( estructura , estructuras ) 
+       if item in unidades:
+         unidad = unidades[ item ] 
+         output += secuenciar( unidad , unidades ) 
        else:
          evaluado = evaluar( item ) 
-         output += secuenciar( evaluado , estructuras ) 
+         output += secuenciar( evaluado , unidades ) 
   return output 
 
 def evaluar(i):
   if type( i ) is int or type( i ) is float:
       return i
-  if type( i ) is str:
+  #if type( i ) is str:
+  if ( isinstance( i,str) ):
     o = eval( i )
   elif type( i ) is list: 
     o = [ evaluar( e ) for e in i ]
@@ -108,12 +92,34 @@ for sublist in l:
     for item in sublist:
         flat_list.append(item)
 """
+#def aplanar(l):
+#  o = [i for sl in l for i in sl]
+#  return o
+
 aplanar = lambda l: [item for sublist in l for item in sublist]
+
+""" 
+aplanar 3 niveles de lista 
+"""
+def aplana(l):
+  o = []
+  if type( l ) is list: 
+    for e in l:
+      e = aplana(e)
+      if type( e ) is list: 
+        for i in e:
+          i = aplana(i)
+          o = o + [i]
+      else:
+        o = o + [e]
+  else:
+    return l
+  return o
 
 melodia = Track( 
   track['parametros'],
-  track['estructuras'],
-  track['articulacion'],
+  track['unidades'],
+  track['forma'],
 )
 
 print(melodia)
@@ -124,16 +130,38 @@ print(melodia.alturas)
 
 print(melodia.secuencia)
 
-pepe = [[1,[888],2,3],[4,5,6], [7], [8,9]] * 9
-print( aplanar(pepe) )
+pepe = [
+    2,
+    [
+      1,
+      [8,88] *2 ,
+      2,
+      3
+    ],
+    [4,5,6], 
+    [7] +[1,3,5], 
+    [8,9] * 3,
+    'range(0,11,2)',
+    ['range(0,7,2)',33]*2
+  ] * 9
+pepeaplanado = aplana( pepe ) 
+pepeevaluado = evaluar( pepe) 
+
+print(pepeaplanado)
+print(pepeaplanado[-2])
+print(pepeevaluado)
 
 
 """ TODO
-[-] func/@property: Secuenciar estructuras.
-[ ] Punteros a partir de estructuras contendoras de punteros.
+[-] func/@property: Secuenciar unidades.
+[ ] Punteros a partir de unidades contendoras de punteros.
 [ ] Que las escructuras levanten params por defencto .
-[ ] Que cada estructura pueda sobreescribir sus parametros.
-[ ] Agregar herencia entre estructuras.
+[ ] Que cada unidad pueda sobreescribir sus parametros.
+[ ] Agregar herencia entre unidades.
 [ ] proper eval() https://docs.python.org/3/library/ast.html 
 """
-
+"""
+cada unidad tiene o parametros propios o parametros 
+que hereda o de los params generales o de otra unidad si es 
+es "hija" lo cual lo indica el prefijo "^"
+"""
