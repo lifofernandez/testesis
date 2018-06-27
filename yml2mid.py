@@ -92,14 +92,14 @@ for sublist in l:
     for item in sublist:
         flat_list.append(item)
 """
-#def aplanar(l):
-#  o = [i for sl in l for i in sl]
-#  return o
 
+""" 
+aplanar 2 niveles de lista 
+"""
 aplanar = lambda l: [item for sublist in l for item in sublist]
 
 """ 
-aplanar 3 niveles de lista 
+aplana 3 niveles de lista 
 """
 def aplana(l):
   o = []
@@ -122,15 +122,15 @@ melodia = Track(
   track['forma'],
 )
 
-print(melodia)
-# en realidad melida.motivo['a'].alturas
-print(melodia.alturas)
-# melodia.secuencia
-# ¿sería melida.motivo['a'].secuencia ?
+#print(melodia)
+## en realidad melida.motivo['a'].alturas
+#print(melodia.alturas)
+## melodia.secuencia
+## ¿sería melida.motivo['a'].secuencia ?
+#
+#print(melodia.secuencia)
 
-print(melodia.secuencia)
-
-pepe = [
+lolol = [
     2,
     [
       1,
@@ -144,12 +144,12 @@ pepe = [
     'range(0,11,2)',
     ['range(0,7,2)',33]*2
   ] * 9
-pepeaplanado = aplana( pepe ) 
-pepeevaluado = evaluar( pepe) 
+aplanado = aplana( lolol ) 
+evaluado = evaluar(lolol) 
 
-print(pepeaplanado)
-print(pepeaplanado[-2])
-print(pepeevaluado)
+print(aplanado )
+print(aplanado[-2])
+print(evaluado)
 
 
 """ TODO
