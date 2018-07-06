@@ -122,35 +122,36 @@ melodia = Track(
   track['forma'],
 )
 
-#print(melodia)
-## en realidad melida.motivo['a'].alturas
-#print(melodia.alturas)
-## melodia.secuencia
-## ¿sería melida.motivo['a'].secuencia ?
-#
-#print(melodia.secuencia)
+print(melodia)
+# en realidad melida.motivo['a'].alturas
+print(melodia.alturas)
+# melodia.secuencia
+# ¿sería melida.motivo['a'].secuencia ?
 
-lolol = [
-    2,
-    [
-      1,
-      [8,88] *2 ,
-      2,
-      3
-    ],
-    [4,5,6], 
-    [7] +[1,3,5], 
-    [8,9] * 3,
-    'range(0,11,2)',
-    ['range(0,7,2)',33]*2
-  ] * 9
-aplanado = aplana( lolol ) 
-evaluado = evaluar(lolol) 
+print(melodia.secuencia)
+print(melodia.secuencia[-1])
 
-print(aplanado )
-print(aplanado[-2])
-print(evaluado)
-
+#lolol = [
+#    2,
+#    [
+#      1,
+#      [8,88] *2 ,
+#      2,
+#      3
+#    ],
+#    [4,5,6], 
+#    [7] +[1,3,5], 
+#    [8,9] * 3,
+#    'range(0,11,2)',
+#    ['range(0,7,2)',33]*2
+#  ] * 9
+# aplanado = aplana( lolol ) 
+# evaluado = evaluar( lolol ) 
+# 
+# print(aplanado )
+# print(aplanado[-2])
+# print(evaluado)
+# 
 
 """ TODO
 [-] func/@property: Secuenciar unidades.
@@ -164,4 +165,7 @@ print(evaluado)
 cada unidad tiene o parametros propios o parametros 
 que hereda o de los params generales o de otra unidad si es 
 es "hija" lo cual lo indica el prefijo "^"
+"""
+"""
+el secuencia de indices que define el largo del loop es el mas largo
 """
