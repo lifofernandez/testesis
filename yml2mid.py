@@ -14,26 +14,61 @@ class Track:
 
   def __str__( self ):
    output = '' 
-   #print(self.__dict__.items())
    for attr, value in self.__dict__.items():
      v = str(attr) + ':' + str(value)
      output += v + '\n'
-
-     #for x in self.parametros:
-     #  output += str(x) + '\n'  
-     #  for y in self.parametros[x]:
-     #    name = '  ' + str( y )
-     #    valor = ': ' + str( self.parametros[x][y] ) 
-     #    output += name + valor + '\n'  
-
    return output 
 
+  def heredar( self ):
+    for unidad in self.unidades:
+      unidad_objeto = Unidad( unidad, self.unidades[unidad])
+      print( unidad_objeto )
+      unidad_objeto.mostrar_cantidad()
+
+      # output += str(x) + '\n'  
+      # for y in self.parametros[x]:
+      #if(unidad[-1] == '^'):
+      #   print(unidad+':HIJAA')
+      #if 'unidades' in self.unidades[unidad]:
+      #   print( unidad + ':UoU' )
+      #else : 
+      #   print( unidad + ':Unidad Basica' )
+      ##if( isinstance( self.unidades[unidad], dict) ):
+      ##  print( 'dict:'+ str(unidad ))
+      ##  #print(unidad[-1] ) 
+      ##elif( isinstance( self.unidades[unidad],list) ):
+      ##  print( 'list:'+str(unidad))
+    return 'e'
+
+class Unidad:
+  cantidad = 0
+  def __init__( self, nombre, unidad_original ):
+    self.nombre = nombre 
+    Unidad.cantidad += 1
+
+  def __str__( self ):
+   return self.nombre
+
+  def mostrar_cantidad( self):
+      print("Cantidad de Unidades: %d" % Unidad.cantidad)
+
+    
+"""
+clase para pasar las unidades de cada track
+metodos: es_hijo, heredar/suceder, init(levantar defaults y override con propios),
+es UoU o Unidad Bassica,
+¿primero se prosesan unidades basicas, luego UoU?
+¿primero hereda, despues completa con parametros generales?
+   def es_hijo?
+"""
+
 tt = Track(
-  track['parametros'],
+  track['modelo'],
   track['unidades'],
   track['forma'],
 )
 print(tt)
+tt.heredar()
 
 
 """ TODO
