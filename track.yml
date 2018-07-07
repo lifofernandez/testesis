@@ -2,7 +2,7 @@ nombre: 'Piano'
 PRIMA: '^' # sufijo herencia (a^ = a + override params propios)
 
 # Unidad Modelo
-modelo: 
+default: 
   # parametros de unidad moldelo
   alturas: [1,1,3,8]
   transporte: '60+(12*2)' # C + dos 8vas

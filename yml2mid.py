@@ -8,7 +8,7 @@ track = yaml.load( data )
 
 @dataclass
 class Track:
-  parametros: dict
+  default: dict
   unidades: dict
   forma: dict
 
@@ -21,9 +21,10 @@ class Track:
 
   def heredar( self ):
     for unidad in self.unidades:
-      unidad_objeto = Unidad( unidad, self.unidades[unidad])
-      print( unidad_objeto )
+      unidad_objeto = Unidad( unidad, self.unidades[unidad], self.default)
+      print( unidad_objeto, unidad_objeto.padre )
       unidad_objeto.mostrar_cantidad()
+      # almacenar unidades en algooo
 
       # output += str(x) + '\n'  
       # for y in self.parametros[x]:
@@ -42,15 +43,27 @@ class Track:
 
 class Unidad:
   cantidad = 0
-  def __init__( self, nombre, unidad_original ):
+  def __init__( self, nombre, cruda, default ):
     self.nombre = nombre 
+    self.original = cruda
     Unidad.cantidad += 1
 
   def __str__( self ):
    return self.nombre
 
-  def mostrar_cantidad( self):
-      print("Cantidad de Unidades: %d" % Unidad.cantidad)
+  def mostrar_cantidad( self ):
+    print("Cantidad de Unidades: %d" % Unidad.cantidad)
+
+  @property
+  def es_hijo( self ):
+    return self.nombre.endswith( '^' )
+
+  @property
+  def padre( self ):
+    if self.es_hijo:
+      return self.nombre[0:-1]
+     
+
 
     
 """
@@ -63,7 +76,7 @@ es UoU o Unidad Bassica,
 """
 
 tt = Track(
-  track['modelo'],
+  track['default'],
   track['unidades'],
   track['forma'],
 )
