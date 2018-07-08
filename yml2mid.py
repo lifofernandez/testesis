@@ -1,10 +1,13 @@
 #!/usr/bin/env python3.7
 
 import yaml
+import weakref
 from dataclasses import dataclass
 
 data = open( "track.yml", 'r' )
-track = yaml.load( data )
+track_file = yaml.load( data )
+# esto tiene que ser de cada track ??
+sufijo_prima = track_file['PRIMA']
 
 @dataclass
 class Track:
@@ -18,18 +21,24 @@ class Track:
      v = str(attr) + ':' + str(value)
      output += v + '\n'
    return output 
-
-  def heredar( self ):
+  # pasar a init
+  def cargar_unidades( self ):
     for unidad in self.unidades:
-      unidad_objeto = Unidad( unidad, self.unidades[unidad], self.default)
-      print( unidad_objeto, unidad_objeto.padre )
+      unidad_objeto = Unidad( 
+        unidad, 
+        self.unidades[unidad], 
+        self.default,
+        self
+    )
+
+
+      print( unidad_objeto)
+      if( unidad_objeto.apellido): print(unidad_objeto.apellido)
+      print(unidad_objeto.herencia)
       unidad_objeto.mostrar_cantidad()
+
       # almacenar unidades en algooo
 
-      # output += str(x) + '\n'  
-      # for y in self.parametros[x]:
-      #if(unidad[-1] == '^'):
-      #   print(unidad+':HIJAA')
       #if 'unidades' in self.unidades[unidad]:
       #   print( unidad + ':UoU' )
       #else : 
@@ -41,11 +50,31 @@ class Track:
       ##  print( 'list:'+str(unidad))
     return 'e'
 
+    
+"""
+clase para pasar las unidades de cada track
+metodos: es_hijo, heredar/suceder, init(levantar defaults y override con propios),
+es UoU o Unidad Bassica,
+¿primero se prosesan unidades basicas, luego UoU?
+¿primero hereda, despues completa con parametros generales?
+   def es_hijo?
+   PRIMERO HEREDA ASI DESPUES PPLANCHA DEFAULTS
+   SINO PLANCHA DEDEI DEFAULS Y DESPUES PLANCHA PADRE
+"""
 class Unidad:
   cantidad = 0
-  def __init__( self, nombre, cruda, default ):
+  def __init__( 
+      self,
+      nombre,
+      cruda,
+      default,
+      track
+    ):
     self.nombre = nombre 
     self.original = cruda
+    self.track = weakref.ref(track)
+    # print( self.track() )
+    #print(self.track)
     Unidad.cantidad += 1
 
   def __str__( self ):
@@ -56,32 +85,29 @@ class Unidad:
 
   @property
   def es_hijo( self ):
-    return self.nombre.endswith( '^' )
+    return self.nombre.endswith( sufijo_prima )
 
   @property
-  def padre( self ):
+  def apellido( self ):
     if self.es_hijo:
+      # obtener objeto padre
+      # return self.track.unidades[padre] 
       return self.nombre[0:-1]
-     
 
-
-    
-"""
-clase para pasar las unidades de cada track
-metodos: es_hijo, heredar/suceder, init(levantar defaults y override con propios),
-es UoU o Unidad Bassica,
-¿primero se prosesan unidades basicas, luego UoU?
-¿primero hereda, despues completa con parametros generales?
-   def es_hijo?
-"""
+  @property
+  def herencia( self ):
+    if self.apellido:
+      # track() invoca a la ref de track 
+      herencia = self.track().unidades[ self.apellido ]
+      return herencia 
 
 tt = Track(
-  track['default'],
-  track['unidades'],
-  track['forma'],
+  track_file['default'],
+  track_file['unidades'],
+  track_file['forma'],
 )
 print(tt)
-tt.heredar()
+tt.cargar_unidades()
 
 
 """ TODO
