@@ -52,11 +52,11 @@ unidades:
   A: 
     unidades: ['a','b'] # otras unidades...
   B: 
+    alturas: [6,4,2]
     unidades: ['b','b']
   B^: 
     unidades: ['b','a']
     dinamicas: [.5,.9,.8,.9]
-    alturas: [2,3]
   C: 
     unidades: ['c','d']
   estrofa: 

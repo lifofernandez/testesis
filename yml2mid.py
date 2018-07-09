@@ -16,11 +16,12 @@ class Track:
   forma: dict
 
   def __str__( self ):
-   output = '' 
+   o = '' 
    for attr, value in self.__dict__.items():
-     v = str(attr) + ':' + str(value)
-     output += v + '\n'
-   return output 
+     l = str(attr) + ':' + str(value)
+     o += l + '\n'
+   return o
+
   # pasar a init
   def cargar_unidades( self ):
     for unidad in self.unidades:
@@ -29,25 +30,14 @@ class Track:
         self.unidades[unidad], 
         self.default,
         self
-    )
-
-
+      )
       print( unidad_objeto)
-      if( unidad_objeto.apellido): print(unidad_objeto.apellido)
-      print(unidad_objeto.herencia)
-      unidad_objeto.mostrar_cantidad()
+      if( unidad_objeto.apellido):
+        print(unidad_objeto.apellido)
+        print(unidad_objeto.herencia)
+        print(unidad_objeto.sucesion)
+      #unidad_objeto.mostrar_cantidad()
 
-      # almacenar unidades en algooo
-
-      #if 'unidades' in self.unidades[unidad]:
-      #   print( unidad + ':UoU' )
-      #else : 
-      #   print( unidad + ':Unidad Basica' )
-      ##if( isinstance( self.unidades[unidad], dict) ):
-      ##  print( 'dict:'+ str(unidad ))
-      ##  #print(unidad[-1] ) 
-      ##elif( isinstance( self.unidades[unidad],list) ):
-      ##  print( 'list:'+str(unidad))
     return 'e'
 
     
@@ -73,12 +63,11 @@ class Unidad:
     self.nombre = nombre 
     self.original = cruda
     self.track = weakref.ref(track)
-    # print( self.track() )
-    #print(self.track)
     Unidad.cantidad += 1
+    #print(Unidad)
 
   def __str__( self ):
-   return self.nombre
+    return self.nombre
 
   def mostrar_cantidad( self ):
     print("Cantidad de Unidades: %d" % Unidad.cantidad)
@@ -90,8 +79,7 @@ class Unidad:
   @property
   def apellido( self ):
     if self.es_hijo:
-      # obtener objeto padre
-      # return self.track.unidades[padre] 
+      # obtener nombre padre
       return self.nombre[0:-1]
 
   @property
@@ -100,6 +88,13 @@ class Unidad:
       # track() invoca a la ref de track 
       herencia = self.track().unidades[ self.apellido ]
       return herencia 
+
+  @property
+  def sucesion( self ):
+    if self.herencia:
+      # mix dicts  
+      o = { **self.herencia, **self.original }
+      return o
 
 tt = Track(
   track_file['default'],
@@ -111,7 +106,7 @@ tt.cargar_unidades()
 
 
 """ TODO
-[ ] Agregar herencia entre unidades.
+[-] Agregar herencia entre unidades prima y padre.
 [ ] func/@property: Secuenciar unidades.
 [ ] Punteros a partir de unidades contendoras de punteros.
 [ ] Que las escructuras levanten params por defencto .
