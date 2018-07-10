@@ -16,7 +16,7 @@ default:
   # Set intervalos para registracion fija 
   intervalos : [ 
       #0,2,4,5,7,[2,3],range(11),9-1,11,12,
-     -12, -10,  -8,  -7,  -5,  -2,   -1,
+      -12, -10,  -8,  -7,  -5,  -2,   -1,
        .2,   2,   4,   5,   7,   9,   11,  
       12,12+2,12+4,12+5,12+7,12+9,12+12,
       12+12
@@ -36,7 +36,6 @@ default:
 
 # Unidades Formales
 unidades:
-  # Unidades Basicas
   a:
     alturas: [1,3,3,5] 
   b:
@@ -60,11 +59,11 @@ unidades:
   C: 
     unidades: ['c','d']
   estrofa: 
-   unidades: ['A',7,7,7,'B','B'] 
+   unidades: ['A','B','B'] 
   estribillo: 
    unidades: ['C','B','B']
   perro: 
-   unidades: [ 33, 'B']
+   unidades: ['B']
 
 # Articulacion de Unidades (Macro-estructura)
 forma: [
@@ -77,4 +76,4 @@ forma: [
   'perro',
 ]
 
-## procesos:
+# procesos:
