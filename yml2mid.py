@@ -22,9 +22,9 @@ class Track:
      o += l + '\n'
    return o
 
-  # pasar a init?
   @property
   def unidades( self ):
+    # pasar a init?
     UNIDADES = {} 
     for unidad in self.originales:
       unidad_objeto = Unidad( 
@@ -46,15 +46,43 @@ class Track:
     return UNIDADES
 
   @property
-  def secuencia( self ):
+  def eventos( self ):
+    # Combinacion parametros: altura, duracion, dinamica, etc
     if self.unidades:
       for unidad in self.unidades:  
-        #print( unidad )
-        # unidad_referida = self.track().originales[ unidad ]
-        unidad_referida = self.unidades[ unidad ] 
-        # print( unidad_referida )
+        print( unidad )
+        referida = self.unidades[ unidad ]
+        parametros = referida.parametros
+
+        cantidad_alturas    = len(parametros['alturas'])
+        cantidad_duraciones = len(parametros['duraciones'])
+        cantidad_dinamicas  = len(parametros['dinamicas'])
+        pasos = max(
+          cantidad_alturas,
+          cantidad_duraciones,
+          cantidad_dinamicas,
+        )
+        #hacer parametros waker
+        for paso in range(pasos):
+          altura = parametros['alturas'][paso % cantidad_alturas]
+          # combinar con intervalos
+          duracion = parametros['duraciones'][paso % cantidad_duraciones]
+          dinamica = parametros['dinamicas'][paso % cantidad_dinamicas]
+          print(
+            '\t',
+            paso,'\t',
+            altura,'\t',
+            duracion,'\t',
+            dinamica,'\t',
+          )
+
+    #else:
+      #print(self.parametros)
     return 'evento'
 
+  def secuencia( self ):
+    # Secuencia de eventos 
+    return 'secuencia'
     
 """
 clase para pasar las unidades de cada track
@@ -80,7 +108,6 @@ class Unidad:
     self.track = weakref.ref(track)
     Unidad.cantidad += 1
     Unidad.default = default
-    #print(Unidad)
 
   def __str__( self ):
     return self.nombre
@@ -132,12 +159,13 @@ t = Track(
   track_file['unidades'],
   track_file['forma'],
 )
-print(t)
-for u in t.unidades:
-  print(u)
+#print(t)
+#for u in t.unidades:
+#  print(u)
 
-for s in t.secuencia:
-  print(s)
+o = t.eventos
+#for s in t.eventos:
+#  print(s)
 
 
 """ TODO

@@ -23,7 +23,7 @@ default:
   ]
   # registracion: 'fija' # redundante si intervalos existe registracion = fija
   
-  duraciones: [1,.5,1.5,1.5]
+  duraciones: [1,.2,1.3,1.4,1.5]
   BPM: 60
   METRO: 9/8
 
@@ -43,7 +43,7 @@ unidades:
   b^:
     dinamicas: [.5,.9,.8,.9]
   c:
-    alturas: [2,3]
+    dinamicas: [.1,.3]
   d:
     alturas: [6,4,2]
 
@@ -55,15 +55,9 @@ unidades:
     unidades: ['b','b']
   B^: 
     unidades: ['b','a']
-    dinamicas: [.5,.9,.8,.9]
+    dinamicas: [.5,.9,.8,.9,.6,.6,.6]
   C: 
     unidades: ['c','d']
-  estrofa: 
-   unidades: ['A','B','B'] 
-  estribillo: 
-   unidades: ['C','B','B']
-  perro: 
-   unidades: ['B']
 
 # Articulacion de Unidades (Macro-estructura)
 forma: [
