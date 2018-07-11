@@ -46,43 +46,65 @@ class Track:
     return UNIDADES
 
   @property
-  def eventos( self ):
-    # Combinacion parametros: altura, duracion, dinamica, etc
-    if self.unidades:
-      for unidad in self.unidades:  
-        print( unidad )
-        referida = self.unidades[ unidad ]
-        parametros = referida.parametros
-
-        cantidad_alturas    = len(parametros['alturas'])
-        cantidad_duraciones = len(parametros['duraciones'])
-        cantidad_dinamicas  = len(parametros['dinamicas'])
-        pasos = max(
-          cantidad_alturas,
-          cantidad_duraciones,
-          cantidad_dinamicas,
-        )
-        #hacer parametros waker
-        for paso in range(pasos):
-          altura = parametros['alturas'][paso % cantidad_alturas]
-          # combinar con intervalos
-          duracion = parametros['duraciones'][paso % cantidad_duraciones]
-          dinamica = parametros['dinamicas'][paso % cantidad_dinamicas]
-          print(
-            '\t',
-            paso,'\t',
-            altura,'\t',
-            duracion,'\t',
-            dinamica,'\t',
-          )
-
-    #else:
-      #print(self.parametros)
-    return 'evento'
-
   def secuencia( self ):
-    # Secuencia de eventos 
+
+    for U in self.forma:
+      print(U)
+
+    for u in self.unidades:  
+      unidad = self.unidades[ u ]
+
+      if unidad.unidades:
+        print( unidad )
+        print( unidad.parametros )
+
+        for r in unidad.unidades:
+          referida = self.unidades[ r ]
+          print( '-', referida )
+          referente = unidad.parametros 
+          referente.pop( 'unidades', None )
+          resultado = { **referida.parametros, **referente} 
+
+          if referida.unidades:
+            for rr in referida.unidades:
+              refereferida = self.unidades[ rr ]
+              print( '--', refereferida )
+              #refereferente = referida.parametros 
+              refereferente = resultado
+              refereferente.pop( 'unidades', None )
+              reresultado = { **refereferida.parametros, **refereferente} 
+
+      #if not unidad.unidades:
+      #else:
+      #  parametros = unidad.parametros
+
+      #  cantidad_alturas    = len( parametros['alturas'] )
+      #  cantidad_duraciones = len( parametros['duraciones'] )
+      #  cantidad_dinamicas  = len( parametros['dinamicas'] )
+      #  pasos = max(
+      #    cantidad_alturas,
+      #    cantidad_duraciones,
+      #    cantidad_dinamicas,
+      #  )
+
+      #  # Combinacion parametros: altura, duracion, dinamica, etc
+      #  for paso in range( pasos ):
+      #    altura = parametros['alturas'][paso % cantidad_alturas]
+      #    # combinar con intervalos
+      #    duracion = parametros['duraciones'][paso % cantidad_duraciones]
+      #    dinamica = parametros['dinamicas'][paso % cantidad_dinamicas]
+      #    print(
+      #      'evento',
+      #      paso,'\t',
+      #      altura,'\t',
+      #      duracion,'\t',
+      #      dinamica,'\t',
+      #    )
     return 'secuencia'
+
+  def eventos( self ):
+    # Secuencia de eventos 
+    return 'eventos'
     
 """
 clase para pasar las unidades de cada track
@@ -163,7 +185,7 @@ t = Track(
 #for u in t.unidades:
 #  print(u)
 
-o = t.eventos
+o = t.secuencia
 #for s in t.eventos:
 #  print(s)
 

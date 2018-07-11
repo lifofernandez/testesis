@@ -6,7 +6,7 @@ default:
   # parametros de unidad moldelo
   alturas: [1,1,3,8]
   transporte: '60+(12*2)' # C + dos 8vas
-  trasponer: 'parametro/proceso por definir'
+  transponer: 'como trasportar pero dentro de una registracion fija'
   
   # Apilamiento de alturas
   textura: 
@@ -58,6 +58,13 @@ unidades:
     dinamicas: [.5,.9,.8,.9,.6,.6,.6]
   C: 
     unidades: ['c','d']
+    textura: [7]
+  estrofa: 
+    unidades: ['A','B','B'] # otras unidades...
+  estribillo:
+    unidades: ['C','B','B']
+  perro: 
+    unidades: ['B']
 
 # Articulacion de Unidades (Macro-estructura)
 forma: [
