@@ -74,6 +74,7 @@ macroforma: [
   'C', 
   'C', 
   'C', 
+  'eee',
   #['B','A'] * 2, 
   #[2,3] * 2, 
   'perro',

@@ -104,15 +104,16 @@ class Track:
 
   def caminar( self ):
     for unidad in self.macroforma:
-      caminador( unidad, self.unidades )
+      paso( unidad, self.unidades )
     return 'caminador'
 
-def caminador( unidad, paleta ):
-  ao = paleta[ unidad ]
-  print( unidad,ao.propios )
-  if ao.unidades:
-    for b in ao.unidades:  
-      caminador( b, paleta )
+def paso( unidad, paleta ):
+  if unidad in paleta:
+    ao = paleta[ unidad ]
+    print( unidad, ao.propios )
+    if ao.unidades:
+      for b in ao.unidades:  
+        paso( b, paleta )
   return 'eventos'
     
 """
