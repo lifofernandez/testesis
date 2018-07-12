@@ -51,10 +51,10 @@ unidades:
   A: 
     unidades: ['a','b'] # otras unidades...
   B: 
-    alturas: [6,4,2]
+    dinamicas: [.5,.4,.3]
     unidades: ['b','b']
   B^: 
-    unidades: ['b','a']
+    unidades: ['b','b^']
     dinamicas: [.5,.9,.8,.9,.6,.6,.6]
   C: 
     unidades: ['c','d']
@@ -62,15 +62,17 @@ unidades:
   estrofa: 
     unidades: ['A','B','B'] # otras unidades...
   estribillo:
-    unidades: ['C','B','B']
+    unidades: ['C','B','B^']
   perro: 
     unidades: ['B']
 
 # Articulacion de Unidades (Macro-estructura)
-forma: [
+macroforma: [
   'estrofa',
   'estrofa',
   'estribillo',
+  'C', 
+  'C', 
   'C', 
   #['B','A'] * 2, 
   #[2,3] * 2, 

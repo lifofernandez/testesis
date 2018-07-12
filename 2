@@ -100,19 +100,13 @@ class Track:
       #      duracion,'\t',
       #      dinamica,'\t',
       #    )
+      eventos()
     return 'secuencia'
 
-  def caminar( self ):
-    for unidad in self.macroforma:
-      caminador( unidad, self.unidades )
-    return 'caminador'
-
-def caminador( unidad, paleta ):
-  ao = paleta[ unidad ]
-  print( unidad,ao.propios )
-  if ao.unidades:
-    for b in ao.unidades:  
-      caminador( b, paleta )
+def walker( ):
+  # Secueparametros ncia de eventos 
+  print('eee')
+  eventos()
   return 'eventos'
     
 """
@@ -173,17 +167,18 @@ class Unidad:
   @property 
   def propios( self ):
     # sucesion y/o original
-    o = self.original
+    o = {**self.original} 
     if self.sucesion:
+      # mix dicts  
       o = { **self.sucesion, **self.original }
-    return o
+      return o
 
   @property 
   def parametros( self ):
-    #if self.sucesion:
-    #  o = { **Unidad.default, **self.sucesion }
-    #else:
-    o = { **Unidad.default, **self.propios }
+    if self.sucesion:
+      o = { **Unidad.default, **self.sucesion }
+    else:
+      o = { **Unidad.default, **self.original }
     return o
 
   #Unidad de Unidades
@@ -202,8 +197,7 @@ t = Track(
 #for u in t.unidades:
 #  print(u)
 
-#o = t.secuencia
-t.caminar()
+o = t.secuencia
 #for s in t.eventos:
 #  print(s)
 
