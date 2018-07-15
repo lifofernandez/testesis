@@ -2,6 +2,8 @@
 
 import yaml
 import weakref
+
+import pprint
 from dataclasses import dataclass
 
 data = open( "track.yml", 'r' )
@@ -16,11 +18,11 @@ class Track:
   macroforma: dict
 
   def __str__( self ):
-   o = '' 
-   for attr, value in self.__dict__.items():
-     l = str(attr) + ':' + str(value)
-     o += l + '\n'
-   return o
+    o = '' 
+    for attr, value in self.__dict__.items():
+      l = str(attr) + ':' + str(value)
+      o += l + '\n'
+    return o
 
   @property
   def unidades( self ):
@@ -45,69 +47,103 @@ class Track:
       UNIDADES[unidad] =  unidad_objeto 
     return UNIDADES
 
+ # @property
+ # def secuencia( self ):
+
+ #   for U in self.macroforma:
+ #     print(U)
+
+ #   for u in self.unidades:  
+ #     unidad = self.unidades[ u ]
+
+ #     if unidad.unidades:
+ #       print( unidad )
+ #       print( unidad.original)
+
+ #       for r in unidad.unidades:
+ #         referida = self.unidades[ r ]
+ #         print( '-', referida )
+ #         referente = unidad.original
+ #         referente.pop( 'unidades', None )
+ #         resultado = { **referida.parametros, **referente} 
+
+ #         if referida.unidades:
+ #           for rr in referida.unidades:
+ #             refereferida = self.unidades[ rr ]
+ #             print( '--', refereferida )
+ #             #refereferente = referida.parametros 
+ #             refereferente = resultado
+ #             refereferente.pop( 'unidades', None )
+ #             reresultado = { **refereferida.parametros, **refereferente} 
+
+ #     #if not unidad.unidades:
+ #     #else:
+ #     #  parametros = unidad.parametros
+
+ #     #  cantidad_alturas    = len( parametros['alturas'] )
+ #     #  cantidad_duraciones = len( parametros['duraciones'] )
+ #     #  cantidad_dinamicas  = len( parametros['dinamicas'] )
+ #     #  pasos = max(
+ #     #    cantidad_alturas,
+ #     #    cantidad_duraciones,
+ #     #    cantidad_dinamicas,
+ #     #  )
+
+ #     #  # Combinacion parametros: altura, duracion, dinamica, etc
+ #     #  for paso in range( pasos ):
+ #     #    altura = parametros['alturas'][paso % cantidad_alturas]
+ #     #    # combinar con intervalos
+ #     #    duracion = parametros['duraciones'][paso % cantidad_duraciones]
+ #     #    dinamica = parametros['dinamicas'][paso % cantidad_dinamicas]
+ #     #    print(
+ #     #      'evento',
+ #     #      paso,'\t',
+ #     #      altura,'\t',
+ #     #      duracion,'\t',
+ #     #      dinamica,'\t',
+ #     #    )
+ #   return 'secuencia'
+
   @property
   def secuencia( self ):
+    SECUENCIA = []  
+    for unidad in self.macroforma:
+      SECUENCIA.append( pasos( unidad, self.unidades ) )
+    return SECUENCIA
 
-    for U in self.macroforma:
-      print(U)
+#def paso( unidad, paleta ):
+#  if unidad in paleta:
+#    ao = paleta[ unidad ]
+#    print( unidad, ao.propiedades)
+#    if ao.unidades:
+#      for b in ao.unidades:  
+#        paso( b, paleta )
+#  return pasos
 
-    for u in self.unidades:  
-      unidad = self.unidades[ u ]
 
-      if unidad.unidades:
-        print( unidad )
-        print( unidad.original)
+def pasos( unidad, paleta ):
+  PASOS = [] #AoO
+  
+  nivel = 0
+  if unidad in paleta:
+    ao = paleta[ unidad ]
+    PASOS.append( ao )
+    if ao.unidades:
+      nivel += 1
+      print( nivel, unidad )
+      ao.secuencia = [] 
+      for b in ao.unidades:  
+        bo = paleta[ b ]
+        pasos( b, paleta )
+        ao.secuencia.append( bo ) #AoO
+    else 
+      nivel += 1
+      print( nivel, unidad )
+  else 
+    nivel += 1
+    print( nivel, unidad )
 
-        for r in unidad.unidades:
-          referida = self.unidades[ r ]
-          print( '-', referida )
-          referente = unidad.original
-          referente.pop( 'unidades', None )
-          resultado = { **referida.parametros, **referente} 
-
-          if referida.unidades:
-            for rr in referida.unidades:
-              refereferida = self.unidades[ rr ]
-              print( '--', refereferida )
-              #refereferente = referida.parametros 
-              refereferente = resultado
-              refereferente.pop( 'unidades', None )
-              reresultado = { **refereferida.parametros, **refereferente} 
-
-      #if not unidad.unidades:
-      #else:
-      #  parametros = unidad.parametros
-
-      #  cantidad_alturas    = len( parametros['alturas'] )
-      #  cantidad_duraciones = len( parametros['duraciones'] )
-      #  cantidad_dinamicas  = len( parametros['dinamicas'] )
-      #  pasos = max(
-      #    cantidad_alturas,
-      #    cantidad_duraciones,
-      #    cantidad_dinamicas,
-      #  )
-
-      #  # Combinacion parametros: altura, duracion, dinamica, etc
-      #  for paso in range( pasos ):
-      #    altura = parametros['alturas'][paso % cantidad_alturas]
-      #    # combinar con intervalos
-      #    duracion = parametros['duraciones'][paso % cantidad_duraciones]
-      #    dinamica = parametros['dinamicas'][paso % cantidad_dinamicas]
-      #    print(
-      #      'evento',
-      #      paso,'\t',
-      #      altura,'\t',
-      #      duracion,'\t',
-      #      dinamica,'\t',
-      #    )
-      eventos()
-    return 'secuencia'
-
-def walker( ):
-  # Secueparametros ncia de eventos 
-  print('eee')
-  eventos()
-  return 'eventos'
+  return PASOS
     
 """
 clase para pasar las unidades de cada track
@@ -165,20 +201,19 @@ class Unidad:
       return o
 
   @property 
-  def propios( self ):
+  def propiedades( self ):
     # sucesion y/o original
-    o = {**self.original} 
+    o = self.original
     if self.sucesion:
-      # mix dicts  
       o = { **self.sucesion, **self.original }
-      return o
+    return o
 
   @property 
   def parametros( self ):
-    if self.sucesion:
-      o = { **Unidad.default, **self.sucesion }
-    else:
-      o = { **Unidad.default, **self.original }
+    #if self.sucesion:
+    #  o = { **Unidad.default, **self.sucesion }
+    #else:
+    o = { **Unidad.default, **self.propiedades }
     return o
 
   #Unidad de Unidades
@@ -197,9 +232,11 @@ t = Track(
 #for u in t.unidades:
 #  print(u)
 
-o = t.secuencia
-#for s in t.eventos:
-#  print(s)
+s = t.secuencia
+#t.secuencia()
+
+#pp = pprint.PrettyPrinter( indent = 4 )
+#pprint.pprint( s )
 
 
 """ TODO

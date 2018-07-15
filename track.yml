@@ -54,6 +54,7 @@ unidades:
     dinamicas: [.5,.4,.3]
     unidades: ['b','b']
   B^: 
+    alturas: [6,4,2]
     unidades: ['b','b^']
     dinamicas: [.5,.9,.8,.9,.6,.6,.6]
   C: 
