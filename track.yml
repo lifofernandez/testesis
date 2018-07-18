@@ -1,4 +1,4 @@
-nombre: 'Piano'
+nombre: 'Pista de prueba'
 PRIMA: '^' # sufijo herencia (a^ = a + override params propios)
 
 # Unidad Modelo
@@ -82,7 +82,7 @@ macroforma: [
  'estrofa',
  'estribillo',
  'estrofa',
-#  'C', 
+ 'C', 
 #  'C', 
 #  'C', 
 #  'eee',

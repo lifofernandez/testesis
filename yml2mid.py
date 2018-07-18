@@ -4,20 +4,28 @@ import yaml
 import weakref
 
 import pprint
-from dataclasses import dataclass
+#from dataclasses import dataclass
 
 data = open( "track.yml", 'r' )
 track_file = yaml.load( data )
 # esto tiene que ser de cada track ??
 sufijo_prima = track_file['PRIMA']
 
-@dataclass
+#@dataclass
 class Track:
-  default: dict
-  originales: dict
-  macroforma: dict
-  secuencia = []
-
+  cantidad = 0 
+ 
+  def __init__( 
+    self,
+    default,
+    originales,
+    macroforma,
+  ):
+    self.default    = default
+    self.originales = originales 
+    self.macroforma = macroforma
+    self.secuencia = self.secuenciar()
+    Track.cantidad += 1
 
   def __str__( self ):
     o = '' 
@@ -33,11 +41,10 @@ class Track:
     for unidad in self.originales:
       unidad_objeto = Unidad( 
         unidad, 
-        self.originales[unidad], 
+        self.originales[ unidad ], 
         self.default,
         self
       )
-
       #print( unidad_objeto)
       #if( unidad_objeto.apellido):
       #  print(unidad_objeto.apellido)
@@ -46,93 +53,51 @@ class Track:
       #print(unidad_objeto.parametros)
       #unidad_objeto.mostrar_cantidad()
 
-      UNIDADES[unidad] =  unidad_objeto 
+      UNIDADES[ unidad ] =  unidad_objeto 
     return UNIDADES
 
- # @property
- # def secuencia( self ):
-
- #   for U in self.macroforma:
- #     print(U)
-
- #   for u in self.unidades:  
- #     unidad = self.unidades[ u ]
-
- #     if unidad.unidades:
- #       print( unidad )
- #       print( unidad.original)
-
- #       for r in unidad.unidades:
- #         referida = self.unidades[ r ]
- #         print( '-', referida )
- #         referente = unidad.original
- #         referente.pop( 'unidades', None )
- #         resultado = { **referida.parametros, **referente} 
-
- #         if referida.unidades:
- #           for rr in referida.unidades:
- #             refereferida = self.unidades[ rr ]
- #             print( '--', refereferida )
- #             #refereferente = referida.parametros 
- #             refereferente = resultado
- #             refereferente.pop( 'unidades', None )
- #             reresultado = { **refereferida.parametros, **refereferente} 
-
- #     #if not unidad.unidades:
- #     #else:
- #     #  parametros = unidad.parametros
-
- #     #  cantidad_alturas    = len( parametros['alturas'] )
- #     #  cantidad_duraciones = len( parametros['duraciones'] )
- #     #  cantidad_dinamicas  = len( parametros['dinamicas'] )
- #     #  pasos = max(
- #     #    cantidad_alturas,
- #     #    cantidad_duraciones,
- #     #    cantidad_dinamicas,
- #     #  )
-
- #     #  # Combinacion parametros: altura, duracion, dinamica, etc
- #     #  for paso in range( pasos ):
- #     #    altura = parametros['alturas'][paso % cantidad_alturas]
- #     #    # combinar con intervalos
- #     #    duracion = parametros['duraciones'][paso % cantidad_duraciones]
- #     #    dinamica = parametros['dinamicas'][paso % cantidad_dinamicas]
- #     #    print(
- #     #      'evento',
- #     #      paso,'\t',
- #     #      altura,'\t',
- #     #      duracion,'\t',
- #     #      dinamica,'\t',
- #     #    )
- #   return 'secuencia'
-
-  #pasar a init
   def secuenciar( 
     self,
     forma = None,
     nivel = 0,
+    PASOS = [],
   ):
     forma = forma if forma is not None else self.macroforma
     paleta = self.unidades
     nivel += 1
-    PASOS = []
     for u in forma:  
-      print( '-' * ( nivel - 1 )+ str( u ) )
+      # print( '-' * ( nivel - 1 )+ str( u ) )
       if u in paleta:
         uo = paleta[ u ]
         if uo.unidades:
-          unis = uo.unidades
-          self.secuenciar( unis, nivel ) 
-        else:
-          #solo unidades basicas se puede secuenciar 
-          # mezclar con los de la estructura padre
-          self.secuencia += [ u ]
+          us = uo.unidades
+          self.secuenciar( us, nivel, PASOS ) 
+        else: # solo unidades basicas se puede secuenciar 
+          #parametros = uo.parametros
+          #falta mezclar propiedades con los de la estructura padre
+          #calt = len( parametros['alturas'] )
+          #cdur = len( parametros['duraciones'] )
+          #cdin = len( parametros['dinamicas'] )
+          #pasos = max(
+          #  calt,
+          #  cdin,
+          #  cdur,
+          #)
+          ## Combinacion parametros: altura, duracion, dinamica, etc
+          #for paso in range( pasos ):
+          #  alt = parametros['alturas'][paso % calt ]
+          #  # falta combinar altura con set  intervalos
+          #  dur = parametros['duraciones'][paso % cdur ]
+          #  din = parametros['dinamicas'][paso % cdin ]
+          #  print(
+          #    'evento',
+          #    paso,'\t',
+          #    alt,'\t',
+          #    dur,'\t',
+          #    din,'\t',
+          #  )
           PASOS += [ u ]
     return PASOS
-
-  
-
-
     
 """
 clase para pasar las unidades de cada track
@@ -147,15 +112,15 @@ es UoU o Unidad Bassica,
 class Unidad:
   cantidad = 0
   def __init__( 
-      self,
-      nombre,
-      cruda,
-      default,
-      track
-    ):
+    self,
+    nombre,
+    cruda,
+    default,
+    track
+  ):
     self.nombre = nombre 
     self.original = cruda
-    self.track = weakref.ref(track)
+    self.track = weakref.ref( track )
     Unidad.cantidad += 1
     Unidad.default = default
 
@@ -219,7 +184,7 @@ t = Track(
 )
 
 #para evitar tener que ejecutar secuenciar, hay quie pasar esa func a init
-secuencia = t.secuenciar()
+#secuencia = t.secuenciar()
 print(t.secuencia)
 
 
