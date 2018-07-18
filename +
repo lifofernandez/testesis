@@ -16,7 +16,7 @@ class Track:
   default: dict
   originales: dict
   macroforma: dict
-  secuencia = []
+  nivel = 0
 
 
   def __str__( self ):
@@ -106,31 +106,46 @@ class Track:
  #     #    )
  #   return 'secuencia'
 
-  #pasar a init
-  def secuenciar( 
+  @property
+  def secuencia( 
     self,
-    forma = None,
-    nivel = 0,
+    forma = []
+    #secuencia = self.secuencia,
   ):
-    forma = forma if forma is not None else self.macroforma
+    #def pasos( unidad, paleta, nivel = 0, PASOS = []):
+    if not forma:
+      forma = self.macroforma
     paleta = self.unidades
-    nivel += 1
+    #print(forma)
+
+    self.nivel += 1
+    print( '-' * self.nivel + str( forma ) )
     PASOS = []
     for u in forma:  
-      print( '-' * ( nivel - 1 )+ str( u ) )
       if u in paleta:
-        uo = paleta[ u ]
-        if uo.unidades:
-          unis = uo.unidades
-          self.secuenciar( unis, nivel ) 
-        else:
-          #solo unidades basicas se puede secuenciar 
-          # mezclar con los de la estructura padre
-          self.secuencia += [ u ]
-          PASOS += [ u ]
+        unis = self.obtener( u )
+        if unis:
+          self.secuencia( self, unis ) 
+ #         secuencia( hija , paleta, nivel)
+ #     else:
+ #       #solo unidades basicas se puede secuenciar 
+ #       # mezclar con los de la estructura padre
+ #       #print( uo, uo.propiedades )
+ #       #PASOS.append( unidad )
+ #       SECUENCIA += [unidad]
     return PASOS
 
+  def obtener( self, unidad ):
+    uo = self.unidades[unidad ]
+    if uo.unidades
+    #return uo.unidades
+    return False 
   
+  @property
+  def perro(self):
+      print ('wow')
+      self.perro()
+      return 'perro'
 
 
     
@@ -217,11 +232,16 @@ t = Track(
   track_file['unidades'],
   track_file['macroforma'],
 )
+#print(t)
+#for u in t.unidades:
+#  print(u)
 
-#para evitar tener que ejecutar secuenciar, hay quie pasar esa func a init
-secuencia = t.secuenciar()
-print(t.secuencia)
+secuencia = t.secuencia
+#for s in secuencia:
+ #   print(s)
 
+#pp = pprint.PrettyPrinter( indent = 4 )
+#pprint.pprint( secuencia )
 
 
 """ TODO

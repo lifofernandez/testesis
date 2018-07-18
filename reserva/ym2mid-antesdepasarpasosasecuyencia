@@ -16,8 +16,6 @@ class Track:
   default: dict
   originales: dict
   macroforma: dict
-  secuencia = []
-
 
   def __str__( self ):
     o = '' 
@@ -106,33 +104,37 @@ class Track:
  #     #    )
  #   return 'secuencia'
 
-  #pasar a init
-  def secuenciar( 
-    self,
-    forma = None,
-    nivel = 0,
-  ):
-    forma = forma if forma is not None else self.macroforma
-    paleta = self.unidades
-    nivel += 1
-    PASOS = []
-    for u in forma:  
-      print( '-' * ( nivel - 1 )+ str( u ) )
-      if u in paleta:
-        uo = paleta[ u ]
-        if uo.unidades:
-          unis = uo.unidades
-          self.secuenciar( unis, nivel ) 
-        else:
-          #solo unidades basicas se puede secuenciar 
-          # mezclar con los de la estructura padre
-          self.secuencia += [ u ]
-          PASOS += [ u ]
-    return PASOS
-
+  @property
+  def secuencia( self ):
+    SECUENCIA = []  
+    for unidad in self.macroforma:
+      SECUENCIA += pasos( unidad, self.unidades ) 
+    return SECUENCIA
   
+  @property
+  def perro(self):
+      print ('wow')
+      self.perro()
+      return 'perro'
 
 
+def pasos( unidad, paleta, nivel = 0, PASOS = []):
+  #print('-' * nivel +  unidad )
+  nivel += 1
+  if unidad in paleta:
+    uo = paleta[ unidad ]
+    if uo.unidades:
+      uo.secuencia = [] 
+      for hija in uo.unidades:  
+        ho = paleta[ hija ]
+        pasos( hija , paleta, nivel, PASOS)
+    else:
+      #solo unidades basicas se puede secuenciar 
+      # mezclar con los de la estructura padre
+      #print( uo, uo.propiedades )
+      #PASOS.append( unidad )
+      PASOS += [unidad]
+  return PASOS
     
 """
 clase para pasar las unidades de cada track
@@ -217,11 +219,16 @@ t = Track(
   track_file['unidades'],
   track_file['macroforma'],
 )
+#print(t)
+#for u in t.unidades:
+#  print(u)
 
-#para evitar tener que ejecutar secuenciar, hay quie pasar esa func a init
-secuencia = t.secuenciar()
-print(t.secuencia)
+secuencia = t.secuencia
+for s in secuencia:
+    print(s)
 
+#pp = pprint.PrettyPrinter( indent = 4 )
+#pprint.pprint( secuencia )
 
 
 """ TODO

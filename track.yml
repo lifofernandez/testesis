@@ -46,39 +46,49 @@ unidades:
     dinamicas: [.1,.3]
   d:
     alturas: [6,4,2]
+  dd:
+    alturas: [6,4,2]
+  cc:
+    alturas: [6,4,2]
+  ????:
+    alturas: [6,4,2]
+  çççç:
+    alturas: [6,4,2]
+  ++++: 
+    alturas: [6,4,2]
 
   # Unidades de Unidades (UoUs)
   A: 
     unidades: ['a','b'] # otras unidades...
   B: 
     dinamicas: [.5,.4,.3]
-    unidades: ['b','b']
+    unidades: ['b','c']
   B^: 
     alturas: [6,4,2]
     unidades: ['b','b^']
     dinamicas: [.5,.9,.8,.9,.6,.6,.6]
   C: 
-    unidades: ['c','d']
+    unidades: ['cc','dd']
     textura: [7]
   estrofa: 
-    unidades: ['A','B','B'] # otras unidades...
+    unidades: ['A','B','B','çççç'] # otras unidades...
   estribillo:
-    unidades: ['C','B','B^']
+    unidades: ['C','B','B^','++++']
   perro: 
     unidades: ['B']
 
 # Articulacion de Unidades (Macro-estructura)
 macroforma: [
-  'estrofa',
-  'estrofa',
-  'estribillo',
-  'C', 
-  'C', 
-  'C', 
-  'eee',
-  #['B','A'] * 2, 
-  #[2,3] * 2, 
-  'perro',
+ 'estrofa',
+ 'estribillo',
+ 'estrofa',
+#  'C', 
+#  'C', 
+#  'C', 
+#  'eee',
+#  #['B','A'] * 2, 
+#  #[2,3] * 2, 
+#'perro',
 ]
 
 # procesos:
