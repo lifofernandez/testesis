@@ -59,6 +59,7 @@ unidades:
 
   # Unidades de Unidades (UoUs)
   A: 
+    alturas: [2]
     unidades: ['a','b'] # otras unidades...
     textura: [7]
   B: 

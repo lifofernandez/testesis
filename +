@@ -78,14 +78,13 @@ class Track:
         if uo.unidades:
           us = uo.unidades
           self.secuenciar( us, nivel, PASOS, instancia  ) 
-        else: 
-          # solo unidades basicas se puede secuenciar 
+        else: # solo unidades basicas se puede secuenciar 
+          print( uo, instancia )
           resultado = {
             **uo.parametros,
             **instancia
           } 
 
-          print( uo, resultado )
           calt = len( resultado['alturas'] )
           cdur = len( resultado['duraciones'] )
           cdin = len( resultado['dinamicas'] )
@@ -96,18 +95,17 @@ class Track:
           )
           # Combinacion parametros: altura, duracion, dinamica, etc
           for paso in range( pasos ):
-            alt = resultado['alturas'][ paso % calt ]
-            # combinar altura con set  intervalos
-            nota = resultado['intervalos'][ alt ]
+            alt = resultado['alturas'][paso % calt ]
+            # falta combinar altura con set  intervalos
             dur = resultado['duraciones'][paso % cdur ]
             din = resultado['dinamicas'][paso % cdin ]
-            evento = {
-              'ord' : paso,
-              'alt' : nota,
-              'dur' : dur,
-              'din' : din,
-            }
-            print(evento)
+            print(
+              'evento',
+              paso,'\t',
+              alt,'\t',
+              dur,'\t',
+              din,'\t',
+            )
           PASOS += [ u ]
     return PASOS
     
