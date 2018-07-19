@@ -61,6 +61,7 @@ class Track:
     forma = None,
     nivel = 0,
     PASOS = [],
+    pisar = {} 
   ):
     forma = forma if forma is not None else self.macroforma
     paleta = self.unidades
@@ -69,12 +70,17 @@ class Track:
       # print( '-' * ( nivel - 1 )+ str( u ) )
       if u in paleta:
         uo = paleta[ u ]
+        # mix propiedades con unidad referente
+        instancia = { 
+          **uo.propiedades,
+          **pisar
+        }
         if uo.unidades:
           us = uo.unidades
-          self.secuenciar( us, nivel, PASOS ) 
+          self.secuenciar( us, nivel, PASOS, instancia  ) 
         else: # solo unidades basicas se puede secuenciar 
-          #parametros = uo.parametros
-          #falta mezclar propiedades con los de la estructura padre
+          print( uo, instancia )
+
           #calt = len( parametros['alturas'] )
           #cdur = len( parametros['duraciones'] )
           #cdin = len( parametros['dinamicas'] )
@@ -128,7 +134,7 @@ class Unidad:
     return self.nombre
 
   def mostrar_cantidad( self ):
-    print("Cantidad de Unidades: %d" % Unidad.cantidad)
+    print( "Cantidad de Unidades: %d" % Unidad.cantidad )
 
   @property # presindible, sin uso por fuera
   def es_hijo( self ):
@@ -143,7 +149,7 @@ class Unidad:
   @property # presindible
   def herencia( self ):
     if self.apellido:
-      # track() invoca a la ref de track 
+      # track() weakref track 
       herencia = self.track().originales[ self.apellido ]
       return herencia 
 
@@ -164,9 +170,6 @@ class Unidad:
 
   @property 
   def parametros( self ):
-    #if self.sucesion:
-    #  o = { **Unidad.default, **self.sucesion }
-    #else:
     o = { **Unidad.default, **self.propiedades }
     return o
 

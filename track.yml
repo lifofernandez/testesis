@@ -60,6 +60,7 @@ unidades:
   # Unidades de Unidades (UoUs)
   A: 
     unidades: ['a','b'] # otras unidades...
+    textura: [7]
   B: 
     dinamicas: [.5,.4,.3]
     unidades: ['b','c']
@@ -69,7 +70,6 @@ unidades:
     dinamicas: [.5,.9,.8,.9,.6,.6,.6]
   C: 
     unidades: ['cc','dd']
-    textura: [7]
   estrofa: 
     unidades: ['A','B','B','çççç'] # otras unidades...
   estribillo:
