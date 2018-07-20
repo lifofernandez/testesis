@@ -86,7 +86,6 @@ class Track:
           # Combinacion parametros: altura, duracion, dinamica, etc
           for paso in range( pasos ):
             alt  = resultado['alturas'][ paso % calt ]
-            #To Do: revisar relacion puntero de altura y casillero int
             nota = resultado['intervalos'][ (alt - 1)  % cint ]
             dur  = resultado['duraciones'][ paso % cdur ]
             din  = resultado['dinamicas'][ paso % cdin ]
