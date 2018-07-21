@@ -77,38 +77,41 @@ class Track:
             **referente
           } 
           # print( uo, resultado )
-          calt = len( resultado['alturas'] )
-          calt = len( resultado['textura'] )
-          cint = len( resultado['intervalos'] )
-          cdur = len( resultado['duraciones'] )
-          cdin = len( resultado['dinamicas'] )
-          pasos = max( calt, cdin, cdur )
+          alts = resultado['alturas'] 
+          ints = resultado['intervalos'] 
+          vozs = resultado['voces'] 
+          durs = resultado['duraciones'] 
+          dins = resultado['dinamicas'] 
           octa = resultado['octava']
           trar = resultado['transporte']
+
+          pasos = len( max( alts, dins, durs ) )
           # Combinacion parametros: altura, duracion, dinamica, etc
           for paso in range( pasos ):
-            alt  = resultado['alturas'][ paso % calt ]
-            #Ajuste relacion puntero de altura y casillero int
+            alt  = alts[ paso % len( alts ) ]
+            #Ajuste relacion puntero altura/int
+            acor = []
             if alt != 0:
               alt = alt - 1
-              nota = resultado['intervalos'][ alt % cint ]
+              nota = ints[ alt % len( ints ) ] + trar
+              if vozs:
+               # Voces, del set de inter
+               for voz in vozs:
+                 fund = alt + ( voz[ paso % len( voz ) ] - 1)
+                 acor += [ ints[ fund % len( ints ) ]  + trar]
+                 #acorde += [ voz[ paso % len( voz )  ] ]
             else:
+              # Silencio
               nota = 'S'
-            dur  = resultado['duraciones'][ paso % cdur ]
-            din  = resultado['dinamicas'][ paso % cdin ]
-            textura = resultado['textura']
-            if textura:
-                if  isinstance( textura, list):
-                  cfil = len( max( textura ) ) 
-                  for fila in textura:
-                    o = ''
-                    for celda in range( cfil ):
-                      o += str( fila[ celda % len(fila) ] )
-                    print(o)  
+            print(paso,alt,acor)  
+            dur  = durs[ paso % len( durs ) ]
+            din  = dins[ paso % len( dins ) ]
+
 
             evento = {
               'orden'      : paso,
               'altura'     : nota,
+              'acorde'     : acor,
               'duracion'   : dur,
               'dinamica'   : din,
               'octava'     : octa,
@@ -199,9 +202,11 @@ for evento in t.secuencia:
       nota = note.Rest()
     else:
       nota = note.Note()
-      nota.pitch.ps = evento['altura'] + evento['transporte']
+      nota.pitch.ps = evento['altura'] 
       #nota.midi = evento['altura'] + evento['transporte']
       #nota.octave = evento['oct']
+      if evento['acorde']:
+        nota = chord.Chord( evento['acorde'] )
     duracion = duration.Duration( evento['duracion'] )
     nota.duration = duracion 
     dinamica = dynamics.Dynamic( evento['dinamica'] )
