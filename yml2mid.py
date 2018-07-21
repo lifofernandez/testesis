@@ -78,24 +78,41 @@ class Track:
           } 
           # print( uo, resultado )
           calt = len( resultado['alturas'] )
+          calt = len( resultado['textura'] )
           cint = len( resultado['intervalos'] )
           cdur = len( resultado['duraciones'] )
           cdin = len( resultado['dinamicas'] )
           pasos = max( calt, cdin, cdur )
           octa = resultado['octava']
+          trar = resultado['transporte']
           # Combinacion parametros: altura, duracion, dinamica, etc
           for paso in range( pasos ):
             alt  = resultado['alturas'][ paso % calt ]
-            #To Do: revisar relacion puntero de altura y casillero int
-            nota = resultado['intervalos'][ (alt - 1)  % cint ]
+            #Ajuste relacion puntero de altura y casillero int
+            if alt != 0:
+              alt = alt - 1
+              nota = resultado['intervalos'][ alt % cint ]
+            else:
+              nota = 'S'
             dur  = resultado['duraciones'][ paso % cdur ]
             din  = resultado['dinamicas'][ paso % cdin ]
+            textura = resultado['textura']
+            if textura:
+                if  isinstance( textura, list):
+                  cfil = len( max( textura ) ) 
+                  for fila in textura:
+                    o = ''
+                    for celda in range( cfil ):
+                      o += str( fila[ celda % len(fila) ] )
+                    print(o)  
+
             evento = {
-              'ord' : paso,
-              'alt' : nota,
-              'dur' : dur,
-              'din' : din,
-              'oct' : octa,
+              'orden'      : paso,
+              'altura'     : nota,
+              'duracion'   : dur,
+              'dinamica'   : din,
+              'octava'     : octa,
+              'transporte' : trar,
             }
             # print(evento)
             secuencia += [ evento ]
@@ -177,18 +194,23 @@ t = Track(
 
 cadena = stream.Stream()
 for evento in t.secuencia:
-    print( evento )
-    nota = note.Note()
-    #TODO silecio 
-    #if evento['alt'] < 1:
-    nota.pitch.ps = evento['alt']
-    nota.octave = evento['oct']
-    duracion = duration.Duration( evento['dur'] )
+    #print( evento )
+    if evento['altura'] == 'S':
+      nota = note.Rest()
+    else:
+      nota = note.Note()
+      nota.pitch.ps = evento['altura'] + evento['transporte']
+      #nota.midi = evento['altura'] + evento['transporte']
+      #nota.octave = evento['oct']
+    duracion = duration.Duration( evento['duracion'] )
     nota.duration = duracion 
-    dinamica = dynamics.Dynamic( evento['din'] )
+    dinamica = dynamics.Dynamic( evento['dinamica'] )
     nota.dynamic = dinamica
     cadena.append( nota )
 
+
+acorde = chord.Chord([60,63,67,72])
+cadena.append( acorde )
 cadena.show()
 
 """
