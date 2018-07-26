@@ -78,7 +78,7 @@ class Track:
           octa = resu['octava']     if 'octava'     in resu else None
           trar = resu['transporte'] if 'transporte' in resu else 0
           candidatos = [ dins, durs, alts ]
-          pasos = maslargo( candidatos )
+          pasos = maslarga( candidatos )
           # Combinar parametros: altura, duracion, dinamica, etc
           for paso in range( pasos ):
             alt  = alts[ paso % len( alts ) ]
@@ -180,13 +180,13 @@ class Unidad:
     if 'unidades' in self.parametros:
       return self.parametros['unidades']
       
-def maslargo( l ):
+def maslarga( l ):
     if( not isinstance( l, list ) ): return(0)
     return( 
       max( 
         [ len( l ) , ] + 
         [ len( subl ) for subl in l if isinstance( subl, list ) ] +
-        [ maslargo( subl ) for subl in l ]
+        [ maslarga( subl ) for subl in l ]
       )
     )
 

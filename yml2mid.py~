@@ -69,7 +69,7 @@ class Track:
         else: 
           # Solo unidades basicas (no UoUs) se secuencian 
           resu = { **uo.parametros, **referente } 
-          3print( uo, resu )
+          #print( uo, resu )
           alts = resu['alturas']    if 'alturas'    in resu else [1] 
           ints = resu['intervalos'] if 'intervalos' in resu else [1]
           vozs = resu['voces']      if 'voces'      in resu else None
