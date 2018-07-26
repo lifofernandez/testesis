@@ -1,17 +1,16 @@
-#!/usr/bin/env python3.7
+#!/usr/bin/env python3
 
 import yaml
 import weakref
-
 from music21 import *
-#from dataclasses import dataclass
 
+# To Do: uno por cada .yml en los args
 data = open( "track.yml", 'r' )
 track_file = yaml.load( data )
-# esto tiene que ser de cada track ??
-sufijo_prima = track_file['PRIMA']
 
-#@dataclass
+# sufijo herencia (a^ = a + override con params propios)
+sufijo_prima = '^' 
+
 class Track:
   cantidad = 0 
  
@@ -24,7 +23,7 @@ class Track:
     self.default    = default
     self.originales = originales 
     self.macroforma = macroforma
-    self.secuencia = self.secuenciar()
+    self.secuencia  = self.secuenciar()
     Track.cantidad += 1
 
   def __str__( self ):
@@ -59,34 +58,28 @@ class Track:
     paleta = self.unidades
     nivel += 1
     for u in forma:  
-      # print( '-' * ( nivel - 1 )+ str( u ) )
+      print( '-' * ( nivel - 1 )+ str( u ) )
       if u in paleta:
         uo = paleta[ u ]
         # Mix propiedades con unidad referente
-        referente = { 
-          **uo.propiedades,
-          **pisar
-        }
+        referente = { **uo.propiedades, **pisar }
         if uo.unidades:
           us = uo.unidades
           self.secuenciar( us, nivel, secuencia, referente) 
         else: 
-          # solo unidades basicas se puede secuenciar 
-          resultado = {
-            **uo.parametros,
-            **referente
-          } 
-          # print( uo, resultado )
-          alts = resultado['alturas'] 
-          ints = resultado['intervalos'] 
-          vozs = resultado['voces'] 
-          durs = resultado['duraciones'] 
-          dins = resultado['dinamicas'] 
-          octa = resultado['octava']
-          trar = resultado['transporte']
-
-          pasos = len( max( alts, dins, durs ) )
-          # Combinacion parametros: altura, duracion, dinamica, etc
+          # Solo unidades basicas (no UoUs) se secuencian 
+          resu = { **uo.parametros, **referente } 
+          #print( uo, resu )
+          alts = resu['alturas']    if 'alturas'    in resu else [1] 
+          ints = resu['intervalos'] if 'intervalos' in resu else [1]
+          vozs = resu['voces']      if 'voces'      in resu else None
+          durs = resu['duraciones'] if 'duraciones' in resu else [1]
+          dins = resu['dinamicas']  if 'dinamicas'  in resu else [1]
+          octa = resu['octava']     if 'octava'     in resu else None
+          trar = resu['transporte'] if 'transporte' in resu else 0
+          candidatos = [ dins, durs, alts ]
+          pasos = maslargo( candidatos )
+          # Combinar parametros: altura, duracion, dinamica, etc
           for paso in range( pasos ):
             alt  = alts[ paso % len( alts ) ]
             #Ajuste relacion puntero altura/int
@@ -103,11 +96,9 @@ class Track:
             else:
               # Silencio
               nota = 'S'
-            print(paso,alt,acor)  
+            # print(paso,alt,acor)  
             dur  = durs[ paso % len( durs ) ]
             din  = dins[ paso % len( dins ) ]
-
-
             evento = {
               'orden'      : paso,
               'altura'     : nota,
@@ -121,6 +112,7 @@ class Track:
             secuencia += [ evento ]
     return secuencia
     
+
 """
 Clase para las unidades de cada track
 """
@@ -188,7 +180,18 @@ class Unidad:
     if 'unidades' in self.parametros:
       return self.parametros['unidades']
       
+def maslargo( l ):
+    if( not isinstance( l, list ) ): return(0)
+    return( 
+      max( 
+        [ len( l ) , ] + 
+        [ len( subl ) for subl in l if isinstance( subl, list ) ] +
+        [ maslargo( subl ) for subl in l ]
+      )
+    )
 
+
+# To Do: Una cadena por cada track
 t = Track(
   track_file['default'],
   track_file['unidades'],
@@ -203,7 +206,7 @@ for evento in t.secuencia:
     else:
       nota = note.Note()
       nota.pitch.ps = evento['altura'] 
-      #nota.midi = evento['altura'] + evento['transporte']
+      #nota.pitch.midi = evento['altura'] 
       #nota.octave = evento['oct']
       if evento['acorde']:
         nota = chord.Chord( evento['acorde'] )
@@ -213,9 +216,8 @@ for evento in t.secuencia:
     nota.dynamic = dinamica
     cadena.append( nota )
 
-
-acorde = chord.Chord([60,63,67,72])
-cadena.append( acorde )
+# To Do: agrupar cadenas en un archivo/partitura
+# To Do: Poder elegir output (MIDI, MuseScore, etc)
 cadena.show()
 
 """
@@ -225,6 +227,7 @@ Cada unidad tiene o parametros propios o parametros
 que hereda o de los params generales o de otra unidad si es 
 es "hija" lo cual lo indica el prefijo "^"
 """
+
 """
 El secuencia de indices que define el largo del loop es el mas largo
 """
