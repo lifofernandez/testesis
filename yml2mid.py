@@ -4,7 +4,7 @@ import yaml
 import weakref
 from music21 import *
 
-# To Do: uno por cada .yml en los args
+# TODO: uno por cada .yml en los args
 data = open( "track.yml", 'r' )
 track_file = yaml.load( data )
 
@@ -58,7 +58,7 @@ class Track:
     paleta = self.unidades
     nivel += 1
     for u in forma:  
-      print( '-' * ( nivel - 1 )+ str( u ) )
+      print( '-' * ( nivel - 1 ) + str( u ) )
       if u in paleta:
         uo = paleta[ u ]
         # Mix propiedades con unidad referente
@@ -70,6 +70,8 @@ class Track:
           # Solo unidades basicas (no UoUs) se secuencian 
           resu = { **uo.parametros, **referente } 
           #print( uo, resu )
+          bpm  = resu['BPM']        if 'BPM'        in resu else 60 
+          metr = resu['METRO']      if 'METRO'      in resu else '4/4'
           alts = resu['alturas']    if 'alturas'    in resu else [1] 
           ints = resu['intervalos'] if 'intervalos' in resu else [1]
           vozs = resu['voces']      if 'voces'      in resu else None
@@ -101,6 +103,8 @@ class Track:
             din  = dins[ paso % len( dins ) ]
             evento = {
               'orden'      : paso,
+              'bpm'        : bpm,
+              'metro'      : metr,
               'altura'     : nota,
               'acorde'     : acor,
               'duracion'   : dur,
@@ -180,6 +184,8 @@ class Unidad:
     if 'unidades' in self.parametros:
       return self.parametros['unidades']
       
+
+# https://stackoverflow.com/questions/30902558
 def maslarga( l ):
     if( not isinstance( l, list ) ): return(0)
     return( 
@@ -191,7 +197,7 @@ def maslarga( l ):
     )
 
 
-# To Do: Una cadena por cada track
+# TODO: Una cadena por cada track
 t = Track(
   track_file['default'],
   track_file['unidades'],
@@ -199,25 +205,52 @@ t = Track(
 )
 
 cadena = stream.Stream()
-for evento in t.secuencia:
-    #print( evento )
-    if evento['altura'] == 'S':
-      nota = note.Rest()
-    else:
-      nota = note.Note()
-      nota.pitch.ps = evento['altura'] 
-      #nota.pitch.midi = evento['altura'] 
-      #nota.octave = evento['oct']
-      if evento['acorde']:
-        nota = chord.Chord( evento['acorde'] )
-    duracion = duration.Duration( evento['duracion'] )
-    nota.duration = duracion 
-    dinamica = dynamics.Dynamic( evento['dinamica'] )
-    nota.dynamic = dinamica
-    cadena.append( nota )
+parte = stream.Part()
 
-# To Do: agrupar cadenas en un archivo/partitura
-# To Do: Poder elegir output (MIDI, MuseScore, etc)
+
+#BUG: se morfa primer nota/evento
+for eventos in zip(t.secuencia[1:],t.secuencia):
+  evento = eventos[0]
+  previo = eventos[1]
+  print( evento )
+  print( previo )
+  if evento['altura'] == 'S':
+    e = note.Rest()
+  else:
+    e = note.Note()
+    e.pitch.ps = evento['altura'] 
+    #nota.pitch.midi = evento['altura'] 
+    #nota.octave = evento['oct']
+    if evento['acorde']:
+      e = chord.Chord( evento['acorde'] )
+  duracion = duration.Duration( evento['duracion'] )
+  e.duration = duracion 
+  dinamica = dynamics.Dynamic( evento['dinamica'] )
+  e.dynamic = dinamica
+
+  bpm = evento['bpm']
+  if ( previo['bpm'] != bpm ):
+    tm = tempo.MetronomeMark( None, bpm , note.Note(type='quarter'))
+    parte.append( tm )
+
+  metro = evento['metro']
+  if ( previo['metro'] != metro ):
+    mt = meter.TimeSignature( metro )
+    parte.append( mt )
+
+
+  parte.append( e )
+
+
+#TODO: poder cambiar el bpm en unidades
+tm = tempo.MetronomeMark( None, bpm , note.Note(type='half'))
+parte.insert( tm )
+
+parte.makeMeasures()
+cadena.append( parte )
+
+# TODO: agrupar cadenas en un archivo/partitura
+# TODO: Poder elegir output (MIDI, MuseScore, etc)
 cadena.show()
 
 """

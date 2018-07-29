@@ -21,7 +21,7 @@ default:
   #  - [1]
 
   duraciones: [2,.5,0.25,0.25,1]
-  BPM: 60
+  BPM: 62
   METRO: 9/8
 
   dinamicas: [.5,.8]
@@ -35,8 +35,10 @@ default:
 # Paleta de Unidades Formales
 unidades:
   a:
-    duraciones: [1]
+    duraciones: [1,.5,.5]
   b:
+    BPM: 61
+    METRO: '12/8' 
     alturas: [2,4,6,9]
   b^:
     dinamicas: [.5,.9,.8,.9]
