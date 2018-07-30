@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import argparse
+import argparse, os, sys
 import yaml
 import weakref
 from music21 import *
@@ -21,8 +21,8 @@ args = parser.parse_args()
 
 pistas = []
 for archivo in args.archivos:
-  data = open( archivo, 'r' )
-  pistas += yaml.load( data )
+  data = open( archivo.name, 'r' )
+  pistas.append(yaml.load( data ))
 
 if args.verbosity:
   print(args.verbosity)

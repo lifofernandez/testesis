@@ -1,5 +1,4 @@
 nombre: 'Pista prueba'
-
 # Parametros Unidad Default
 default: 
   intervalos : [ 
