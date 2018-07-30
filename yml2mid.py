@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import argparse, os, sys
+import argparse
 import yaml
 import weakref
 from music21 import *
@@ -19,10 +19,11 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
+# BUG: no respeta parametros (alturas, voces) de diferentes pistas
 pistas = []
 for archivo in args.archivos:
   data = open( archivo.name, 'r' )
-  pistas.append(yaml.load( data ))
+  pistas.append( yaml.load( data ) )
 
 if args.verbosity:
   print(args.verbosity)
@@ -216,7 +217,6 @@ def larguest( l ):
 
 
 cadena = stream.Stream()
-# TODO: Una parte por cada track
 for pista in pistas:
   t = Track(
     pista['default'],
@@ -252,7 +252,6 @@ for pista in pistas:
   parte.makeMeasures()
   cadena.append( parte )
 
-# TODO: agrupar cadenas en un archivo/partitura
 # TODO: Poder elegir output (MIDI, MuseScore, etc)
 cadena.show()
 

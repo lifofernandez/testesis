@@ -16,7 +16,7 @@ default:
   # Apilamiento de alturas
   voces: 
     - [5,7,8] # desplaza nº de intervalo
-    - [3]  
+    - [3] # desplaza nº de intervalo
     - [1]
 
   duraciones: [2,.5,0.25,0.25,1]
@@ -41,7 +41,6 @@ unidades:
   b^:
     dinamicas: [.5,.9,.8,.9]
   c:
-    metro: '12/8' 
     alturas: [2,4,6,9]
     dinamicas: [.1,.3]
   d:
