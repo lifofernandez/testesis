@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import random
 import yaml
 import weakref
 from music21 import *
@@ -19,7 +20,7 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
-# BUG: no respeta parametros (alturas, voces) de diferentes pistas
+# BUG:agrega track2 adentro y despues del track1 
 pistas = []
 for archivo in args.archivos:
   data = open( archivo.name, 'r' )
@@ -71,7 +72,7 @@ class Track:
     self,
     forma = None,
     nivel = 0,
-    secuencia = [],
+    s = [],
     pisar = {} 
   ):
     forma = forma if forma is not None else self.macroforma
@@ -85,7 +86,7 @@ class Track:
         referente = { **uo.propiedades, **pisar }
         if uo.unidades:
           us = uo.unidades
-          self.secuenciar( us, nivel, secuencia, referente) 
+          self.secuenciar( us, nivel, s, referente) 
         else: 
           # Solo unidades basicas (no UoUs) se secuencian 
           resu = { **uo.parametros, **referente } 
@@ -131,9 +132,9 @@ class Track:
               'octava'     : octa,
               'transporte' : trar,
             }
-            # print(evento)
-            secuencia += [ evento ]
-    return secuencia
+            print(evento)
+            s.append( evento )
+    return s
     
 
 """
@@ -217,16 +218,25 @@ def larguest( l ):
 
 
 cadena = stream.Stream()
+partitura = stream.Score()
 for pista in pistas:
   t = Track(
     pista['default'],
     pista['unidades'],
     pista['macroforma'],
   )
-  parte = stream.Part()
+  parte = stream.Part( id=random.getrandbits(64) )
+  partitura.append( parte )
+
+  i = instrument.fromString('Clarinet')
+  i.instrumentAbbreviation = 'Clara'
+  parte.append( i )
+
   for index, evento in enumerate( t.secuencia ):
     evento = t.secuencia[ index ]
     previo = t.secuencia[ index - 1 ]
+    print(evento)
+    e = note.Note()
     if evento['altura'] == 'S':
       e = note.Rest()
     else:
@@ -242,7 +252,11 @@ for pista in pistas:
     e.dynamic = dinamica
     bpm = evento['bpm']
     if ( previo['bpm'] != bpm ):
-      tm = tempo.MetronomeMark( None, bpm, note.Note( type='quarter' ) )
+      tm = tempo.MetronomeMark( 
+        None,
+        bpm,
+        note.Note( type='quarter' ) 
+      )
       parte.append( tm )
     metro = evento['metro']
     if ( previo['metro'] != metro ):
@@ -250,10 +264,9 @@ for pista in pistas:
       parte.append( mt )
     parte.append( e )
   parte.makeMeasures()
-  cadena.append( parte )
 
 # TODO: Poder elegir output (MIDI, MuseScore, etc)
-cadena.show()
+partitura.show('text')
 
 """
 prope eval() https://docs.python.org/3/library/ast.html 

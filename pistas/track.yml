@@ -1,4 +1,4 @@
-nombre: 'Pista prueba'
+nombre: 'Pista 22'
 # Parametros Unidad Default
 default: 
   intervalos : [ 
@@ -21,51 +21,51 @@ default:
 
   duraciones: [2,.5,0.25,0.25,1]
   bpm: 62
-  metro: 9/8
+  metro: '12/8'
 
   dinamicas: [.5,.8]
 
   #CANAL: 1
   #BANCO: 'GM'
-  #PROGRAMA: 'GrandPiano'
+  programa: 1 
+  #instrumento: 'GrandPiano'
 
   #transicion: 'parametro/proceso por definir'
 
 # Paleta de Unidades Formales
 unidades:
-  a:
-    bpm: 61
+  aa:
     duraciones: [1]
-  b:
+  bb:
     alturas: [2,4,6,9]
-  b^:
+  bb^:
     dinamicas: [.5,.9,.8,.9]
-  c:
+  cc:
     alturas: [2,4,6,9]
     dinamicas: [.1,.3]
   d:
     alturas: [6,4,2]
-  A: 
-    unidades: ['a','b'] # refiere a otras unidades (UoU)
-  B: 
+  F: 
+    unidades: ['aa','bb'] # refiere a otras unidades (UoU)
+  G: 
     dinamicas: [.5,.4,.3]
-    unidades: ['b','c']
-  B^: 
+    unidades: ['bb','cc']
+  G^: 
     alturas: [6,4,2]
     unidades: ['b','b^']
     dinamicas: [.5,.9,.8,.9,.6,.6,.6]
   C: 
     unidades: ['c','d']
-  estrofa: 
-    unidades: ['A','B','B']
+  estro: 
+    unidades: ['F','G','G']
   estribillo:
     duraciones: [.25]
     unidades: ['C','B','B^']
 
 macroforma: [
- 'estrofa',
- 'estribillo',
- 'estrofa',
+ 'estro',
+ # 'estribillo',
+ # 'estrofa',
 ]
 
 #procesos:
