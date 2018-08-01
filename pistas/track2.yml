@@ -1,21 +1,13 @@
-nombre: 'Pista prueba2'
-# Parametros Unidad Default
+CONSTANTES:
+  instrumento: 'Bass'
+  
 default: 
   intervalos : [ 
     0,2,3,5,7,8,10,12
-    #     0,    2,   4,   5,   7,  [2,3],range(11),9-1,11,12,
-    #    -12, -10,  -8,  -7,  -5,  -2,   -1,
-    #     .2,   2,   4,   5,   7,   9,   11,  
-    #    12,12+2,12+4,12+5,12+7,12+9,12+12,
-    #    12+12
   ]
   octava: 3
   alturas: [1,1,1,1]
-  transporte: 60 
-  #transponer: 'trasportar pero dentro del set intervalo'
-  # Apilamiento de alturas
-  #voces: 
-  #  - [1]
+  transporte: 48
 
   duraciones: [2,.5,0.25,0.25,1]
   bpm: 62
@@ -23,17 +15,9 @@ default:
 
   dinamicas: [.5,.8]
 
-  #CANAL: 1
-  #BANCO: 'GM'
-  programa: 2 
-  #instrumento: 'GrandPiano'
-
-  #transicion: 'parametro/proceso por definir'
-
-# Paleta de Unidades Formales
 unidades:
   a:
-    alturas: [1,2,3,4,5]
+    alturas: [1,2,3,4]
     duraciones: [2]
   b:
     alturas: [2,4,6,9]
@@ -45,7 +29,7 @@ unidades:
   d:
     alturas: [6,4,2]
   A: 
-    unidades: ['a'] # refiere a otras unidades (UoU)
+    unidades: ['a'] 
   B: 
     dinamicas: [.5,.4,.3]
     unidades: ['b','c']
@@ -63,8 +47,5 @@ unidades:
 
 macroforma: [
  'estrofa',
- # 'estribillo',
- # 'estrofa',
 ]
 
-#procesos:

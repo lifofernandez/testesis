@@ -1,23 +1,14 @@
-nombre: 'Pista 22'
+CONSTANTES:
+  instrumento: 'Clarinet'
+
 # Parametros Unidad Default
 default: 
   intervalos : [ 
     0,2,3,5,7,8,10,12
-    #     0,    2,   4,   5,   7,  [2,3],range(11),9-1,11,12,
-    #    -12, -10,  -8,  -7,  -5,  -2,   -1,
-    #     .2,   2,   4,   5,   7,   9,   11,  
-    #    12,12+2,12+4,12+5,12+7,12+9,12+12,
-    #    12+12
   ]
   octava: 3
   alturas: [1,3,5,7]
   transporte: 60 
-  #transponer: 'trasportar pero dentro del set intervalo'
-  # Apilamiento de alturas
-  voces: 
-    - [5,7,8] # desplaza nº de intervalo
-    - [3] # desplaza nº de intervalo
-    - [1]
 
   duraciones: [2,.5,0.25,0.25,1]
   bpm: 62
@@ -25,14 +16,6 @@ default:
 
   dinamicas: [.5,.8]
 
-  #CANAL: 1
-  #BANCO: 'GM'
-  programa: 1 
-  #instrumento: 'GrandPiano'
-
-  #transicion: 'parametro/proceso por definir'
-
-# Paleta de Unidades Formales
 unidades:
   aa:
     duraciones: [1]
@@ -47,7 +30,7 @@ unidades:
   d:
     alturas: [6,4,2]
   F: 
-    unidades: ['bb'] # refiere a otras unidades (UoU)
+    unidades: ['bb'] 
   G: 
     dinamicas: [.5,.4,.3]
     unidades: ['bb','cc']
@@ -65,8 +48,5 @@ unidades:
 
 macroforma: [
  'estro',
- # 'estribillo',
- # 'estrofa',
 ]
 
-#procesos:

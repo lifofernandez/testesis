@@ -1,51 +1,64 @@
 #!/usr/bin/env python3
 
 import argparse
-import random
 import yaml
 import weakref
 from music21 import *
 
+"""
+Manejo de argumentos y parametros globales
+"""
 parser = argparse.ArgumentParser()
 parser.add_argument( 
  'archivos',
- help  = 'archivos yml para procesar',
+ help  = 'Al menos un archivo en formato YAML para procesar',
  type  = argparse.FileType('r'),
  nargs = '+'
 )
 parser.add_argument( 
  '-v',
  '--verbosity',
- help='eo eio eo',
+ help='Imprimir informacion',
+)
+parser.add_argument( 
+ '-f',
+ '--formato',
+ help='Formato de salida (op: midi, musicxml, text).',
 )
 args = parser.parse_args()
-
-# BUG:agrega track2 adentro y despues del track1 
+# Archivos de entrada
 pistas = []
 for archivo in args.archivos:
   data = open( archivo.name, 'r' )
   pistas.append( yaml.load( data ) )
-
-if args.verbosity:
-  print(args.verbosity)
-
-# sufijo herencia (a^ = a + override con params propios)
+# Verbosidadd
+verbose = args.verbosity
+verboseprint = print if verbose else lambda *a, **k: None
+# Salida
+formato_salida = args.formato 
+# Sufijo herencia 
+# (a^ = a + override con params propios)
 sufijo_prima = '^' 
 
-class Track:
+"""
+Clase para cada track a partir de archivos.yml
+"""
+class Pista:
   cantidad = 0 
  
   def __init__( 
     self,
+    constantes,
     default,
     originales,
     macroforma,
   ):
+    self.constantes = constantes
     self.default    = default
     self.originales = originales 
     self.macroforma = macroforma
     self.secuencia  = self.secuenciar()
-    Track.cantidad += 1
+    Pista.cantidad += 1
 
   def __str__( self ):
     o = '' 
@@ -56,23 +69,21 @@ class Track:
 
   @property
   def unidades( self ):
-    # pasar a init?
-    UNIDADES = {} 
+    unidades = {} 
     for unidad in self.originales:
-      unidad_objeto = Unidad( 
+      uo = Unidad( 
         unidad, 
         self.originales[ unidad ], 
         self.default,
         self
       )
-      UNIDADES[ unidad ] =  unidad_objeto 
-    return UNIDADES
+      unidades[ unidad ] =  uo
+    return unidades
 
   def secuenciar( 
     self,
     unidades = None,
     nivel = 0,
-    sequencia = [],
     pisar = {} 
   ):
     unidades = unidades if unidades is not None else self.macroforma
@@ -80,17 +91,16 @@ class Track:
     nivel += 1
     sequencia = []
     for u in unidades:  
-      print( '-' * ( nivel - 1 ) + str( u ) )
+      verboseprint( '-' * ( nivel - 1 ) + str( u ) )
       if u in paleta:
         uo = paleta[ u ]
         # Mix propiedades con unidad referente
         referente = { **uo.propiedades, **pisar }
         if uo.unidades:
-          sequencia = self.secuenciar( uo.unidades, nivel, sequencia, referente) 
+          sequencia = self.secuenciar( uo.unidades, nivel, referente) 
         else: 
           # Solo unidades basicas (no UoUs) se secuencian 
           resu = { **uo.parametros, **referente } 
-          #print( uo, resu )
           bpm  = resu['bpm']        if 'bpm'        in resu else 60 
           metr = resu['metro']      if 'metro'      in resu else '4/4'
           alts = resu['alturas']    if 'alturas'    in resu else [1] 
@@ -105,9 +115,9 @@ class Track:
           # Combinar parametros: altura, duracion, dinamica, etc
           for paso in range( pasos ):
             alt  = alts[ paso % len( alts ) ]
-            #Ajuste relacion puntero altura/int
             acor = []
             if alt != 0:
+              # Ajuste relacion puntero altura/int
               alt = alt - 1
               nota = ints[ alt % len( ints ) ] + trar
               if vozs:
@@ -118,7 +128,6 @@ class Track:
             else:
               # Silencio
               nota = 'S'
-            # print(paso,alt,acor)  
             dur  = durs[ paso % len( durs ) ]
             din  = dins[ paso % len( dins ) ]
             evento = {
@@ -132,13 +141,8 @@ class Track:
               'octava'     : octa,
               'transporte' : trar,
             }
-            #print(evento)
             sequencia.append( evento )
-          print('#'*80)
-          for oi in sequencia:
-           print(oi)
     return sequencia
-    
 
 """
 Clase para las unidades de cada track
@@ -164,7 +168,7 @@ class Unidad:
   def mostrar_cantidad( self ):
     print( "Cantidad de Unidades: %d" % Unidad.cantidad )
 
-  @property # presindible, sin uso por fuera
+  @property # presindible?
   def es_hijo( self ):
     return self.nombre.endswith( sufijo_prima )
 
@@ -177,7 +181,7 @@ class Unidad:
   @property # presindible?
   def herencia( self ):
     if self.apellido:
-      # track() weakref track 
+      # track() weakref del track que contiene esta unidad 
       herencia = self.track().originales[ self.apellido ]
       return herencia 
 
@@ -207,7 +211,10 @@ class Unidad:
     if 'unidades' in self.parametros:
       return self.parametros['unidades']
       
-
+"""
+Metodos generales
+"""
+# Devuelve el tamaño de la lista mas larga
 # https://stackoverflow.com/questions/30902558
 def larguest( l ):
     if( not isinstance( l, list ) ): return(0)
@@ -219,26 +226,26 @@ def larguest( l ):
       )
     )
 
-
+"""
+Main loop
+"""
 cadena = stream.Stream()
 partitura = stream.Score()
 for pista in pistas:
-  t = Track(
+  p = Pista(
+    pista['CONSTANTES'],
     pista['default'],
     pista['unidades'],
     pista['macroforma'],
   )
-  parte = stream.Part( id=random.getrandbits(64) )
-  partitura.append( parte )
+  parte = stream.Part()
 
-  i = instrument.fromString('Clarinet')
-  i.instrumentAbbreviation = 'Clara'
-  parte.append( i )
+  i = instrument.fromString( p.constantes['instrumento'] )
+  parte.insert( i )
 
-  for index, evento in enumerate( t.secuencia ):
-    evento = t.secuencia[ index ]
-    previo = t.secuencia[ index - 1 ]
-    #print(evento)
+  for index, evento in enumerate( p.secuencia ):
+    evento = p.secuencia[ index ]
+    previo = p.secuencia[ index - 1 ]
     e = note.Note()
     if evento['altura'] == 'S':
       e = note.Rest()
@@ -265,20 +272,13 @@ for pista in pistas:
     if ( previo['metro'] != metro ):
       mt = meter.TimeSignature( metro )
       parte.append( mt )
+    verboseprint( evento )
     parte.append( e )
   parte.makeMeasures()
-
-# TODO: Poder elegir output (MIDI, MuseScore, etc)
-partitura.show('text')
+  partitura.append( parte )
 
 """
-prope eval() https://docs.python.org/3/library/ast.html 
+Salida
+"""
+partitura.show( formato_salida )
 
-Cada unidad tiene o parametros propios o parametros 
-que hereda o de los params generales o de otra unidad si es 
-es "hija" lo cual lo indica el prefijo "^"
-"""
-
-"""
-El secuencia de indices que define el largo del loop es el mas largo
-"""
