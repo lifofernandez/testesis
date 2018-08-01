@@ -33,7 +33,7 @@ default:
 # Paleta de Unidades Formales
 unidades:
   a:
-    alturas: [2,4,6,9]
+    alturas: [1,2,3,4]
     duraciones: [1]
   b:
     alturas: [2,4,6,9]
@@ -45,7 +45,7 @@ unidades:
   d:
     alturas: [6,4,2]
   A: 
-    unidades: ['a','b'] # refiere a otras unidades (UoU)
+    unidades: ['a'] # refiere a otras unidades (UoU)
   B: 
     dinamicas: [.5,.4,.3]
     unidades: ['b','c']
@@ -56,7 +56,7 @@ unidades:
   C: 
     unidades: ['c','d']
   estrofa: 
-    unidades: ['A','B','B']
+    unidades: ['A']
   estribillo:
     duraciones: [.25]
     unidades: ['C','B','B^']

@@ -45,6 +45,7 @@ class Track:
     self.originales = originales 
     self.macroforma = macroforma
     self.secuencia  = self.secuenciar()
+    print( self.secuencia )
     Track.cantidad += 1
 
   def __str__( self ):
@@ -70,23 +71,24 @@ class Track:
 
   def secuenciar( 
     self,
-    unidades = None,
+    forma = None,
     nivel = 0,
     s = [],
     pisar = {} 
   ):
-    unidades = unidades if unidades is not None else self.macroforma
+    #s = 
+    forma = forma if forma is not None else self.macroforma
     paleta = self.unidades
     nivel += 1
-    o = []
-    for u in unidades:  
+    for u in forma:  
       print( '-' * ( nivel - 1 ) + str( u ) )
       if u in paleta:
         uo = paleta[ u ]
         # Mix propiedades con unidad referente
         referente = { **uo.propiedades, **pisar }
         if uo.unidades:
-          o = self.secuenciar( uo.unidades, nivel, o, referente) 
+          us = uo.unidades
+          self.secuenciar( us, nivel, s, referente) 
         else: 
           # Solo unidades basicas (no UoUs) se secuencian 
           resu = { **uo.parametros, **referente } 
@@ -133,11 +135,8 @@ class Track:
               'transporte' : trar,
             }
             #print(evento)
-            o.append( evento )
-          print('#'*80)
-          for oi in o:
-           print(oi)
-    return o
+            s.append( evento )
+    return s
     
 
 """
