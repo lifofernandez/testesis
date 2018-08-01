@@ -54,6 +54,7 @@ class Pista:
     macroforma,
   ):
     self.constantes = constantes
+    verboseprint( '\n#### ', self.constantes['nombre'], ' ####' )
     self.default    = default
     self.originales = originales 
     self.macroforma = macroforma
@@ -185,7 +186,7 @@ class Unidad:
       herencia = self.track().originales[ self.apellido ]
       return herencia 
 
-  @property # presindible?º
+  @property # presindible?
   def sucesion( self ):
     if self.herencia:
       # mix dicts  
@@ -239,7 +240,6 @@ for pista in pistas:
     pista['macroforma'],
   )
   parte = stream.Part()
-
   i = instrument.fromString( p.constantes['instrumento'] )
   parte.insert( i )
 

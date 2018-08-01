@@ -1,5 +1,5 @@
 CONSTANTES:
-  #nombre: 'Pista 1'
+  nombre: 'Pista 1'
   instrumento: 'Piano'
   # web.mit.edu/music21/doc/moduleReference/moduleInstrument.html
   # lista de instrumentos soportados por music21

@@ -1,4 +1,5 @@
 CONSTANTES:
+  nombre: 'Pista 3'
   instrumento: 'Bass'
   
 default: 
