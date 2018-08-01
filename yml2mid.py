@@ -72,13 +72,13 @@ class Track:
     self,
     unidades = None,
     nivel = 0,
-    s = [],
+    sequencia = [],
     pisar = {} 
   ):
     unidades = unidades if unidades is not None else self.macroforma
     paleta = self.unidades
     nivel += 1
-    o = []
+    sequencia = []
     for u in unidades:  
       print( '-' * ( nivel - 1 ) + str( u ) )
       if u in paleta:
@@ -86,7 +86,7 @@ class Track:
         # Mix propiedades con unidad referente
         referente = { **uo.propiedades, **pisar }
         if uo.unidades:
-          o = self.secuenciar( uo.unidades, nivel, o, referente) 
+          sequencia = self.secuenciar( uo.unidades, nivel, sequencia, referente) 
         else: 
           # Solo unidades basicas (no UoUs) se secuencian 
           resu = { **uo.parametros, **referente } 
@@ -133,11 +133,11 @@ class Track:
               'transporte' : trar,
             }
             #print(evento)
-            o.append( evento )
+            sequencia.append( evento )
           print('#'*80)
-          for oi in o:
+          for oi in sequencia:
            print(oi)
-    return o
+    return sequencia
     
 
 """

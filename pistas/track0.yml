@@ -37,8 +37,8 @@ unidades:
   aa:
     duraciones: [1]
   bb:
-    duraciones: [1]
-    alturas: [5,6,7,8]
+    duraciones: [0.25]
+    alturas: [6,7,8]
   bb^:
     dinamicas: [.5,.9,.8,.9]
   cc:
