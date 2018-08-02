@@ -59,6 +59,7 @@ unidades:
   estrofa: 
     unidades: ['A','B','B^']
   estribo:
+    bpm: 100
     unidades: ['B','B^']
 
 macroforma: [
