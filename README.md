@@ -1,6 +1,6 @@
-# Secuenciador musical a partir de archivos texto serializado en formato .yml
+# Secuenciador musical a partir de archivos texto serializado en formato YAML
 
-## Instalacion
+## Instalación
 ```
 $ pip3 install -r requirements.txt
 ```
