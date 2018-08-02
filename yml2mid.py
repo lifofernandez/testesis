@@ -113,7 +113,7 @@ class Pista:
           vozs = resu['voces']      if 'voces'      in resu else None
           durs = resu['duraciones'] if 'duraciones' in resu else [1]
           dins = resu['dinamicas']  if 'dinamicas'  in resu else [1]
-          octa = resu['octava']     if 'octava'     in resu else None
+          #octa = resu['octava']     if 'octava'     in resu else None
           trar = resu['transporte'] if 'transporte' in resu else 0
           candidatos = [ dins, durs, alts ]
           pasos = larguest( candidatos )
@@ -143,7 +143,7 @@ class Pista:
               'acorde'     : acor,
               'duracion'   : dur,
               'dinamica'   : din,
-              'octava'     : octa,
+              #'octava'     : octa,
               'transporte' : trar,
             }
             sequencia.append( evento )
