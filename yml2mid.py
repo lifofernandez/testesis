@@ -88,13 +88,12 @@ class Pista:
     unidades = None,
     nivel = 0,
     pisar = {},
-    s =  []
   ):
     unidades = unidades if unidades is not None else self.macroforma
     paleta = self.unidades
     nivel += 1
-    sequencia = s
-    secuencia = s if s is not None else secuencia
+    sequencia = []
+    #secuenciar = s  if s is not None else self.secuencia
     for u in unidades:  
       verboseprint( '-' * ( nivel - 1 ) + str( u ) )
       if u in paleta:
@@ -102,7 +101,7 @@ class Pista:
         # Mix propiedades con unidad referente
         referente = { **uo.propiedades, **pisar }
         if uo.unidades:
-          sequencia = self.secuenciar( uo.unidades, nivel, referente, secuencia ) 
+          sequencia += self.secuenciar( uo.unidades, nivel, referente ) 
         # Solo unidades basicas (no UoUs) se secuencian 
         else: 
           # Mix parametros con unidad referente
