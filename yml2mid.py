@@ -18,12 +18,12 @@ parser.add_argument(
 parser.add_argument( 
  '-v',
  '--verbosity',
- help='Imprimir informacion',
+ help = 'Imprimir informacion',
 )
 parser.add_argument( 
  '-f',
  '--formato',
- help='Formato de salida (op: midi, musicxml, text).',
+ help = 'Formato de salida (op: midi, musicxml, text).',
 )
 args = parser.parse_args()
 # Archivos de entrada
@@ -31,9 +31,8 @@ pistas = []
 for archivo in args.archivos:
   data = open( archivo.name, 'r' )
   pistas.append( yaml.load( data ) )
-# Verbosidadd
-verbose = args.verbosity
-verboseprint = print if verbose else lambda *a, **k: None
+# Verbosidat
+verboseprint = print if args.verbosity else lambda *a, **k: None
 # Salida
 formato_salida = args.formato 
 # Sufijo herencia 
@@ -68,6 +67,7 @@ class Pista:
       o += l + '\n'
     return o
 
+  # Paleta de Unidades
   @property
   def unidades( self ):
     unidades = {} 
@@ -81,16 +81,20 @@ class Pista:
       unidades[ unidad ] =  uo
     return unidades
 
+  # Genera una secuencia a partir de los unidades/parametros
+  # BUG: solo quedan hijas de la ultima unidad padre
   def secuenciar( 
     self,
     unidades = None,
     nivel = 0,
-    pisar = {} 
+    pisar = {},
+    s =  []
   ):
     unidades = unidades if unidades is not None else self.macroforma
     paleta = self.unidades
     nivel += 1
-    sequencia = []
+    sequencia = s
+    secuencia = s if s is not None else secuencia
     for u in unidades:  
       verboseprint( '-' * ( nivel - 1 ) + str( u ) )
       if u in paleta:
@@ -98,9 +102,10 @@ class Pista:
         # Mix propiedades con unidad referente
         referente = { **uo.propiedades, **pisar }
         if uo.unidades:
-          sequencia = self.secuenciar( uo.unidades, nivel, referente) 
+          sequencia = self.secuenciar( uo.unidades, nivel, referente, secuencia ) 
+        # Solo unidades basicas (no UoUs) se secuencian 
         else: 
-          # Solo unidades basicas (no UoUs) se secuencian 
+          # Mix parametros con unidad referente
           resu = { **uo.parametros, **referente } 
           bpm  = resu['bpm']        if 'bpm'        in resu else 60 
           metr = resu['metro']      if 'metro'      in resu else '4/4'
@@ -169,23 +174,25 @@ class Unidad:
   def mostrar_cantidad( self ):
     print( "Cantidad de Unidades: %d" % Unidad.cantidad )
 
-  @property # presindible?
+  @property 
   def es_hijo( self ):
     return self.nombre.endswith( sufijo_prima )
 
-  @property # presindible?
+  @property  
   def apellido( self ):
     if self.es_hijo:
       # obtener nombre padre
       return self.nombre[0:-1]
 
-  @property # presindible?
+  # Propiedades originales del padre
+  @property  
   def herencia( self ):
     if self.apellido:
       # track() weakref del track que contiene esta unidad 
       herencia = self.track().originales[ self.apellido ]
       return herencia 
 
+  # Mix de herencia con parametros originales
   @property # presindible?
   def sucesion( self ):
     if self.herencia:
@@ -193,6 +200,8 @@ class Unidad:
       o = { **self.herencia, **self.original }
       return o
 
+  # Propiedades a partir originales (si no hay sucecion) ó sucesión con originales
+  # TODO: revisar si propiedas y/o sucesion está de mas
   @property 
   def propiedades( self ):
     # sucesion y/o original
@@ -206,7 +215,7 @@ class Unidad:
     o = { **Unidad.default, **self.propiedades }
     return o
 
-  #Unidad de Unidades
+  # Unidad de Unidades
   @property
   def unidades( self ):
     if 'unidades' in self.parametros:
@@ -214,9 +223,10 @@ class Unidad:
       
 """
 Metodos generales
+
+Devuelve el tamaño de la lista mas larga
+https://stackoverflow.com/questions/30902558
 """
-# Devuelve el tamaño de la lista mas larga
-# https://stackoverflow.com/questions/30902558
 def larguest( l ):
     if( not isinstance( l, list ) ): return(0)
     return( 
@@ -228,9 +238,10 @@ def larguest( l ):
     )
 
 """
-Main loop
+Loop principal:
+Recorre cada pista y partir de su secuencia genera Notas o Silencios 
+que agrupa en una Parte para finalmente agregarlas a una Partirtura de Musescore
 """
-cadena = stream.Stream()
 partitura = stream.Score()
 for pista in pistas:
   p = Pista(
