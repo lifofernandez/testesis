@@ -1,52 +1,45 @@
 CONSTANTES:
   nombre: 'Pista 3'
   instrumento: 'Bass'
-  
 default: 
   intervalos : [ 
-    0,2,3,5,7,8,10,12
+    -12,-10,-9,-7,-5,-4,-2,
+      0,  2, 3, 5, 7, 8,10,
+    12,  14,15,17,19,20,22,
+    24
   ]
-  octava: 3
-  alturas: [1,1,1,1]
-  transporte: 48
-
-  duraciones: [2,.5,0.25,0.25,1]
+  alturas: [1,3,5,8]
+  transporte: 48 
+  duraciones: [1]
   bpm: 62
-  metro: '12/8'
-
+  metro: '4/4'
   dinamicas: [.5,.8]
-
 unidades:
   a:
-    alturas: [1,2,3,4]
-    duraciones: [2]
+    metro: 2/4
+    alturas: [1,3,5,7,8]
+    duraciones: [1,.5,.5,1,1]
   b:
-    alturas: [2,4,6,9]
+    metro: 6/8
+    duraciones: [0.5]
+    alturas: [6,7,8,7,8,9]
   b^:
-    dinamicas: [.5,.9,.8,.9]
-  c:
-    alturas: [2,4,6,9]
-    dinamicas: [.1,.3]
-  d:
-    alturas: [6,4,2]
+    metro: 2/4
+    alturas: [6,7,0,9]
+    dinamicas: [.2,.1,]
   A: 
-    unidades: ['a'] 
+    unidades: ['a','b'] 
   B: 
-    dinamicas: [.5,.4,.3]
-    unidades: ['b','c']
+    unidades: ['a','b^']
   B^: 
-    alturas: [6,4,2]
-    unidades: ['b','b^']
-    dinamicas: [.5,.9,.8,.9,.6,.6,.6]
-  C: 
-    unidades: ['c','d']
+    metro: 2/4
+    unidades: ['b','a']
+    dinamicas: [1]
   estrofa: 
-    unidades: ['A']
-  estribillo:
-    duraciones: [.25]
-    unidades: ['C','B','B^']
-
+    unidades: ['A','B','B^']
+  estribo:
+    unidades: ['B','B^']
 macroforma: [
- 'estrofa',
+  'estrofa',
+  'estribo',
 ]
-

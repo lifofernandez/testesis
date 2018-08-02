@@ -1,53 +1,44 @@
 CONSTANTES:
   nombre: 'Pista 2'
   instrumento: 'Clarinet'
-
-# Parametros Unidad Default
 default: 
   intervalos : [ 
-    0,2,3,5,7,8,10,12
+    -12,-10,-9,-7,-5,-4,-2,
+      0,  2, 3, 5, 7, 8,10,
+    12,  14,15,17,19,20,22,
+    24
   ]
-  octava: 3
-  alturas: [1,3,5,7]
-  transporte: 60 
-
-  duraciones: [2,.5,0.25,0.25,1]
+  alturas: [1,3,5,8]
+  transporte: 72 
+  duraciones: [1]
   bpm: 62
-  metro: '12/8'
-
-  dinamicas: [.5,.8]
-
+  metro: '4/4'
 unidades:
-  aa:
-    duraciones: [1]
-  bb:
-    duraciones: [1]
-    alturas: [5,6,7,8]
-  bb^:
-    dinamicas: [.5,.9,.8,.9]
-  cc:
-    duraciones: [1]
-    dinamicas: [.1,.3]
-  d:
-    alturas: [6,4,2]
-  F: 
-    unidades: ['bb'] 
-  G: 
-    dinamicas: [.5,.4,.3]
-    unidades: ['bb','cc']
-  G^: 
-    alturas: [6,4,2]
-    unidades: ['b','b^']
-    dinamicas: [.5,.9,.8,.9,.6,.6,.6]
-  C: 
-    unidades: ['c','d']
-  estro: 
-    unidades: ['F']
-  estribillo:
-    duraciones: [.25]
-    unidades: ['C','B','B^']
-
+  a:
+    metro: 2/4
+    alturas: [1,3,5,7,8]
+    duraciones: [1,.5,.5,1,1]
+  b:
+    metro: 6/8
+    duraciones: [0.5]
+    alturas: [6,7,8,7,8,9]
+  b^:
+    metro: 2/4
+    alturas: [6,7,0,9]
+    dinamicas: [.2,.1,]
+  A: 
+    unidades: ['a','b']
+  B: 
+    unidades: ['a','b^']
+  B^: 
+    metro: 2/4
+    unidades: ['b','a']
+    dinamicas: [1]
+  estrofa: 
+    unidades: ['A','B','B^']
+  estribo:
+    unidades: ['B','B^']
 macroforma: [
- 'estro',
+  'estrofa',
+  'estribo',
 ]
-
