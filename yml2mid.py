@@ -12,7 +12,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument( 
  'archivos',
  help  = 'Al menos un archivo en formato YAML para procesar',
- type  = argparse.FileType('r'),
+ type  = argparse.FileType( 'r' ),
  nargs = '+'
 )
 parser.add_argument( 
@@ -81,7 +81,7 @@ class Pista:
       unidades[ unidad ] =  uo
     return unidades
 
-  # Genera una secuencia a partir de los unidades/parametros
+  # Genera una secuencia a partir de unidades/parametros
   def secuenciar( 
     self,
     unidades = None,
@@ -190,6 +190,7 @@ class Unidad:
       return herencia 
 
   # Mix de herencia con parametros originales
+  # TODO: revisar si sucesion o propiedades está de mas
   @property # presindible?
   def sucesion( self ):
     if self.herencia:
@@ -197,8 +198,7 @@ class Unidad:
       o = { **self.herencia, **self.original }
       return o
 
-  # Propiedades a partir originales (si no hay sucecion) ó sucesión con originales
-  # TODO: revisar si propiedas y/o sucesion está de mas
+  # Propiedades a partir originales (si no hay sucesión) ó sucesión con originales
   @property 
   def propiedades( self ):
     # sucesion y/o original
@@ -207,6 +207,7 @@ class Unidad:
       o = { **self.sucesion, **self.original }
     return o
 
+  # Parametros definitivos mezcla de defaults con propiedades  
   @property 
   def parametros( self ):
     o = { **Unidad.default, **self.propiedades }
