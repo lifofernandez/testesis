@@ -82,7 +82,6 @@ class Pista:
     return unidades
 
   # Genera una secuencia a partir de los unidades/parametros
-  # BUG: solo quedan hijas de la ultima unidad padre
   def secuenciar( 
     self,
     unidades = None,
@@ -93,7 +92,6 @@ class Pista:
     paleta = self.unidades
     nivel += 1
     sequencia = []
-    #secuenciar = s  if s is not None else self.secuencia
     for u in unidades:  
       verboseprint( '-' * ( nivel - 1 ) + str( u ) )
       if u in paleta:
@@ -102,7 +100,7 @@ class Pista:
         referente = { **uo.propiedades, **pisar }
         if uo.unidades:
           sequencia += self.secuenciar( uo.unidades, nivel, referente ) 
-        # Solo unidades basicas (no UoUs) se secuencian 
+        # Solo unidades de nivel 0 (no UoU) se secuencian 
         else: 
           # Mix parametros con unidad referente
           resu = { **uo.parametros, **referente } 
