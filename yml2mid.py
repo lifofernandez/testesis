@@ -35,9 +35,7 @@ for archivo in args.archivos:
 verboseprint = print if args.verbosity else lambda *a, **k: None
 # Salida
 formato_salida = args.formato 
-# Sufijo herencia 
-# (a^ = a + override con params propios)
-sufijo_prima = '^' 
+
 
 """
 Clase para cada track a partir de archivos.yml
@@ -75,7 +73,6 @@ class Pista:
       uo = Unidad( 
         unidad, 
         self.originales[ unidad ], 
-        self.default,
         self
       )
       unidades[ unidad ] =  uo
@@ -97,13 +94,14 @@ class Pista:
       if u in paleta:
         uo = paleta[ u ]
         # Mix propiedades con unidad referente
-        referente = { **uo.propiedades, **pisar }
+        referente = { **uo.parametros , **pisar }
         if uo.unidades:
           sequencia += self.secuenciar( uo.unidades, nivel, referente ) 
         # Solo unidades de nivel 0 (no UoU) se secuencian 
         else: 
           # Mix parametros con unidad referente
           resu = { **uo.parametros, **referente } 
+          unid = str( uo )
           bpm  = resu['bpm']        if 'bpm'        in resu else 60 
           metr = resu['metro']      if 'metro'      in resu else '4/4'
           alts = resu['alturas']    if 'alturas'    in resu else [1] 
@@ -135,6 +133,7 @@ class Pista:
             din  = dins[ paso % len( dins ) ]
             evento = {
               'orden'      : paso,
+              'unidad'     : unid,
               'bpm'        : bpm,
               'metro'      : metr,
               'altura'     : nota,
@@ -150,68 +149,25 @@ class Pista:
 """
 Clase para las unidades de cada track
 """
+# pasar a dataclass
 class Unidad:
   cantidad = 0
   def __init__( 
     self,
     nombre,
-    cruda,
-    default,
+    parametros,
     track
   ):
     self.nombre = nombre 
-    self.original = cruda
+    self.parametros = parametros 
     self.track = weakref.ref( track )
     Unidad.cantidad += 1
-    Unidad.default = default
 
   def __str__( self ):
     return self.nombre
 
   def mostrar_cantidad( self ):
     print( "Cantidad de Unidades: %d" % Unidad.cantidad )
-
-  @property 
-  def es_hijo( self ):
-    return self.nombre.endswith( sufijo_prima )
-
-  @property  
-  def apellido( self ):
-    if self.es_hijo:
-      # obtener nombre padre
-      return self.nombre[0:-1]
-
-  # Propiedades originales del padre
-  @property  
-  def herencia( self ):
-    if self.apellido:
-      # track() weakref del track que contiene esta unidad 
-      herencia = self.track().originales[ self.apellido ]
-      return herencia 
-
-  # Mix de herencia con parametros originales
-  # TODO: revisar si sucesion o propiedades está de mas
-  @property # presindible?
-  def sucesion( self ):
-    if self.herencia:
-      # mix dicts  
-      o = { **self.herencia, **self.original }
-      return o
-
-  # Propiedades a partir originales (si no hay sucesión) ó sucesión con originales
-  @property 
-  def propiedades( self ):
-    # sucesion y/o original
-    o = self.original
-    if self.sucesion:
-      o = { **self.sucesion, **self.original }
-    return o
-
-  # Parametros definitivos mezcla de defaults con propiedades  
-  @property 
-  def parametros( self ):
-    o = { **Unidad.default, **self.propiedades }
-    return o
 
   # Unidad de Unidades
   @property
@@ -255,6 +211,7 @@ for pista in pistas:
   for index, evento in enumerate( p.secuencia ):
     evento = p.secuencia[ index ]
     previo = p.secuencia[ index - 1 ]
+    unidad = evento['unidad']
     e = note.Note()
     if evento['altura'] == 'S':
       e = note.Rest()
@@ -281,7 +238,18 @@ for pista in pistas:
     if ( previo['metro'] != metro ):
       mt = meter.TimeSignature( metro )
       parte.append( mt )
+
+    # no funciona el texto en musecore
+    if ( previo['unidad'] != unidad ):
+      print(unidad)
+      tb = text.TextBox( unidad, 250, 1000 )
+      tb.style.fontSize = 40
+      tb.style.alignVertical = 'bottom' 
+      parte.append( tb )
+      c = editorial.Comment( unidad )
+      e.editorial.footnotes.append( c )
     verboseprint( evento )
+
     parte.append( e )
   parte.makeMeasures()
   partitura.append( parte )

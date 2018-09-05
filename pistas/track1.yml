@@ -1,6 +1,6 @@
 CONSTANTES:
   nombre: 'Pista 2'
-  instrumento: 'Clarinet'
+  instrumento: 'Trumpet'
 default: 
   intervalos : [ 
     -12,-10,-9,-7,-5,-4,-2,

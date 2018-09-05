@@ -1,6 +1,6 @@
 CONSTANTES:
   nombre: 'Pista 3'
-  instrumento: 'Bass'
+  instrumento: 'Tuba'
 default: 
   intervalos : [ 
     -12,-10,-9,-7,-5,-4,-2,

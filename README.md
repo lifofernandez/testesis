@@ -1,16 +1,16 @@
 # Secuenciador musical a partir de archivos texto serializado en formato YAML
 
-## Instalación
+Instalación
 ```
 $ pip3 install -r requirements.txt
 ```
 
-## Uso
+Uso
 ```
 $ ./yml2mid.py pistas/* -f text -v 1
 ```
 
-## Ayuda
+Ayuda
 ```
 $ ./yml2mid.py -h 
 ```
