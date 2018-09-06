@@ -3,6 +3,7 @@
 import argparse
 import yaml
 import weakref
+import pprint
 from music21 import *
 
 """
@@ -46,14 +47,12 @@ class Pista:
   def __init__( 
     self,
     constantes,
-    default,
-    originales,
+    paleta,
     macroforma,
   ):
     self.constantes = constantes
     verboseprint( '\n#### ', self.constantes['nombre'], ' ####' )
-    self.default    = default
-    self.originales = originales 
+    self.paleta = paleta
     self.macroforma = macroforma
     self.secuencia  = self.secuenciar()
     Pista.cantidad += 1
@@ -69,10 +68,10 @@ class Pista:
   @property
   def unidades( self ):
     unidades = {} 
-    for unidad in self.originales:
+    for unidad in self.paleta:
       uo = Unidad( 
         unidad, 
-        self.originales[ unidad ], 
+        self.paleta[ unidad ], 
         self
       )
       unidades[ unidad ] =  uo
@@ -198,9 +197,9 @@ que agrupa en una Parte para finalmente agregarlas a una Partirtura de Musescore
 """
 partitura = stream.Score()
 for pista in pistas:
+  pprint.pprint(pista)
   p = Pista(
     pista['CONSTANTES'],
-    pista['default'],
     pista['unidades'],
     pista['macroforma'],
   )

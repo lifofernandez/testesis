@@ -1,12 +1,24 @@
-CONSTANTES: !!map
-  nombre: !!str 'Pista 1'
-  instrumento: !!str 'Piano'
-  # web.mit.edu/music21/doc/moduleReference/moduleInstrument.html
-  # lista de instrumentos soportados por music21
+CONSTANTES: 
+  tipo: !!map
+  descripcion: 'Variables que se mantienen a lo largo de toda la pista'
+  elementos:
+    nombre: 
+      tipo: !!str 
+      ejemplo: 'Pista 1'
+      descripcion: 'Nombre de la pista'
+    instrumento: 
+      tipo: !!str 
+      ejemplo: 'Piano'
+      descripcion: 'Lista de instrumentos soportados por music21
+        (web.mit.edu/music21/doc/moduleReference/moduleInstrument.html)'
   
 # Parametros Unidad Base
-base: &base !!map
-  intervalos : !!seq [ 
+base: &base 
+  tipo: !!map
+  descripcion: 'Parametros default para todas las unidades, pueden ser sobrescritos'
+  intervalos : 
+    tipo: !!seq 
+    ejemplo: [ 
     -12,-10,-9,-7,-5,-4,-2,
       0,  2, 3, 5, 7, 8,10,
     12,  14,15,17,19,20,22,
@@ -32,7 +44,6 @@ base: &base !!map
   #BANCO: 'GM'
   #programa: 1 
 
-  #transicion: 'parametro/proceso por definir'
 
 # Paleta de Unidades Formales
 unidades: !!map
@@ -73,3 +84,4 @@ macroforma: !!seq [
 ]
 
 #procesos:
+  #transicion: 'parametro/proceso por definir'
