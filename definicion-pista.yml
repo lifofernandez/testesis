@@ -131,12 +131,10 @@ macroforma: !!seq
   ]
 
 TODO:
-  # relacion: !!str
-  #   # Como se conecta/transicion con la unidad consecuente
+  # relaciones
   #   'overlaps / juxtapuesta'
-  superponer: !!float
-    # overlap, corrimiento, recion offset con la "posicion" original 
-    # -1.0 a 1.0 
+  desplazar: !!float
+    # - / + offset con la "posicion" original 
     # 0 es que empieza donde deberia ir originalmente
     # -1 es que empieza una unidad (duracion de la unidad) antes
     # 1 es que piza una unidad (duracion de la unidad) a la unidad despues 
