@@ -109,7 +109,7 @@ class Pista:
           durs = resu['duraciones'] if 'duraciones' in resu else [1]
           dins = resu['dinamicas']  if 'dinamicas'  in resu else [1]
           #octa = resu['octava']     if 'octava'     in resu else None
-          trar = resu['transporte'] if 'transporte' in resu else 0
+          trar = resu['transportar'] if 'transportar' in resu else 0
           candidatos = [ dins, durs, alts ]
           pasos = larguest( candidatos )
           # Combinar parametros: altura, duracion, dinamica, etc
@@ -140,7 +140,7 @@ class Pista:
               'duracion'   : dur,
               'dinamica'   : din,
               #'octava'     : octa,
-              'transporte' : trar,
+              'transportar' : trar,
             }
             sequencia.append( evento )
     return sequencia
@@ -204,6 +204,7 @@ for pista in pistas:
     pista['macroforma'],
   )
   parte = stream.Part()
+
   i = instrument.fromString( p.constantes['instrumento'] )
   parte.insert( i )
 
@@ -212,6 +213,7 @@ for pista in pistas:
     previo = p.secuencia[ index - 1 ]
     unidad = evento['unidad']
     e = note.Note()
+    e.id = index
     if evento['altura'] == 'S':
       e = note.Rest()
     else:
@@ -238,20 +240,35 @@ for pista in pistas:
       mt = meter.TimeSignature( metro )
       parte.append( mt )
 
-    # no funciona el texto en musecore
-    if ( previo['unidad'] != unidad ):
-      print(unidad)
-      tb = text.TextBox( unidad, 250, 1000 )
-      tb.style.fontSize = 40
-      tb.style.alignVertical = 'bottom' 
-      parte.append( tb )
-      c = editorial.Comment( unidad )
-      e.editorial.footnotes.append( c )
-    verboseprint( evento )
 
+    # no funcionado 
+    #if ( index == 20 ):
+    #  i = instrument.fromString('Clarinet')
+    #  parte.insert( i )
+
+    #if ( previo['unidad'] != unidad ):
+    #  print(unidad)
+    #  #tb = text.TextBox( unidad, 250, 1000 )
+    #  #tb.style.fontSize = 40
+    #  #tb.style.alignVertical = 'bottom' 
+    #  #parte.append( tb )
+    #  #c = editorial.Comment( unidad )
+    #  #e.editorial.footnotes.append( c )
+
+    verboseprint( evento )
     parte.append( e )
   parte.makeMeasures()
+
+  i = instrument.fromString('Clarinet')
+  # parte.getElementsById('Measure')[0].insert(0.0, i)
+  m = parte.getElementsByClass('Measure')
+  o = parte.getElementsByOffset(2)
+  print(o)
+  o.insert( i )
+
+  partitura.makeMeasures()
   partitura.append( parte )
+
 
 """
 Salida
