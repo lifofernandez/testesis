@@ -259,12 +259,12 @@ for pista in pistas:
     parte.append( e )
   parte.makeMeasures(inPlace=True)
 
-  # Funciona format=text pero no musescore/lilypond 
-  m = parte.getElementsByClass('Measure')[1]
-  i = instrument.fromString('Clarinet')
-  tb = text.TextBox('Texto de Prueba', 250, 1000 )
-  m.insert( 3.0, i )
-  m.insert( 1.0, tb )
+  ## Funciona --formato text pero no musescore/lilypond 
+  #m = parte.getElementsByClass('Measure')[1]
+  #i = instrument.fromString('Clarinet')
+  #tb = text.TextBox('Texto de Prueba', 250, 1000 )
+  #m.insert( 3.0, i )
+  #m.insert( 1.0, tb )
 
   partitura.append( parte )
 
