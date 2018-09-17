@@ -241,7 +241,7 @@ for pista in pistas:
       parte.append( mt )
 
 
-    # no funcionado 
+    # funciona en texto pero no en musescore/lilypond 
     #if ( index == 20 ):
     #  i = instrument.fromString('Clarinet')
     #  parte.insert( i )
@@ -257,16 +257,15 @@ for pista in pistas:
 
     verboseprint( evento )
     parte.append( e )
-  parte.makeMeasures()
+  parte.makeMeasures(inPlace=True)
 
+  # Funciona format=text pero no musescore/lilypond 
+  m = parte.getElementsByClass('Measure')[1]
   i = instrument.fromString('Clarinet')
-  # parte.getElementsById('Measure')[0].insert(0.0, i)
-  m = parte.getElementsByClass('Measure')
-  o = parte.getElementsByOffset(2)
-  print(o)
-  o.insert( i )
+  tb = text.TextBox('Texto de Prueba', 250, 1000 )
+  m.insert( 3.0, i )
+  m.insert( 1.0, tb )
 
-  partitura.makeMeasures()
   partitura.append( parte )
 
 
