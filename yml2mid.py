@@ -257,7 +257,7 @@ for pista in pistas:
 
     verboseprint( evento )
     parte.append( e )
-  parte.makeMeasures(inPlace=True)
+  parte.makeMeasures( inPlace=True )
 
   ## Funciona --formato text pero no musescore/lilypond 
   #m = parte.getElementsByClass('Measure')[1]
