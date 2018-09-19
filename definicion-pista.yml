@@ -104,45 +104,45 @@ base: &base !!map
 unidades: !!map
   # Paleta de unidades para secuenciar
 
-  a: &a !!map
+  a: &a 
     <<: *base
     metro: 2/4
     alturas: [ 1, 3, 5, 7, 8 ]
     duraciones: [ 1, .5, .5, 1, 1 ]
 
-  b: &b !!map
+  b: &b 
     <<: *base
     metro: 6/8
     duraciones: [ .5 ]
     alturas: [ 6, 7, 8, 7, 0, 9 ]
 
-  b^: !!map
+  b^: 
     <<: *b
     alturas: [ 6, 7, 0, 9]
     dinamicas: [ .2, .1 ]
   
   # Unidad de unidades (UoU)
   # Propiedades "Pisan" a los de las unidades referidas 
-  A: !!map
+  A: 
     unidades: [ 'a', 'b' ] 
 
-  B: &B !!map
-    metro: !!str 3/4
-    unidades: !!seq [ 'a' , 'b^' ]
+  B: &B 
+    metro: 3/4
+    unidades: [ 'a' , 'b^' ]
 
-  B^: !!map
+  B^: 
     <<: *B
-    voces: !!int 0 
-    bmp: !!int 89
+    voces: 0 
+    bmp: 89
     unidades: [ 'b', 'a' ] 
     dinamicas: [ 1 ]
 
-  estrofa: !!map
-    unidades: !!seq [ 'A', 'B', 'B^' ]
+  estrofa: 
+    unidades: [ 'A', 'B', 'B^' ]
 
-  estribo: !!map
-    bpm: !!int 100
-    unidades: !!seq [ 'B', 'B^', 'a' ]
+  estribo: 
+    bpm: 100
+    unidades: [ 'B', 'B^', 'a' ]
 
 macroforma: !!seq 
   # Lista de unidades a ser sequenciadas 

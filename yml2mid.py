@@ -175,8 +175,6 @@ class Unidad:
       return self.parametros['unidades']
       
 """
-Metodos generales
-
 Devuelve el tamaño de la lista mas larga
 https://stackoverflow.com/questions/30902558
 """
@@ -196,37 +194,37 @@ Recorre cada pista y partir de su secuencia genera Notas o Silencios
 que agrupa en una Parte para finalmente agregarlas a una Partirtura de Musescore
 """
 partitura = stream.Score()
-for pista in pistas:
-  pprint.pprint(pista)
-  p = Pista(
-    pista['CONSTANTES'],
-    pista['unidades'],
-    pista['macroforma'],
+for p in pistas:
+  #pprint.pprint(p)
+  pista = Pista(
+    p['CONSTANTES'],
+    p['unidades'],
+    p['macroforma'],
   )
+
   parte = stream.Part()
+  instrumento= instrument.fromString( pista.constantes['instrumento'] )
+  parte.insert( instrumento )
 
-  i = instrument.fromString( p.constantes['instrumento'] )
-  parte.insert( i )
-
-  for index, evento in enumerate( p.secuencia ):
-    evento = p.secuencia[ index ]
-    previo = p.secuencia[ index - 1 ]
+  for index, evento in enumerate( pista.secuencia ):
+    evento = pista.secuencia[ index ]
+    previo = pista.secuencia[ index - 1 ]
     unidad = evento['unidad']
-    e = note.Note()
-    e.id = index
+    articulacion = note.Note()
+    articulacion.id = index
     if evento['altura'] == 'S':
-      e = note.Rest()
+      articulacion = note.Rest()
     else:
-      e = note.Note()
-      e.pitch.ps = evento['altura'] 
+      articulacion = note.Note()
+      articulacion.pitch.ps = evento['altura'] 
       #nota.pitch.midi = evento['altura'] 
       #nota.octave = evento['oct']
       if evento['acorde']:
-        e = chord.Chord( evento['acorde'] )
+        articulacion = chord.Chord( evento['acorde'] )
     duracion = duration.Duration( evento['duracion'] )
-    e.duration = duracion 
+    articulacion.duration = duracion 
     dinamica = dynamics.Dynamic( evento['dinamica'] )
-    e.dynamic = dinamica
+    articulacion.dynamic = dinamica
     bpm = evento['bpm']
     if ( previo['bpm'] != bpm ):
       tm = tempo.MetronomeMark( 
@@ -240,7 +238,6 @@ for pista in pistas:
       mt = meter.TimeSignature( metro )
       parte.append( mt )
 
-
     # funciona en texto pero no en musescore/lilypond 
     #if ( index == 20 ):
     #  i = instrument.fromString('Clarinet')
@@ -252,11 +249,8 @@ for pista in pistas:
     #  #tb.style.fontSize = 40
     #  #tb.style.alignVertical = 'bottom' 
     #  #parte.append( tb )
-    #  #c = editorial.Comment( unidad )
-    #  #e.editorial.footnotes.append( c )
-
     verboseprint( evento )
-    parte.append( e )
+    parte.append( articulacion )
   parte.makeMeasures( inPlace=True )
 
   ## Funciona --formato text pero no musescore/lilypond 
