@@ -12,7 +12,7 @@ CONSTANTES: !!map
   instrumento: !!str 
     # Instrumentos soportados por music21
     # web.mit.edu/music21/doc/moduleReference/moduleInstrument.html
-    'violin'
+    'Piano'
   
 base: &base !!map
   # Parametros por defecto para todas las unidades, pueden ser sobrescritos
@@ -99,7 +99,14 @@ base: &base !!map
     # Instrumentos soportados por music21
     # web.mit.edu/music21/doc/moduleReference/moduleInstrument.html
     'Piano'
-   
+
+  controles: !!seq
+    # Secuencia de tuples: nº contro:valor
+    [
+      70 :  82,
+      70 :  91,
+      71 : 120,
+    ]
 
 unidades: !!map
   # Paleta de unidades para secuenciar

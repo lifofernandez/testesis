@@ -18,9 +18,17 @@ base: &base !!map
   # Parametros por defecto para todas las unidades, pueden ser sobrescritos
   # <<: *base (Para que otra pista herede estas propiedades)
 
+  clave: !!int
+    # http://web.mit.edu/music21/doc/moduleReference/moduleKey.html#music21.key.KeySignature
+    # 3 = 3 sontenidos
+    # -3 = 3 bemoles
+    3
+
   intervalos: !!seq 
     # Sequiencia (lista ordenada) de intervalos a ser recorrida por 
     # el puntero de alturas
+    # considerar: http://web.mit.edu/music21/doc/moduleReference/moduleScale.html
+    # http://web.mit.edu/music21/doc/moduleReference/moduleKey.html
     [ 
       -12,-10,-9,-7,-5,-4,-2,
         0,  2, 3, 5, 7, 8,10,
@@ -71,7 +79,7 @@ base: &base !!map
     # 1 es que piza una unidad (duracion de la unidad) a la unidad despues 
     # quedando .5 mitad de la unidad
     # OPCION 2 (facil de aplicar) que se mueva en relaciona al metro
-    # por ejemplo: "-2" anticipar pulsos o ".5" demorar medio pulso
+    # por ejemplo: "-2" anticipar 2 pulsos o ".5" demorar medio pulso
     0
 
   dinamicas: !!seq
@@ -79,7 +87,7 @@ base: &base !!map
    [ .5, .8 ]
 
   fluctuaciones: !!seq
-    # Factores de alteracion azaroza de la dinamica
+    # Seq. de factores de azar en alteracion de la dinamica
     # 0 a 1
     [ .1, 0, .9 ]
 
@@ -100,6 +108,13 @@ base: &base !!map
     # web.mit.edu/music21/doc/moduleReference/moduleInstrument.html
     'Piano'
    
+  controles: !!seq
+  # Secuencia de pares nº contro : valor
+    [
+      70 :  80,
+      70 :  90,
+      71 : 120,
+    ]
 
 unidades: !!map
   # Paleta de unidades para secuenciar

@@ -195,7 +195,7 @@ que agrupa en una Parte para finalmente agregarlas a una Partirtura de Musescore
 """
 partitura = stream.Score()
 for p in pistas:
-  #pprint.pprint(p)
+  pprint.pprint(p)
   pista = Pista(
     p['CONSTANTES'],
     p['unidades'],
