@@ -12,7 +12,7 @@ CONSTANTES: !!map
   instrumento: !!str 
     # Instrumentos soportados por music21
     # web.mit.edu/music21/doc/moduleReference/moduleInstrument.html
-    'Piano'
+    'Violin'
   
 base: &base !!map
   # Parametros por defecto para todas las unidades, pueden ser sobrescritos

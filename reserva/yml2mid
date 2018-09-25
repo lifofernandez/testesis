@@ -252,9 +252,9 @@ for p in pistas:
     parte.append( articulacion )
 
     # funciona en texto pero no en musescore/lilypond 
-    #if ( index == 120 ):
-    #  i = instrument.fromString('Trombone')
-    #  parte.append( i )
+    if ( index == 10 ):
+      i = instrument.fromString('Trombone')
+      parte.append( i )
 
     #if ( previo['unidad'] != unidad ):
     #  print(unidad)
@@ -265,11 +265,11 @@ for p in pistas:
   parte.makeMeasures( inPlace=True )
 
   # Funciona --formato text pero no musescore/lilypond 
-  #m = parte.getElementsByClass('Measure')[-2]
-  #i = instrument.fromString('Trombone')
-  #tb = text.TextBox('Texto de Prueba', 250, 1000 )
-  #m.insert( 3.0, i )
-  #m.insert( 1.0, tb )
+  m = parte.getElementsByClass('Measure')[-2]
+  i = instrument.fromString('Clarinet')
+  tb = text.TextBox('Texto de Prueba', 250, 1000 )
+  m.insert( 3.0, i )
+  m.insert( 1.0, tb )
 
   partitura.append( parte )
 
@@ -282,5 +282,5 @@ mf.open('./midi.mid', 'wb')
 print(mf)
 mf.write()
 mf.close()
-partitura.show( formato_salida )
+##partitura.show( formato_salida )
 
