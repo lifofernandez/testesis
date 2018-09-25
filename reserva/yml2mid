@@ -278,6 +278,12 @@ for p in pistas:
 Salida
 """
 mf = midi.translate.streamToMidiFile( partitura )
+
+#me2 = midi.MidiEvent(mf)
+#me2.type = "SEQUENCE_TRACK_NAME"
+#me2.time = 0
+#me2.data = 'guitar' 
+
 mf.open('./midi.mid', 'wb')
 print(mf)
 mf.write()
