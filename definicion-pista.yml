@@ -13,6 +13,10 @@ CONSTANTES: !!map
     # Instrumentos soportados por music21
     # web.mit.edu/music21/doc/moduleReference/moduleInstrument.html
     'Piano'
+
+  canal: !!int
+   # Canal MIDI 
+   2
   
 base: &base !!map
   # Parametros por defecto para todas las unidades, pueden ser sobrescritos
@@ -72,7 +76,7 @@ base: &base !!map
 
   desplazar: !!float
     # ajuste temporal 
-    # momento, cuando ocurre o  acontence
+    # momento, cuando ocurre o acontence
     # offset : + / - offset con la "posicion" original 
     # 0 es que donde ocurrir 
     # -1 es que empieza una unidad (duracion de la unidad) antes
@@ -136,8 +140,8 @@ unidades: !!map
     alturas: [ 6, 7, 0, 9]
     dinamicas: [ .2, .1 ]
   
-  # Unidad de unidades (UoU)
-  # Propiedades "Pisan" a los de las unidades referidas 
+  # Unidad de unidades ( UoUs )
+  # Propiedades "Pisan" a las de las unidades referidas 
   A: 
     unidades: [ 'a', 'b' ] 
 

@@ -204,6 +204,12 @@ for p in pistas:
 
   parte = stream.Part()
   instrumento= instrument.fromString( pista.constantes['instrumento'] )
+  #canal =  pista.constantes['canal'] 
+  #ii = dir(instrumento)
+  #print(ii)
+  ##instrumento.midiChannel = canal
+  #instrumento.midiChannel = canal
+  #print (instrumento.midiChannel)
   parte.insert( instrumento )
 
   for index, evento in enumerate( pista.secuencia ):

@@ -13,7 +13,11 @@ CONSTANTES: !!map
     # Instrumentos soportados por music21
     # web.mit.edu/music21/doc/moduleReference/moduleInstrument.html
     'Violin'
-  
+
+  canal: !!int
+   # Canal MIDI 
+   9
+ 
 base: &base !!map
   # Parametros por defecto para todas las unidades, pueden ser sobrescritos
   # <<: *base (Para que otra pista herede estas propiedades)
