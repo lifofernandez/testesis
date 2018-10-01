@@ -1,0 +1,305 @@
+#!/usr/bin/env python3
+
+import argparse
+import yaml
+import weakref
+import pprint
+from music21 import *
+
+from midiutil import MIDIFile
+
+degr  = [60, 62, 64, 65, 67, 69, 71, 72] # MIDI note number
+trac  = 0
+chan  = 0
+time  = 0   # In beats
+dura  = 1   # In beats
+temp  = 60  # In BPM
+dina  = 100 # 0-127, as per the MIDI standard
+
+MyMIDI = MIDIFile(1) # One track, defaults to format 1 (tempo track
+                     # automatically created)
+MyMIDI.addTempo( trac, time, temp )
+
+for pitc in degr:
+    MyMIDI.addNote( 
+      trac, 
+      chan, 
+      pitc, 
+      time, 
+      dura, 
+      dina 
+    )
+    time = time + 1
+
+with open("major-scale.mid", "wb") as output_file:
+    MyMIDI.writeFile(output_file)
+
+
+"""
+Manejo de argumentos y parametros globales
+"""
+parser = argparse.ArgumentParser()
+parser.add_argument( 
+ 'archivos',
+ help  = 'Al menos un archivo en formato YAML para procesar',
+ type  = argparse.FileType( 'r' ),
+ nargs = '+'
+)
+parser.add_argument( 
+ '-v',
+ '--verbosity',
+ help = 'Imprimir informacion',
+)
+parser.add_argument( 
+ '-f',
+ '--formato',
+ help = 'Formato de salida (op: midi, musicxml, text).',
+)
+args = parser.parse_args()
+# Archivos de entrada
+pistas = []
+for archivo in args.archivos:
+  data = open( archivo.name, 'r' )
+  pistas.append( yaml.load( data ) )
+# Verbosidat
+verboseprint = print if args.verbosity else lambda *a, **k: None
+# Salida
+formato_salida = args.formato 
+
+
+"""
+Clase para cada track a partir de archivos.yml
+"""
+class Pista:
+  cantidad = 0 
+ 
+  def __init__( 
+    self,
+    constantes,
+    paleta,
+    macroforma,
+  ):
+    self.constantes = constantes
+    verboseprint( '\n#### ', self.constantes['nombre'], ' ####' )
+    self.paleta = paleta
+    self.macroforma = macroforma
+    self.secuencia  = self.secuenciar()
+    Pista.cantidad += 1
+
+  def __str__( self ):
+    o = '' 
+    for attr, value in self.__dict__.items():
+      l = str( attr ) + ':' + str( value )
+      o += l + '\n'
+    return o
+
+  # Paleta de Unidades
+  @property
+  def unidades( self ):
+    unidades = {} 
+    for unidad in self.paleta:
+      uo = Unidad( 
+        unidad, 
+        self.paleta[ unidad ], 
+        self
+      )
+      unidades[ unidad ] =  uo
+    return unidades
+
+  # Genera una secuencia a partir de unidades/parametros
+  def secuenciar( 
+    self,
+    unidades = None,
+    nivel = 0,
+    pisar = {},
+  ):
+    unidades = unidades if unidades is not None else self.macroforma
+    paleta = self.unidades
+    nivel += 1
+    sequencia = []
+    for u in unidades:  
+      verboseprint( '-' * ( nivel - 1 ) + str( u ) )
+      if u in paleta:
+        uo = paleta[ u ]
+        # Mix propiedades con unidad referente
+        referente = { **uo.parametros , **pisar }
+        if uo.unidades:
+          sequencia += self.secuenciar( uo.unidades, nivel, referente ) 
+        # Solo unidades de nivel 0 (no UoU) se secuencian 
+        else: 
+          # Mix parametros con unidad referente
+          resu = { **uo.parametros, **referente } 
+          unid = str( uo )
+          bpm  = resu['bpm']        if 'bpm'        in resu else 60 
+          metr = resu['metro']      if 'metro'      in resu else '4/4'
+          alts = resu['alturas']    if 'alturas'    in resu else [1] 
+          ints = resu['intervalos'] if 'intervalos' in resu else [1]
+          vozs = resu['voces']      if 'voces'      in resu else None
+          durs = resu['duraciones'] if 'duraciones' in resu else [1]
+          dins = resu['dinamicas']  if 'dinamicas'  in resu else [1]
+          #octa = resu['octava']     if 'octava'     in resu else None
+          trar = resu['transportar'] if 'transportar' in resu else 0
+          candidatos = [ dins, durs, alts ]
+          pasos = larguest( candidatos )
+          # Combinar parametros: altura, duracion, dinamica, etc
+          for paso in range( pasos ):
+            alt  = alts[ paso % len( alts ) ]
+            acor = []
+            if alt != 0:
+              # Ajuste relacion puntero altura/int
+              alt = alt - 1
+              nota = ints[ alt % len( ints ) ] + trar
+              if vozs:
+               # Voces, del set de inter
+               for voz in vozs:
+                 fund = alt + ( voz[ paso % len( voz ) ] - 1)
+                 acor += [ ints[ fund % len( ints ) ]  + trar]
+            else:
+              # Silencio
+              nota = 'S'
+            dur  = durs[ paso % len( durs ) ]
+            din  = dins[ paso % len( dins ) ]
+            evento = {
+              'orden'      : paso,
+              'unidad'     : unid,
+              'bpm'        : bpm,
+              'metro'      : metr,
+              'altura'     : nota,
+              'acorde'     : acor,
+              'duracion'   : dur,
+              'dinamica'   : din,
+              #'octava'     : octa,
+              'transportar' : trar,
+            }
+            sequencia.append( evento )
+    return sequencia
+
+"""
+Clase para las unidades de cada track
+"""
+# pasar a dataclass
+class Unidad:
+  cantidad = 0
+  def __init__( 
+    self,
+    nombre,
+    parametros,
+    track
+  ):
+    self.nombre = nombre 
+    self.parametros = parametros 
+    self.track = weakref.ref( track )
+    Unidad.cantidad += 1
+
+  def __str__( self ):
+    return self.nombre
+
+  def mostrar_cantidad( self ):
+    print( "Cantidad de Unidades: %d" % Unidad.cantidad )
+
+  # Unidad de Unidades
+  @property
+  def unidades( self ):
+    if 'unidades' in self.parametros:
+      return self.parametros['unidades']
+      
+"""
+Devuelve el tamaño de la lista mas larga
+https://stackoverflow.com/questions/30902558
+"""
+def larguest( l ):
+    if( not isinstance( l, list ) ): return(0)
+    return( 
+      max( 
+        [ len( l ) , ] + 
+        [ len( subl ) for subl in l if isinstance( subl, list ) ] +
+        [ larguest( subl ) for subl in l ]
+      )
+    )
+
+"""
+Loop principal:
+Recorre cada pista y partir de su secuencia genera Notas o Silencios 
+que agrupa en una Parte para finalmente agregarlas a una Partirtura de Musescore
+"""
+partitura = stream.Score()
+for p in pistas:
+  pprint.pprint(p)
+  pista = Pista(
+    p['CONSTANTES'],
+    p['unidades'],
+    p['macroforma'],
+  )
+
+  parte = stream.Part()
+  instrumento= instrument.fromString( pista.constantes['instrumento'] )
+  #canal =  pista.constantes['canal'] 
+  #ii = dir(instrumento)
+  #print(ii)
+  ##instrumento.midiChannel = canal
+  #instrumento.midiChannel = canal
+  #print (instrumento.midiChannel)
+  parte.insert( instrumento )
+
+  for index, evento in enumerate( pista.secuencia ):
+    evento = pista.secuencia[ index ]
+    previo = pista.secuencia[ index - 1 ]
+    unidad = evento['unidad']
+    articulacion = note.Note()
+    articulacion.id = index
+    if evento['altura'] == 'S':
+      articulacion = note.Rest()
+    else:
+      articulacion = note.Note()
+      articulacion.pitch.ps = evento['altura'] 
+      #nota.pitch.midi = evento['altura'] 
+      #nota.octave = evento['oct']
+      if evento['acorde']:
+        articulacion = chord.Chord( evento['acorde'] )
+    duracion = duration.Duration( evento['duracion'] )
+    articulacion.duration = duracion 
+    dinamica = dynamics.Dynamic( evento['dinamica'] )
+    articulacion.dynamic = dinamica
+    bpm = evento['bpm']
+    if ( previo['bpm'] != bpm ):
+      tm = tempo.MetronomeMark( 
+        None,
+        bpm,
+        note.Note( type='quarter' ) 
+      )
+      parte.append( tm )
+    metro = evento['metro']
+    if ( previo['metro'] != metro ):
+      mt = meter.TimeSignature( metro )
+      parte.append( mt )
+
+    # funciona en texto pero no en musescore/lilypond 
+    #if ( index == 20 ):
+    #  i = instrument.fromString('Clarinet')
+    #  parte.insert( i )
+
+    #if ( previo['unidad'] != unidad ):
+    #  print(unidad)
+    #  #tb = text.TextBox( unidad, 250, 1000 )
+    #  #tb.style.fontSize = 40
+    #  #tb.style.alignVertical = 'bottom' 
+    #  #parte.append( tb )
+    verboseprint( evento )
+    parte.append( articulacion )
+  parte.makeMeasures( inPlace=True )
+
+  ## Funciona --formato text pero no musescore/lilypond 
+  #m = parte.getElementsByClass('Measure')[1]
+  #i = instrument.fromString('Clarinet')
+  #tb = text.TextBox('Texto de Prueba', 250, 1000 )
+  #m.insert( 3.0, i )
+  #m.insert( 1.0, tb )
+
+  partitura.append( parte )
+
+
+"""
+Salida
+"""
+partitura.show( formato_salida )
+
