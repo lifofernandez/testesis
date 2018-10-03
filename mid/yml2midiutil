@@ -287,14 +287,6 @@ for numero_pista,p in enumerate(pistas):
     if evento['altura'] == 'S':
       dina = 0
       pitc = 0
-    #time = delta
-    #dura = evento['duracion'],
-    #dina = 100
-    #trac  = 0
-    #chan  = 0
-    #dura  = 1
-    temp  = 60  # In BPM
-    #dina  = 100 # 0-127, as per the MIDI standard
     opus.addNote( 
       trac, 
       chan, 
