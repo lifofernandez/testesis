@@ -1,0 +1,175 @@
+# Boceto de PISTA (validdo / funciona)
+# YAML types: yaml.org/type
+# Ejemplo de documentación: https://selinon.readthedocs.io/en/latest/yaml.html
+
+CONSTANTES: !!map
+  # Variables que se mantienen a lo largo de toda la pista
+
+  nombre: !!str 
+    # Título de la pista
+    'Pista ejemplo'
+
+  instrumento: !!str 
+    # Instrumentos soportados por music21
+    # web.mit.edu/music21/doc/moduleReference/moduleInstrument.html
+    'Piano'
+
+  canal: !!int
+   # Canal MIDI 
+   2
+  
+base: &base !!map
+  # Parametros por defecto para todas las unidades, pueden ser sobrescritos
+  # <<: *base (Para que otra pista herede estas propiedades)
+
+  clave: !!int
+    # http://web.mit.edu/music21/doc/moduleReference/moduleKey.html#music21.key.KeySignature
+    # 3 = 3 sontenidos
+    # -3 = 3 bemoles
+    3
+
+  intervalos: !!seq 
+    # Sequiencia (lista ordenada) de intervalos a ser recorrida por 
+    # el puntero de alturas
+    # considerar: http://web.mit.edu/music21/doc/moduleReference/moduleScale.html
+    # http://web.mit.edu/music21/doc/moduleReference/moduleKey.html
+    [ 
+      -12,-10,-9,-7,-5,-4,-2,
+        0,  2, 3, 5, 7, 8,10,
+       12, 14,15,17,19,20,22,
+       24
+    ]
+
+  alturas: !!seq 
+    # Punteros del set de intervalos
+    # cada elemento equivale a el n de intervalo
+    [ 1, 3, 5, 8 ] 
+
+  voces: !!seq
+    # Apilamiento de alturas 
+    # cada voz es un lista
+    # desplaza nº de intervalo
+    - [ 8, 6 ] 
+    - [ 5 ] 
+    - [ 3 ]
+
+  transportar: !!int 
+    # Ajuste de alturas
+    60 
+
+  transponer: !!int
+    # Ajuste de alturas pero dentro del set intervalos
+    # registración fija
+    3
+
+  duraciones: !!seq 
+    # Lista ordenada de duraciones
+    [ 1 ]
+
+  bpm: !!int 
+   # Tempo, Pulsos Por Minuto
+   62
+
+  metro: !!str 
+    # Clave de compás
+    4/4
+
+  desplazar: !!float
+    # Ajuste temporal 
+    # momento, cuando ocurre o acontence
+    # offset : + / - offset con la "posicion" original 
+    # 0 es que donde debe acontecer originalmente
+    # OPCION 1 Relativa al beat:
+      # Ejemplo: "-2" anticipar 2 pulsos o ".5" demorar medio pulso
+    # OPCION 2: Relativa a la duracion total de la unidad
+      # -1 es que empieza una unidad (duracion de la unidad) antes
+      # 1 es que piza una unidad (duracion de la unidad) a la unidad despues 
+      # quedando .5 mitad de la unidad
+    0
+
+  dinamicas: !!seq 
+   # Lista ordenada de dinámicas
+   [ 1, .5, .4 ]
+
+  fluctuaciones: !!seq
+    # Seq. de factores de azar en alteracion de la dinamica
+    # 0 a 1
+    [ .1, 0, .9 ]
+
+  canal: !!int
+   # Canal MIDI 
+   1
+
+  banco: !!str
+   # Banco MIDI
+   'GM'
+
+  programa: !!str
+    # Instrumento MIDI
+    'Piano'
+
+  instrumento: !!str 
+    # Instrumentos soportados por music21
+    # web.mit.edu/music21/doc/moduleReference/moduleInstrument.html
+    'Piano'
+   
+  controles: !!seq
+  # Secuencia de pares nº contro : valor
+    [
+      70 :  80,
+      70 :  90,
+      71 : 120,
+    ]
+
+unidades: !!map
+  # Paleta de unidades para secuenciar
+
+  a: &a 
+    <<: *base
+    metro: 2/4
+    alturas: [ 1, 3, 5, 7, 8 ]
+    duraciones: [ 1, .5, .5, 1, 1 ]
+
+  b: &b 
+    <<: *base
+    metro: 6/8
+    duraciones: [ .5 ]
+    alturas: [ 6, 7, 8, 7, 0, 9 ]
+
+  b^: 
+    <<: *b
+    alturas: [ 6, 7, 0, 9]
+    dinamicas: [ .2, .1 ]
+  
+  # Unidad de unidades ( UoUs )
+  # Propiedades "Pisan" a las de las unidades referidas 
+  A: 
+    unidades: [ 'a', 'b' ] 
+
+  B: &B 
+    metro: 3/4
+    unidades: [ 'a' , 'b^' ]
+
+  B^: 
+    <<: *B
+    voces: 0 
+    bmp: 89
+    unidades: [ 'b', 'a' ] 
+    dinamicas: [ 1 ]
+
+  estrofa: 
+    unidades: [ 'A', 'B', 'B^' ]
+
+  estribo: 
+    bpm: 100
+    unidades: [ 'B', 'B^', 'a' ]
+
+macroforma: !!seq 
+  # Lista de unidades a ser sequenciadas 
+  [
+    'intro',
+    'estrofa',
+    'estribo',
+    'inter',
+  ]
+
