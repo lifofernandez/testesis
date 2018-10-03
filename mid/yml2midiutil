@@ -280,18 +280,21 @@ for numero_pista,p in enumerate(pistas):
     parte.append( articulacion )
     ########################################
     pitc = evento['altura']
-    if evento['altura'] == 'S':
-      pitc = 30
     trac = numero_pista
     chan = pista.constantes['canal']
+    dura  = evento['duracion'] 
+    dina  = int(evento['dinamica'] * 126)
+    if evento['altura'] == 'S':
+      dina = 0
+      pitc = 0
     #time = delta
     #dura = evento['duracion'],
     #dina = 100
     #trac  = 0
     #chan  = 0
-    dura  = 1
+    #dura  = 1
     temp  = 60  # In BPM
-    dina  = 100 # 0-127, as per the MIDI standard
+    #dina  = 100 # 0-127, as per the MIDI standard
     opus.addNote( 
       trac, 
       chan, 
