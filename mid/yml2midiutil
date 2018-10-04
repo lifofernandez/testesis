@@ -4,7 +4,8 @@ import argparse
 import yaml
 import weakref
 import pprint
-from music21 import *
+import math
+#from music21 import *
 
 from midiutil import MIDIFile
 
@@ -31,10 +32,10 @@ parser.add_argument(
 )
 args = parser.parse_args()
 # Archivos de entrada
-pistas = []
+definiciones = []
 for archivo in args.archivos:
   data = open( archivo.name, 'r' )
-  pistas.append( yaml.load( data ) )
+  definiciones.append( yaml.load( data ) )
 # Verbosidat
 verboseprint = print if args.verbosity else lambda *a, **k: None
 # Salida
@@ -46,19 +47,25 @@ Clase para cada track a partir de archivos.yml
 """
 class Pista:
   cantidad = 0 
+  #TODO agregar Nº de pista
  
   def __init__( 
     self,
-    constantes,
+    nombre,
+    defaults,
     paleta,
     macroforma,
   ):
-    self.constantes = constantes
-    verboseprint( '\n#### ', self.constantes['nombre'], ' ####' )
+    self.nombre = nombre
+    self.defaults = defaults
     self.paleta = paleta
     self.macroforma = macroforma
+
     self.secuencia  = self.secuenciar()
+    self.orden = Pista.cantidad 
     Pista.cantidad += 1
+
+    verboseprint( '\n#### ', self.nombre, ' ####' )
 
   def __str__( self ):
     o = '' 
@@ -196,73 +203,87 @@ Loop principal:
 Recorre cada pista y partir de su secuencia genera Notas o Silencios que agrupa
 en una Parte para finalmente agregarlas a una Partirtura de Musescore
 """
-# One track, defaults to format 1 (tempo track automatically created)
 
-########################################
-opus = MIDIFile(len(pistas)) 
-
-temp  = 60  # In BPM
-
-
-########################################
-
-partitura = stream.Score()
-
-for numero_pista,p in enumerate(pistas):
-  pprint.pprint(p)
+pistas = []
+for d in definiciones:
+  #pprint.pprint( d )
   pista = Pista(
-    p['CONSTANTES'],
-    p['unidades'],
-    p['macroforma'],
+    d['nombre'],
+    d['base'],
+    d['unidades'],
+    d['macroforma'],
   )
-  delta = 0
-  opus.addTempo( numero_pista, delta , temp )
+  pistas.append( pista )
 
-  parte = stream.Part()
-  instrumento= instrument.fromString( pista.constantes['instrumento'] )
+opus = MIDIFile( Pista.cantidad ) 
+#partitura = stream.Score()
+
+for pista in pistas:
+  #print( id( pista ) ) 
+  print( pista.orden )
+  momento = 0
+  opus.addTrackName( pista.orden, momento , pista.nombre )
+  opus.addTempo( pista.orden, momento , pista.defaults['bpm'] )
+  # Time Signature event
+  # https://midiutil.readthedocs.io/en/1.2.1/class.html#midiutil.MidiFile.MIDIFile.addTimeSignature
+  # The denominator is a negative power of two: log10( X ) / log10( 2 ) 
+  # 2 represents a quarter-note, 3 represents an eighth-note, etc.
+  numerador, denominador = pista.defaults['metro'].split( '/' )
+  denominador = int( math.log10( int( denominador ) ) / math.log10( 2 ) )
+  relojes_por_tick = 12 * denominador
+  notas_por_negra = 8
+  opus.addTimeSignature( 
+    pista.orden,
+    momento,
+    int(numerador),
+    denominador,
+    relojes_por_tick, 
+    notas_por_negra
+  )
+
+  #parte = stream.Part()
+  #instrumento= instrument.fromString( pista.constantes['instrumento'] )
+  #parte.insert( instrumento )
 
   #canal =  pista.constantes['canal'] 
-
-  parte.insert( instrumento )
 
   for index, evento in enumerate( pista.secuencia ):
     evento = pista.secuencia[ index ]
     previo = pista.secuencia[ index - 1 ]
     unidad = evento['unidad']
+    verboseprint( evento )
 
-    articulacion = note.Note()
-    articulacion.id = index
-    if evento['altura'] == 'S':
-      articulacion = note.Rest()
-    else:
-      articulacion = note.Note()
-      articulacion.pitch.ps = evento['altura'] 
-      #nota.pitch.midi = evento['altura'] 
-      #nota.octave = evento['oct']
+    #articulacion = note.Note()
+    #articulacion.id = index
+    #if evento['altura'] == 'S':
+    #  articulacion = note.Rest()
+    #else:
+    #  articulacion = note.Note()
+    #  articulacion.pitch.ps = evento['altura'] 
+    #  #nota.pitch.midi = evento['altura'] 
+    #  #nota.octave = evento['oct']
 
-      if evento['acorde']:
-        articulacion = chord.Chord( evento['acorde'] )
+    #  if evento['acorde']:
+    #    articulacion = chord.Chord( evento['acorde'] )
 
-    duracion = duration.Duration( evento['duracion'] )
-    articulacion.duration = duracion 
-    dinamica = dynamics.Dynamic( evento['dinamica'] )
-    articulacion.dynamic = dinamica
+    #duracion = duration.Duration( evento['duracion'] )
+    #articulacion.duration = duracion 
+    #dinamica = dynamics.Dynamic( evento['dinamica'] )
+    #articulacion.dynamic = dinamica
 
+    #bpm = evento['bpm']
+    #if ( previo['bpm'] != bpm ):
+    #  tm = tempo.MetronomeMark( 
+    #    None,
+    #    bpm,
+    #    note.Note( type='quarter' ) 
+    #  )
+    #  parte.append( tm )
 
-
-    bpm = evento['bpm']
-    if ( previo['bpm'] != bpm ):
-      tm = tempo.MetronomeMark( 
-        None,
-        bpm,
-        note.Note( type='quarter' ) 
-      )
-      parte.append( tm )
-
-    metro = evento['metro']
-    if ( previo['metro'] != metro ):
-      mt = meter.TimeSignature( metro )
-      parte.append( mt )
+    #metro = evento['metro']
+    #if ( previo['metro'] != metro ):
+    #  mt = meter.TimeSignature( metro )
+    #  parte.append( mt )
 
     #if ( previo['program'] != program ):
     #  i = instrument.fromString('Clarinet')
@@ -275,15 +296,17 @@ for numero_pista,p in enumerate(pistas):
     #  #tb.style.alignVertical = 'bottom' 
     #  #parte.append( tb )
 
-    verboseprint( evento )
+    #parte.append( articulacion )
 
-    parte.append( articulacion )
     ########################################
     pitc = evento['altura']
-    trac = numero_pista
-    chan = pista.constantes['canal']
+    #if evento['acorde']:
+    #  pprint.pprint(  evento['acorde'] )
+
+    trac = pista.orden
+    chan = pista.defaults['canal']
     dura  = evento['duracion'] 
-    dina  = int(evento['dinamica'] * 126)
+    dina  = int( evento['dinamica'] * 126 )
     if evento['altura'] == 'S':
       dina = 0
       pitc = 0
@@ -291,15 +314,16 @@ for numero_pista,p in enumerate(pistas):
       trac, 
       chan, 
       pitc, 
-      delta, 
+      momento, 
       dura, 
       dina,
     )
-    delta = delta + evento[ 'duracion' ]
+    momento = momento + evento[ 'duracion' ]
     ########################################
-  parte.makeMeasures( inPlace=True )
 
-  partitura.append( parte )
+  #parte.makeMeasures( inPlace=True )
+
+  #partitura.append( parte )
 
 
 """

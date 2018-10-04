@@ -2,22 +2,10 @@
 # YAML types: yaml.org/type
 # Ejemplo de documentación: https://selinon.readthedocs.io/en/latest/yaml.html
 
-CONSTANTES: !!map
-  # Variables que se mantienen a lo largo de toda la pista
+nombre: !!str 
+  # Título de la pista
+  'Pista 2'
 
-  nombre: !!str 
-    # Título de la pista
-    'Pista ejemplo'
-
-  instrumento: !!str 
-    # Instrumentos soportados por music21
-    # web.mit.edu/music21/doc/moduleReference/moduleInstrument.html
-    'Violin'
-
-  canal: !!int
-   # Canal MIDI 
-   8
- 
 base: &base !!map
   # Parametros por defecto para todas las unidades, pueden ser sobrescritos
   # <<: *base (Para que otra pista herede estas propiedades)
@@ -64,7 +52,7 @@ base: &base !!map
 
   metro: !!str 
     # Clave de compás
-    4/4
+    3/4
 
   desplazar: !!float
     # ajuste temporal 
