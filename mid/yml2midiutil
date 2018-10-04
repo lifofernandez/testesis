@@ -241,11 +241,7 @@ for pista in pistas:
     notas_por_negra
   )
 
-  #parte = stream.Part()
-  #instrumento= instrument.fromString( pista.constantes['instrumento'] )
-  #parte.insert( instrumento )
-
-  #canal =  pista.constantes['canal'] 
+  opus.addProgramChange( pista.orden, pista.defaults['canal'], momento,  pista.defaults['programa'] )
 
   for index, evento in enumerate( pista.secuencia ):
     evento = pista.secuencia[ index ]
@@ -253,23 +249,9 @@ for pista in pistas:
     unidad = evento['unidad']
     verboseprint( evento )
 
-    #articulacion = note.Note()
-    #articulacion.id = index
-    #if evento['altura'] == 'S':
-    #  articulacion = note.Rest()
-    #else:
-    #  articulacion = note.Note()
-    #  articulacion.pitch.ps = evento['altura'] 
-    #  #nota.pitch.midi = evento['altura'] 
-    #  #nota.octave = evento['oct']
-
     #  if evento['acorde']:
     #    articulacion = chord.Chord( evento['acorde'] )
 
-    #duracion = duration.Duration( evento['duracion'] )
-    #articulacion.duration = duracion 
-    #dinamica = dynamics.Dynamic( evento['dinamica'] )
-    #articulacion.dynamic = dinamica
 
     #bpm = evento['bpm']
     #if ( previo['bpm'] != bpm ):

@@ -92,14 +92,10 @@ base: &base !!map
    # Banco MIDI
    'GM'
 
-  programa: !!str
+  programa: !!int
     # Instrumento MIDI
-    'Piano'
+    33
 
-  instrumento: !!str 
-    # Instrumentos soportados por music21
-    # web.mit.edu/music21/doc/moduleReference/moduleInstrument.html
-    'Piano'
    
   controles: !!seq
   # Secuencia de pares nº contro : valor
