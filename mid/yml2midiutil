@@ -216,14 +216,20 @@ for d in definiciones:
   pistas.append( pista )
 
 opus = MIDIFile( Pista.cantidad ) 
-#partitura = stream.Score()
-
 for pista in pistas:
   #print( id( pista ) ) 
   print( pista.orden )
   momento = 0
-  opus.addTrackName( pista.orden, momento , pista.nombre )
-  opus.addTempo( pista.orden, momento , pista.defaults['bpm'] )
+  opus.addTrackName(
+    pista.orden,
+    momento,
+    pista.nombre
+  )
+  opus.addTempo(
+    pista.orden,
+    momento,
+    pista.defaults['bpm']
+  )
   # Time Signature event
   # https://midiutil.readthedocs.io/en/1.2.1/class.html#midiutil.MidiFile.MIDIFile.addTimeSignature
   # The denominator is a negative power of two: log10( X ) / log10( 2 ) 
@@ -241,17 +247,18 @@ for pista in pistas:
     notas_por_negra
   )
 
-  opus.addProgramChange( pista.orden, pista.defaults['canal'], momento,  pista.defaults['programa'] )
+  opus.addProgramChange(
+    pista.orden,
+    pista.defaults['canal'],
+    momento, 
+    pista.defaults['programa']
+  )
 
   for index, evento in enumerate( pista.secuencia ):
     evento = pista.secuencia[ index ]
     previo = pista.secuencia[ index - 1 ]
     unidad = evento['unidad']
     verboseprint( evento )
-
-    #  if evento['acorde']:
-    #    articulacion = chord.Chord( evento['acorde'] )
-
 
     #bpm = evento['bpm']
     #if ( previo['bpm'] != bpm ):
@@ -271,49 +278,37 @@ for pista in pistas:
     #  i = instrument.fromString('Clarinet')
     #  parte.insert( i )
 
-    #if ( previo['unidad'] != unidad ):
-    #  print(unidad)
-    #  #tb = text.TextBox( unidad, 250, 1000 )
-    #  #tb.style.fontSize = 40
-    #  #tb.style.alignVertical = 'bottom' 
-    #  #parte.append( tb )
-
-    #parte.append( articulacion )
-
-    ########################################
-    pitc = evento['altura']
-    #if evento['acorde']:
-    #  pprint.pprint(  evento['acorde'] )
+    if ( evento['orden'] == 0 ):
+      opus.addText( pista.orden, momento , unidad )
 
     trac = pista.orden
     chan = pista.defaults['canal']
-    dura  = evento['duracion'] 
-    dina  = int( evento['dinamica'] * 126 )
-    if evento['altura'] == 'S':
-      dina = 0
-      pitc = 0
-    opus.addNote( 
-      trac, 
-      chan, 
-      pitc, 
-      momento, 
-      dura, 
-      dina,
-    )
+    pitc = evento['altura']
+    voces = [ evento['altura'] ]
+    if evento['acorde']:
+      voces = evento['acorde']
+    dura = evento['duracion'] 
+    dina = int( evento['dinamica'] * 126 )
+    for voz in voces:
+      pitc = voz 
+      if voz == 'S':
+        dina = 0
+        pitc = 0
+      opus.addNote( 
+        trac, 
+        chan, 
+        pitc, 
+        momento, 
+        dura, 
+        dina,
+      )
     momento = momento + evento[ 'duracion' ]
-    ########################################
 
-  #parte.makeMeasures( inPlace=True )
-
-  #partitura.append( parte )
 
 
 """
 Salida
 """
-#partitura.show( formato_salida )
-
-
 
 with open("prueba.mid", "wb") as output_file:
     opus.writeFile(output_file)

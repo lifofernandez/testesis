@@ -52,7 +52,7 @@ base: &base !!map
 
   metro: !!str 
     # Clave de compás
-    3/4
+    4/4
 
   desplazar: !!float
     # ajuste temporal 
@@ -84,7 +84,7 @@ base: &base !!map
    'GM'
 
   programa: !!int
-    # Instrumento MIDI
+    # numero de programa MIDI
     1 
 
   controles: !!seq
@@ -102,12 +102,12 @@ unidades: !!map
     <<: *base
     metro: 2/4
     alturas: [ 1, 3, 5, 7, 8 ]
-    #duraciones: [ 1, .5, .5, 1, 1 ]
+    duraciones: [ 1, .5, .5, 1, 1 ]
 
   b: &b !!map
     <<: *base
     metro: 6/8
-    #duraciones: [ .5 ]
+    duraciones: [ .5 ]
     #alturas: [ 6, 7, 8, 7, 0, 9 ]
 
   b^: !!map
@@ -139,7 +139,7 @@ unidades: !!map
     unidades: !!seq [ 'B', 'B^', 'a' ]
 
 macroforma: !!seq 
-  # Lista de unidades a ser sequenciadas 
+  # Lista de unidades a ser secuenciadas 
   [
     'intro',
     'estrofa',

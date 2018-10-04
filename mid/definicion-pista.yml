@@ -60,7 +60,7 @@ base: &base !!map
 
   metro: !!str 
     # Clave de compás
-    6/8
+    4/4
 
   desplazar: !!float
     # Ajuste temporal 
