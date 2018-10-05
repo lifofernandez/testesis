@@ -111,14 +111,16 @@ class Pista:
           # Mix parametros con unidad referente
           resu = { **uo.parametros, **referente } 
           unid = str( uo )
-          bpm  = resu['bpm']        if 'bpm'        in resu else 60 
-          metr = resu['metro']      if 'metro'      in resu else '4/4'
-          alts = resu['alturas']    if 'alturas'    in resu else [1] 
-          ints = resu['intervalos'] if 'intervalos' in resu else [1]
-          vozs = resu['voces']      if 'voces'      in resu else None
-          durs = resu['duraciones'] if 'duraciones' in resu else [1]
-          dins = resu['dinamicas']  if 'dinamicas'  in resu else [1]
-          #octa = resu['octava']     if 'octava'     in resu else None
+          bpm  = resu['bpm']        if 'bpm'          in resu else 60 
+          cana = resu['canal']      if 'canal'        in resu else 1 
+          prog = resu['programa']   if 'programa'     in resu else 1 
+          metr = resu['metro']      if 'metro'        in resu else '4/4'
+          alts = resu['alturas']    if 'alturas'      in resu else [1] 
+          ints = resu['intervalos'] if 'intervalos'   in resu else [1]
+          vozs = resu['voces']      if 'voces'        in resu else None
+          durs = resu['duraciones'] if 'duraciones'   in resu else [1]
+          dins = resu['dinamicas']  if 'dinamicas'    in resu else [1]
+          #octa = resu['octava']     if 'octava'      in resu else None
           trar = resu['transportar'] if 'transportar' in resu else 0
           candidatos = [ dins, durs, alts ]
           pasos = larguest( candidatos )
@@ -138,17 +140,19 @@ class Pista:
             else:
               # Silencio
               nota = 'S'
-            dur  = durs[ paso % len( durs ) ]
-            din  = dins[ paso % len( dins ) ]
+            dura  = durs[ paso % len( durs ) ]
+            dina  = dins[ paso % len( dins ) ]
             evento = {
-              'orden'      : paso,
-              'unidad'     : unid,
-              'bpm'        : bpm,
-              'metro'      : metr,
-              'altura'     : nota,
-              'acorde'     : acor,
-              'duracion'   : dur,
-              'dinamica'   : din,
+              'orden'       : paso,
+              'canal'       : cana,
+              'programa'    : prog,
+              'unidad'      : unid,
+              'bpm'         : bpm,
+              'metro'       : metr,
+              'altura'      : nota,
+              'acorde'      : acor,
+              'duracion'    : dura,
+              'dinamica'    : dina,
               #'octava'     : octa,
               'transportar' : trar,
             }
@@ -198,15 +202,12 @@ def larguest( l ):
       )
     )
 
-"""
-Loop principal:
-Recorre cada pista y partir de su secuencia genera Notas o Silencios que agrupa
-en una Parte para finalmente agregarlas a una Partirtura de Musescore
-"""
 
+"""
+Carga de pistas a partir de las definiciones
+"""
 pistas = []
 for d in definiciones:
-  #pprint.pprint( d )
   pista = Pista(
     d['nombre'],
     d['base'],
@@ -215,18 +216,22 @@ for d in definiciones:
   )
   pistas.append( pista )
 
+"""
+Loop principal:
+Recorre cada pista y partir de su secuencia genera Notas o Silencios que agrupa
+en una Parte para finalmente agregarlas a una Partirtura de Musescore
+"""
 opus = MIDIFile( Pista.cantidad ) 
 for pista in pistas:
-  #print( id( pista ) ) 
-  print( pista.orden )
   momento = 0
+  trac = pista.orden
   opus.addTrackName(
-    pista.orden,
+    trac,
     momento,
     pista.nombre
   )
   opus.addTempo(
-    pista.orden,
+    trac,
     momento,
     pista.defaults['bpm']
   )
@@ -239,16 +244,16 @@ for pista in pistas:
   relojes_por_tick = 12 * denominador
   notas_por_negra = 8
   opus.addTimeSignature( 
-    pista.orden,
+    trac,
     momento,
-    int(numerador),
+    int( numerador ),
     denominador,
     relojes_por_tick, 
     notas_por_negra
   )
 
   opus.addProgramChange(
-    pista.orden,
+    trac,
     pista.defaults['canal'],
     momento, 
     pista.defaults['programa']
@@ -259,30 +264,50 @@ for pista in pistas:
     previo = pista.secuencia[ index - 1 ]
     unidad = evento['unidad']
     verboseprint( evento )
+    chan = evento['canal']
 
-    #bpm = evento['bpm']
-    #if ( previo['bpm'] != bpm ):
-    #  tm = tempo.MetronomeMark( 
-    #    None,
-    #    bpm,
-    #    note.Note( type='quarter' ) 
-    #  )
-    #  parte.append( tm )
+    bpm = evento['bpm']
+    if ( previo['bpm'] != bpm ):
+      opus.addTempo(
+        trac,
+        momento,
+        bpm,
+      )
 
-    #metro = evento['metro']
-    #if ( previo['metro'] != metro ):
-    #  mt = meter.TimeSignature( metro )
-    #  parte.append( mt )
+    metro = evento['metro']
+    if ( previo['metro'] != metro ):
+      numerador, denominador = metro.split( '/' )
+      denominador = int( math.log10( int( denominador ) ) / math.log10( 2 ) )
+      relojes_por_tick = 12 * denominador
+      notas_por_negra = 8
+      opus.addTimeSignature( 
+        trac,
+        momento,
+        int( numerador ),
+        denominador,
+        relojes_por_tick, 
+        notas_por_negra
+      )
 
-    #if ( previo['program'] != program ):
-    #  i = instrument.fromString('Clarinet')
-    #  parte.insert( i )
+    programa = evento['programa']
+    if ( previo['programa'] != programa ):
+      opus.addProgramChange(
+        trac,
+        chan, 
+        momento, 
+        programa
+      )
+      opus.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
 
     if ( evento['orden'] == 0 ):
-      opus.addText( pista.orden, momento , unidad )
+      # TODO agregar unidades referentes
+      opus.addText(
+        trac,
+        momento,
+        unidad
+      )
 
-    trac = pista.orden
-    chan = pista.defaults['canal']
+
     pitc = evento['altura']
     voces = [ evento['altura'] ]
     if evento['acorde']:
@@ -302,14 +327,12 @@ for pista in pistas:
         dura, 
         dina,
       )
-    momento = momento + evento[ 'duracion' ]
 
-
+    momento = momento + dura
 
 """
 Salida
 """
-
 with open("prueba.mid", "wb") as output_file:
     opus.writeFile(output_file)
 

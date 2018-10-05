@@ -121,7 +121,7 @@ unidades: !!map
     unidades: [ 'a', 'b' ] 
 
   B: &B !!map
-    metro: !!str 3/4
+    metro: !!str 2/4
     unidades: !!seq [ 'a' , 'b^' ]
 
   B^: !!map

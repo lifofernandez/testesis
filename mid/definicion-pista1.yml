@@ -94,7 +94,7 @@ base: &base !!map
 
   programa: !!int
     # Instrumento MIDI
-    33
+    103
 
    
   controles: !!seq
@@ -131,7 +131,7 @@ unidades: !!map
     unidades: [ 'a', 'b' ] 
 
   B: &B 
-    metro: 3/4
+    #metro: 9/8
     unidades: [ 'a' , 'b^' ]
 
   B^: 
@@ -146,6 +146,7 @@ unidades: !!map
 
   estribo: 
     bpm: 100
+    programa: 4
     unidades: [ 'B', 'B^', 'a' ]
 
 macroforma: !!seq 
