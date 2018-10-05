@@ -224,14 +224,14 @@ en una Parte para finalmente agregarlas a una Partirtura de Musescore
 opus = MIDIFile( Pista.cantidad ) 
 for pista in pistas:
   momento = 0
-  trac = pista.orden
+  track = pista.orden
   opus.addTrackName(
-    trac,
+    track,
     momento,
     pista.nombre
   )
   opus.addTempo(
-    trac,
+    track,
     momento,
     pista.defaults['bpm']
   )
@@ -244,36 +244,32 @@ for pista in pistas:
   relojes_por_tick = 12 * denominador
   notas_por_negra = 8
   opus.addTimeSignature( 
-    trac,
+    track,
     momento,
     int( numerador ),
     denominador,
     relojes_por_tick, 
     notas_por_negra
   )
-
   opus.addProgramChange(
-    trac,
+    track,
     pista.defaults['canal'],
     momento, 
     pista.defaults['programa']
   )
-
   for index, evento in enumerate( pista.secuencia ):
     evento = pista.secuencia[ index ]
+    verboseprint( evento )
     previo = pista.secuencia[ index - 1 ]
     unidad = evento['unidad']
-    verboseprint( evento )
-    chan = evento['canal']
-
+    canal = evento['canal']
     bpm = evento['bpm']
     if ( previo['bpm'] != bpm ):
       opus.addTempo(
-        trac,
+        track,
         momento,
         bpm,
       )
-
     metro = evento['metro']
     if ( previo['metro'] != metro ):
       numerador, denominador = metro.split( '/' )
@@ -281,58 +277,56 @@ for pista in pistas:
       relojes_por_tick = 12 * denominador
       notas_por_negra = 8
       opus.addTimeSignature( 
-        trac,
+        track,
         momento,
         int( numerador ),
         denominador,
         relojes_por_tick, 
         notas_por_negra
       )
-
     programa = evento['programa']
     if ( previo['programa'] != programa ):
       opus.addProgramChange(
-        trac,
-        chan, 
+        track,
+        canal, 
         momento, 
         programa
       )
       opus.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
-
     if ( evento['orden'] == 0 ):
       # TODO agregar unidades referentes
       opus.addText(
-        trac,
+        track,
         momento,
         unidad
       )
 
-
-    pitc = evento['altura']
+    altura = evento['altura']
     voces = [ evento['altura'] ]
     if evento['acorde']:
       voces = evento['acorde']
-    dura = evento['duracion'] 
-    dina = int( evento['dinamica'] * 126 )
+
+    duracion = evento['duracion'] 
+    dinamica = int( evento['dinamica'] * 126 )
     for voz in voces:
-      pitc = voz 
+      altura = voz 
       if voz == 'S':
-        dina = 0
-        pitc = 0
+        dinamica = 0
+        altura = 0
       opus.addNote( 
-        trac, 
-        chan, 
-        pitc, 
+        track, 
+        canal, 
+        altura , 
         momento, 
-        dura, 
-        dina,
+        duracion, 
+        dinamica ,
       )
 
-    momento = momento + dura
+    momento = momento + duracion
 
 """
 Salida
 """
 with open("prueba.mid", "wb") as output_file:
-    opus.writeFile(output_file)
+  opus.writeFile(output_file)
 
