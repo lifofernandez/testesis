@@ -48,6 +48,7 @@ base: &base !!map
   transponer: !!int
     # Ajuste de alturas pero dentro del set intervalos
     # registración fija
+    # No aplicado
     3
 
   duraciones: !!seq 
@@ -73,6 +74,7 @@ base: &base !!map
       # -1 es que empieza una unidad (duracion de la unidad) antes
       # 1 es que piza una unidad (duracion de la unidad) a la unidad despues 
       # quedando .5 mitad de la unidad
+    # No aplicado
     0
 
   dinamicas: !!seq 
@@ -82,6 +84,7 @@ base: &base !!map
   fluctuaciones: !!seq
     # Seq. de factores de azar en alteracion de la dinamica
     # 0 a 1
+    # No aplicado
     [ .1, 0, .9 ]
 
   canal: !!int
@@ -90,6 +93,7 @@ base: &base !!map
 
   banco: !!str
    # Banco MIDI
+    # No aplicado
    'GM'
 
   programa: !!int
@@ -97,8 +101,9 @@ base: &base !!map
     103
 
    
-  controles: !!seq
-  # Secuencia de pares nº contro : valor
+  controladores: !!seq
+    # Secuencia de pares nº controlador : parametro
+    # No aplicado
     [
       70 :  80,
       70 :  90,
@@ -146,7 +151,6 @@ unidades: !!map
 
   estribo: 
     bpm: 100
-    programa: 4
     unidades: [ 'B', 'B^', 'a' ]
 
 macroforma: !!seq 
@@ -158,3 +162,7 @@ macroforma: !!seq
     'inter',
   ]
 
+
+# Cosiderar:
+# sentido de lectura de los sets
+#

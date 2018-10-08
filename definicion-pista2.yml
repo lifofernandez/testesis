@@ -85,9 +85,9 @@ base: &base !!map
 
   programa: !!int
     # numero de programa MIDI
-    1 
+    33 
 
-  controles: !!seq
+  controladores: !!seq
     # Secuencia de tuples: nº contro:valor
     [
       70 :  82,

@@ -31,23 +31,18 @@ parser.add_argument(
  help = 'Formato de salida (op: midi, musicxml, text).',
 )
 args = parser.parse_args()
-# Archivos de entrada
 definiciones = []
 for archivo in args.archivos:
   data = open( archivo.name, 'r' )
   definiciones.append( yaml.load( data ) )
-# Verbosidat
 verboseprint = print if args.verbosity else lambda *a, **k: None
-# Salida
 formato_salida = args.formato 
 
-
-"""
-Clase para cada track a partir de archivos.yml
-"""
 class Pista:
+  """
+  Clase para cada track a partir de archivos.yml
+  """
   cantidad = 0 
-  #TODO agregar Nº de pista
  
   def __init__( 
     self,
@@ -122,18 +117,18 @@ class Pista:
           dins = resu['dinamicas']  if 'dinamicas'    in resu else [1]
           #octa = resu['octava']     if 'octava'      in resu else None
           trar = resu['transportar'] if 'transportar' in resu else 0
-          candidatos = [ dins, durs, alts ]
+          ctrs = resu['controladores'] if 'controladores' in resu else None
+          candidatos = [ dins, durs, alts, ctrs ]
           pasos = larguest( candidatos )
           # Combinar parametros: altura, duracion, dinamica, etc
           for paso in range( pasos ):
             alt  = alts[ paso % len( alts ) ]
             acor = []
             if alt != 0:
-              # Ajuste relacion puntero altura/int
+              # Ajuste relacion altura /puntero intervalo
               alt = alt - 1
               nota = ints[ alt % len( ints ) ] + trar
               if vozs:
-               # Voces, del set de inter
                for voz in vozs:
                  fund = alt + ( voz[ paso % len( voz ) ] - 1)
                  acor += [ ints[ fund % len( ints ) ]  + trar]
@@ -142,6 +137,7 @@ class Pista:
               nota = 'S'
             dura  = durs[ paso % len( durs ) ]
             dina  = dins[ paso % len( dins ) ]
+            ctrl  = ctrs[ paso % len( ctrs ) ]
             evento = {
               'orden'       : paso,
               'canal'       : cana,
@@ -155,15 +151,16 @@ class Pista:
               'dinamica'    : dina,
               #'octava'     : octa,
               'transportar' : trar,
+              'controlador' : ctrl,
             }
             sequencia.append( evento )
     return sequencia
 
-"""
-Clase para las unidades de cada track
-"""
-# pasar a dataclass
 class Unidad:
+  """
+  Clase para las unidades de cada track
+  TO DO: pasar a dataclass
+  """
   cantidad = 0
   def __init__( 
     self,
@@ -188,20 +185,19 @@ class Unidad:
     if 'unidades' in self.parametros:
       return self.parametros['unidades']
       
-"""
-Devuelve el tamaño de la lista mas larga
-https://stackoverflow.com/questions/30902558
-"""
 def larguest( l ):
-    if( not isinstance( l, list ) ): return(0)
-    return( 
-      max( 
-        [ len( l ) , ] + 
-        [ len( subl ) for subl in l if isinstance( subl, list ) ] +
-        [ larguest( subl ) for subl in l ]
-      )
+  """
+  Devuelve el tamaño de la lista mas larga
+  https://stackoverflow.com/questions/30902558
+  """
+  if( not isinstance( l, list ) ): return(0)
+  return( 
+    max( 
+      [ len( l ) , ] + 
+      [ len( subl ) for subl in l if isinstance( subl, list ) ] +
+      [ larguest( subl ) for subl in l ]
     )
-
+  )
 
 """
 Carga de pistas a partir de las definiciones
@@ -235,10 +231,12 @@ for pista in pistas:
     momento,
     pista.defaults['bpm']
   )
-  # Time Signature event
-  # https://midiutil.readthedocs.io/en/1.2.1/class.html#midiutil.MidiFile.MIDIFile.addTimeSignature
-  # The denominator is a negative power of two: log10( X ) / log10( 2 ) 
-  # 2 represents a quarter-note, 3 represents an eighth-note, etc.
+  """
+  Time Signature event
+  https://midiutil.readthedocs.io/en/1.2.1/class.html#midiutil.MidiFile.MIDIFile.addTimeSignature
+  The denominator is a negative power of two: log10( X ) / log10( 2 ) 
+  2 represents a quarter-note, 3 represents an eighth-note, etc.
+  """
   numerador, denominador = pista.defaults['metro'].split( '/' )
   denominador = int( math.log10( int( denominador ) ) / math.log10( 2 ) )
   relojes_por_tick = 12 * denominador
@@ -301,7 +299,7 @@ for pista in pistas:
         unidad
       )
 
-    altura = evento['altura']
+    #altura = evento['altura']
     voces = [ evento['altura'] ]
     if evento['acorde']:
       voces = evento['acorde']
@@ -322,6 +320,14 @@ for pista in pistas:
         dinamica ,
       )
 
+    for controlador, parametro in evento['controlador'].items():
+      opus.addControllerEvent( 
+        track, 
+        canal, 
+        momento, 
+        controlador, 
+        parametro, 
+      )
     momento = momento + duracion
 
 """
