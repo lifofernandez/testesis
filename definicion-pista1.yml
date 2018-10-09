@@ -103,7 +103,6 @@ base: &base !!map
    
   controladores: !!seq
     # Secuencia de pares nº controlador : parametro
-    # No aplicado
     [
       70 :  80,
       70 :  90,

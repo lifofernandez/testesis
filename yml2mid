@@ -117,7 +117,7 @@ class Pista:
           dins = resu['dinamicas']  if 'dinamicas'    in resu else [1]
           #octa = resu['octava']     if 'octava'      in resu else None
           trar = resu['transportar'] if 'transportar' in resu else 0
-          ctrs = resu['controladores'] if 'controladores' in resu else None
+          ctrs = resu['controladores'] if 'controladores' in resu else [{0:0}]
           candidatos = [ dins, durs, alts, ctrs ]
           pasos = larguest( candidatos )
           # Combinar parametros: altura, duracion, dinamica, etc
@@ -320,19 +320,19 @@ for pista in pistas:
         dinamica ,
       )
 
-    for controlador, parametro in evento['controlador'].items():
-      opus.addControllerEvent( 
-        track, 
-        canal, 
-        momento, 
-        controlador, 
-        parametro, 
-      )
+    #for controlador, parametro in evento['controlador'].items():
+    #  opus.addControllerEvent( 
+    #    track, 
+    #    canal, 
+    #    momento, 
+    #    controlador, 
+    #    parametro, 
+    #  )
     momento = momento + duracion
 
 """
 Salida
 """
-with open("prueba.mid", "wb") as output_file:
-  opus.writeFile(output_file)
+with open( "prueba.mid", "wb" ) as output_file:
+  opus.writeFile( output_file )
 

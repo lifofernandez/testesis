@@ -1,0 +1,57 @@
+# Feliz Cumpleaños 
+
+nombre: !!str 
+  'Feliz Cumpleaños: Melodía'
+  
+base: &base !!map
+  clave: !!int 0
+  intervalos: !!seq [ 
+    -12, -10, -8, -7, -5, -3, -1,
+      0,   2,  4,  5,  7,  9, 11,
+     12,  14, 15, 17, 19, 21, 23,
+     24
+  ]
+  alturas: !!seq [ 1 ] 
+  transportar: !!int 60 
+  duraciones: !!seq [ 1.5 ]
+  bpm: !!int 100  
+  metro: !!str 9/8
+  dinamicas: !!seq [ 1 ]
+  canal: !!int 1
+  programa: !!int 1
+
+unidades: !!map
+  espera:
+    <<: *base
+    alturas: [ 0, 0 ] 
+    duraciones: [ 1.5, 1.5 ]
+  a: &a 
+    <<: *base
+    alturas: [ 5, 5, 6, 5 ] 
+    duraciones: [ 1, .5, 1.5, 1.5 ]
+  b: &b 
+    <<: *base
+    alturas: [ 8, 7 ] 
+    duraciones: [ 1.5, 1.5 ]
+
+  b^:
+    <<: *b
+    alturas: [ 9, 8 ] 
+  A: 
+    unidades: [ 'a', 'b' ] 
+
+  B: &B 
+    unidades: [ 'a' , 'b^' ]
+
+  B^: 
+    <<: *B
+    unidades: [ 'b', 'a' ] 
+    dinamicas: [ 1 ]
+
+macroforma: !!seq [
+  'espera',
+  'A',
+  'B',
+]
+
+
