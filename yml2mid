@@ -106,20 +106,26 @@ class Pista:
           # Mix parametros con unidad referente
           resu = { **uo.parametros, **referente } 
           unid = str( uo )
-          bpm  = resu['bpm']        if 'bpm'          in resu else 60 
-          cana = resu['canal']      if 'canal'        in resu else 1 
-          prog = resu['programa']   if 'programa'     in resu else 1 
-          metr = resu['metro']      if 'metro'        in resu else '4/4'
-          alts = resu['alturas']    if 'alturas'      in resu else [1] 
-          ints = resu['intervalos'] if 'intervalos'   in resu else [1]
-          vozs = resu['voces']      if 'voces'        in resu else None
-          durs = resu['duraciones'] if 'duraciones'   in resu else [1]
-          dins = resu['dinamicas']  if 'dinamicas'    in resu else [1]
-          #octa = resu['octava']     if 'octava'      in resu else None
-          trar = resu['transportar'] if 'transportar' in resu else 0
-          ctrs = resu['controladores'] if 'controladores' in resu else [{0:0}]
-          candidatos = [ dins, durs, alts, ctrs ]
-          pasos = larguest( candidatos )
+          bpm  = resu['bpm']        if 'bpm'              in resu else 60 
+          cana = resu['canal']      if 'canal'            in resu else 1 
+          prog = resu['programa']   if 'programa'         in resu else 1 
+          metr = resu['metro']      if 'metro'            in resu else '4/4'
+          alts = resu['alturas']    if 'alturas'          in resu else [1] 
+          ints = resu['intervalos'] if 'intervalos'       in resu else [1]
+          vozs = resu['voces']      if 'voces'            in resu else None
+          durs = resu['duraciones'] if 'duraciones'       in resu else [1]
+          dins = resu['dinamicas']  if 'dinamicas'        in resu else [1]
+          octa = resu['octava']     if 'octava'          in resu else 0
+          trar = resu['transportar'] if 'transportar'     in resu else 0
+          ctrs = resu['controladores'] if 'controladores' in resu else [0] 
+          candidatos = [ 
+            dins,
+            durs,
+            alts,
+            ctrs,
+          ]
+          ganador = max( candidatos, key=len )
+          pasos = len( ganador )
           # Combinar parametros: altura, duracion, dinamica, etc
           for paso in range( pasos ):
             alt  = alts[ paso % len( alts ) ]
@@ -185,19 +191,19 @@ class Unidad:
     if 'unidades' in self.parametros:
       return self.parametros['unidades']
       
-def larguest( l ):
-  """
-  Devuelve el tamaño de la lista mas larga
-  https://stackoverflow.com/questions/30902558
-  """
-  if( not isinstance( l, list ) ): return(0)
-  return( 
-    max( 
-      [ len( l ) , ] + 
-      [ len( subl ) for subl in l if isinstance( subl, list ) ] +
-      [ larguest( subl ) for subl in l ]
-    )
-  )
+#def larguest( l ):
+#  """
+#  Devuelve el tamaño de la lista mas larga
+#  https://stackoverflow.com/questions/30902558
+#  """
+#  if( not isinstance( l, list ) ): return(0)
+#  return( 
+#    max( 
+#      [ len( l ) , ] + 
+#      [ len( subl ) for subl in l if isinstance( subl, list ) ] +
+#      [ larguest( subl ) for subl in l ]
+#    )
+#  )
 
 """
 Carga de pistas a partir de las definiciones
@@ -320,14 +326,15 @@ for pista in pistas:
         dinamica ,
       )
 
-    #for controlador, parametro in evento['controlador'].items():
-    #  opus.addControllerEvent( 
-    #    track, 
-    #    canal, 
-    #    momento, 
-    #    controlador, 
-    #    parametro, 
-    #  )
+    if evento['controlador']:
+      for controlador, parametro in evento['controlador'].items():
+        opus.addControllerEvent( 
+          track, 
+          canal, 
+          momento, 
+          controlador, 
+          parametro, 
+        )
     momento = momento + duracion
 
 """
