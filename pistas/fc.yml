@@ -1,24 +1,21 @@
-# Feliz Cumpleaños 
-
-nombre: !!str 
-  'Feliz Cumpleaños: Melodía'
-base: &base !!map
-  clave: !!int 0
-  intervalos: !!seq [ 
+nombre: 'Feliz Cumpleaños: Melodía'
+base: &base 
+  clave: 0
+  intervalos: [ 
     -12, -10, -8, -7, -5, -3, -1,
       0,   2,  4,  5,  7,  9, 11,
      12,  14, 15, 17, 19, 21, 23,
      24
   ]
-  alturas: !!seq [ 1 ] 
-  transportar: !!int 72 
-  duraciones: !!seq [ 1.5 ]
-  bpm: !!int 100  
-  metro: !!str 3/4
-  dinamicas: !!seq [ 1 ]
-  canal: !!int 1
-  programa: !!int 1
-unidades: !!map
+  alturas: [ 1 ] 
+  transportar: 72 
+  duraciones: [ 1.5 ]
+  bpm: 100  
+  metro: 3/4
+  dinamicas: [ 1 ]
+  canal: 1
+  programa: 1
+unidades: 
   espera:
     alturas: [ 0 ] 
     duraciones: [ 2 ]
@@ -31,43 +28,36 @@ unidades: !!map
     programa: 4
     alturas: [ 8, 7 ] 
     duraciones: [ 1, 2 ]
-  b^: 
+  b`: 
     <<: *b
     alturas: [ 9, 8 ] 
-  a^: 
+  a`: 
     <<: *a
     alturas: [ 5, 5, 12, 10 ] 
-  a^^: 
+  a``: 
     <<: *a
     alturas: [ 8, 8, 7, 6 ] 
-  a^^^: 
+  a```: 
     <<: *a
     alturas: [ 11, 11, 10, 8 ] 
   A: 
     unidades: [ 'a', 'b' ] 
-  A^: 
-    unidades: [ 'a' , 'b^' ]
+  A`: 
+    unidades: [ 'a' , 'b`' ]
   B: 
-    programa: 104
-    unidades: [ 'a^', 'a^^' ] 
-  A^^: 
-    unidades: [ 'a^^^', 'b^' ] 
-  hijo: 
-    <<: *base
-  papa: 
-    unidades: [  'hijo' ] 
-  abuelo: 
-    unidades: [  'papa' ] 
-  tata: 
-    unidades: [  'abuelo' ] 
+    unidades: [ 'a`', 'a``' ] 
+  A``: 
+    unidades: [ 'a```', 'b`' ] 
+  Estrofa: 
+    unidades: [ 'A','A' ] 
 
 macroforma: !!seq [
   'espera',
+  #'Estrofa',
   'A',
-  'A^',
+  'A`',
   'B',
-  'A^^',
-  'tata'
+  'A``',
 ]
 
 

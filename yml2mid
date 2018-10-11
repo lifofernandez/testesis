@@ -100,19 +100,14 @@ class Pista:
         # Mix propiedades con unidad referente
         referente = { **uo.parametros , **pisar }
         if uo.unidades:
-          #referente['padre'] = str( u )
           referente.setdefault('referentes',[]).insert( 0,str( u ) )
-
-          #print(referente['padre'])
           sequencia += self.secuenciar( uo.unidades, nivel, referente ) 
         # Solo unidades de nivel 0 (no UoU) se secuencian 
         else: 
           # Mix parametros con unidad referente
           resu = { **uo.parametros, **referente } 
           unid = str( uo )
-          padre = resu['referentes']     if 'referentes'            in resu else ''
-          print(unid + ' referentes:' )
-          print( padre)
+          refe = resu['referentes'] if 'referentes'       in resu else None 
           bpm  = resu['bpm']        if 'bpm'              in resu else 60 
           cana = resu['canal']      if 'canal'            in resu else 1 
           prog = resu['programa']   if 'programa'         in resu else 1 
@@ -122,7 +117,7 @@ class Pista:
           vozs = resu['voces']      if 'voces'            in resu else None
           durs = resu['duraciones'] if 'duraciones'       in resu else [1]
           dins = resu['dinamicas']  if 'dinamicas'        in resu else [1]
-          octa = resu['octava']     if 'octava'          in resu else 0
+          #octa = resu['octava']     if 'octava'          in resu else 0
           trar = resu['transportar'] if 'transportar'     in resu else 0
           ctrs = resu['controladores'] if 'controladores' in resu else [0] 
           candidatos = [ 
@@ -156,6 +151,7 @@ class Pista:
               'canal'       : cana,
               'programa'    : prog,
               'unidad'      : unid,
+              'referentes'  : refe,
               'bpm'         : bpm,
               'metro'       : metr,
               'altura'      : nota,
@@ -303,13 +299,21 @@ for pista in pistas:
         momento, 
         programa
       )
-      opus.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
+      #opus.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
     if ( evento['orden'] == 0 ):
-      # TODO agregar unidades referentes
+      # TODO mostrar repeticion de unidades referentes 
+      st = unidad
+      referentes = evento['referentes'] 
+      if referentes and ( 
+        previo['referentes'] != referentes 
+      ):
+        for i,r in enumerate( referentes ):
+          st = st + '\n'+ r 
+
       opus.addText(
         track,
         momento,
-        unidad
+        st
       )
 
     #altura = evento['altura']
