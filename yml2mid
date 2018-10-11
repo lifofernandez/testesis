@@ -100,12 +100,19 @@ class Pista:
         # Mix propiedades con unidad referente
         referente = { **uo.parametros , **pisar }
         if uo.unidades:
+          #referente['padre'] = str( u )
+          referente.setdefault('referentes',[]).insert( 0,str( u ) )
+
+          #print(referente['padre'])
           sequencia += self.secuenciar( uo.unidades, nivel, referente ) 
         # Solo unidades de nivel 0 (no UoU) se secuencian 
         else: 
           # Mix parametros con unidad referente
           resu = { **uo.parametros, **referente } 
           unid = str( uo )
+          padre = resu['referentes']     if 'referentes'            in resu else ''
+          print(unid + ' referentes:' )
+          print( padre)
           bpm  = resu['bpm']        if 'bpm'              in resu else 60 
           cana = resu['canal']      if 'canal'            in resu else 1 
           prog = resu['programa']   if 'programa'         in resu else 1 

@@ -52,6 +52,14 @@ unidades: !!map
     unidades: [ 'a^', 'a^^' ] 
   A^^: 
     unidades: [ 'a^^^', 'b^' ] 
+  hijo: 
+    <<: *base
+  papa: 
+    unidades: [  'hijo' ] 
+  abuelo: 
+    unidades: [  'papa' ] 
+  tata: 
+    unidades: [  'abuelo' ] 
 
 macroforma: !!seq [
   'espera',
@@ -59,6 +67,7 @@ macroforma: !!seq [
   'A^',
   'B',
   'A^^',
+  'tata'
 ]
 
 
