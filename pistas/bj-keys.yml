@@ -1,0 +1,59 @@
+nombre: 'Billy Jean: keys'
+base: &base 
+  intervalos: [ 
+    -12, -10, -9, -7, -5, -3, -2,
+      0,   2,  3,  5,  7,  9, 10,
+     12,  14, 15, 17, 19, 21, 22,
+     24
+  ]
+  alturas: [ 1 ] 
+  transportar: 71 #B
+  duraciones: [ 1.5, 2.5 ]
+  bpm: 100  
+  metro: 4/4
+  dinamicas: [ 1 ]
+  canal: 1 
+  programa: 2 
+  voces:
+    - [1]
+    - [-4]
+    - [-2]
+unidades: 
+  a:
+    <<: *base
+    alturas: [ 8, 9 ] 
+  b:
+    <<: *base
+    alturas: [ 10, 9 ] 
+macroforma: [
+  'a',
+  'b',
+  'a',
+  'b',
+  'a',
+  'b',
+  'a',
+  'b',
+  'a',
+  'b',
+  'a',
+  'b',
+  'a',
+  'b',
+  'a',
+  'b',
+  'a',
+  'b',
+  'a',
+  'b',
+  'a',
+  'b',
+  'a',
+  'b',
+  'a',
+  'b',
+  'a',
+  'b',
+]
+
+

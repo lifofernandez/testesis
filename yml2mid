@@ -110,7 +110,7 @@ class Pista:
           refe = resu['referentes'] if 'referentes'       in resu else None 
           bpm  = resu['bpm']        if 'bpm'              in resu else 60 
           cana = resu['canal']      if 'canal'            in resu else 1 
-          prog = resu['programa']   if 'programa'         in resu else 1 
+          prog = resu['programa']   if 'programa'         in resu else None 
           metr = resu['metro']      if 'metro'            in resu else '4/4'
           alts = resu['alturas']    if 'alturas'          in resu else [1] 
           ints = resu['intervalos'] if 'intervalos'       in resu else [1]
@@ -138,8 +138,12 @@ class Pista:
               nota = ints[ alt % len( ints ) ] + trar
               if vozs:
                for voz in vozs:
-                 fund = alt + ( voz[ paso % len( voz ) ] - 1)
-                 acor += [ ints[ fund % len( ints ) ]  + trar]
+                 if voz[ paso % len( voz ) ] != 0:
+                   fund = alt + ( voz[ paso % len( voz ) ] - 1)
+                   acor += [ ints[ fund % len( ints ) ]  + trar]
+                 else:
+                   acor += [ 'S'  ]
+
             else:
               # Silencio
               nota = 'S'
@@ -258,12 +262,14 @@ for pista in pistas:
     relojes_por_tick, 
     notas_por_negra
   )
-  opus.addProgramChange(
-    track,
-    pista.defaults['canal'],
-    momento, 
-    pista.defaults['programa']
-  )
+
+  if 'programa' in pista.defaults:
+    opus.addProgramChange(
+      track,
+      pista.defaults['canal'],
+      momento, 
+      pista.defaults['programa']
+    )
   for index, evento in enumerate( pista.secuencia ):
     evento = pista.secuencia[ index ]
     verboseprint( evento )
@@ -292,14 +298,15 @@ for pista in pistas:
         notas_por_negra
       )
     programa = evento['programa']
-    if ( previo['programa'] != programa ):
-      opus.addProgramChange(
-        track,
-        canal, 
-        momento, 
-        programa
-      )
-      #opus.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
+    if programa:
+      if ( previo['programa'] != programa ):
+        opus.addProgramChange(
+          track,
+          canal, 
+          momento, 
+          programa
+        )
+        #opus.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
     if ( evento['orden'] == 0 ):
       # TODO mostrar repeticion de unidades referentes 
       st = unidad
