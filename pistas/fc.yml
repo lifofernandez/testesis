@@ -48,12 +48,8 @@ unidades:
     unidades: [ 'a`', 'a``' ] 
   A``: 
     unidades: [ 'a```', 'b`' ] 
-  Estrofa: 
-    unidades: [ 'A','A' ] 
-
 macroforma: !!seq [
   'espera',
-  #'Estrofa',
   'A',
   'A`',
   'B',

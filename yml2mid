@@ -26,9 +26,10 @@ parser.add_argument(
  help = 'Imprimir informacion',
 )
 parser.add_argument( 
- '-f',
- '--formato',
- help = 'Formato de salida (op: midi, musicxml, text).',
+ '-o',
+ '--output',
+ default = 'output',
+ help = 'Nombre del archivo de salida',
 )
 args = parser.parse_args()
 definiciones = []
@@ -36,7 +37,7 @@ for archivo in args.archivos:
   data = open( archivo.name, 'r' )
   definiciones.append( yaml.load( data ) )
 verboseprint = print if args.verbosity else lambda *a, **k: None
-formato_salida = args.formato 
+salida = args.output
 
 class Pista:
   """
@@ -100,14 +101,15 @@ class Pista:
         # Mix propiedades con unidad referente
         referente = { **uo.parametros , **pisar }
         if uo.unidades:
-          referente.setdefault('referentes',[]).insert( 0,str( u ) )
+          # estudiando: https://www.python.org/doc/essays/graphs/
+          referente.setdefault( 'referentes', [] ).insert( 0, str( u ) )
           sequencia += self.secuenciar( uo.unidades, nivel, referente ) 
         # Solo unidades de nivel 0 (no UoU) se secuencian 
         else: 
           # Mix parametros con unidad referente
           resu = { **uo.parametros, **referente } 
           unid = str( uo )
-          refe = resu['referentes'] if 'referentes'       in resu else None 
+          refe = resu['referentes'] if 'referentes'       in resu else None
           bpm  = resu['bpm']        if 'bpm'              in resu else 60 
           cana = resu['canal']      if 'canal'            in resu else 1 
           prog = resu['programa']   if 'programa'         in resu else None 
@@ -142,8 +144,7 @@ class Pista:
                    fund = alt + ( voz[ paso % len( voz ) ] - 1)
                    acor += [ ints[ fund % len( ints ) ]  + trar]
                  else:
-                   acor += [ 'S'  ]
-
+                   acor += [ 'S' ]
             else:
               # Silencio
               nota = 'S'
@@ -198,20 +199,6 @@ class Unidad:
     if 'unidades' in self.parametros:
       return self.parametros['unidades']
       
-#def larguest( l ):
-#  """
-#  Devuelve el tamaño de la lista mas larga
-#  https://stackoverflow.com/questions/30902558
-#  """
-#  if( not isinstance( l, list ) ): return(0)
-#  return( 
-#    max( 
-#      [ len( l ) , ] + 
-#      [ len( subl ) for subl in l if isinstance( subl, list ) ] +
-#      [ larguest( subl ) for subl in l ]
-#    )
-#  )
-
 """
 Carga de pistas a partir de las definiciones
 """
@@ -308,14 +295,15 @@ for pista in pistas:
         )
         #opus.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
     if ( evento['orden'] == 0 ):
-      # TODO mostrar repeticion de unidades referentes 
+      # TODO mejorar referencias
       st = unidad
       referentes = evento['referentes'] 
       if referentes and ( 
         previo['referentes'] != referentes 
       ):
+      #if referentes:
         for i,r in enumerate( referentes ):
-          st = st + '\n'+ r 
+          st = st + '\n'+ str( r )
 
       opus.addText(
         track,
@@ -358,6 +346,6 @@ for pista in pistas:
 """
 Salida
 """
-with open( "prueba.mid", "wb" ) as output_file:
+with open( salida + ".mid", "wb" ) as output_file:
   opus.writeFile( output_file )
 

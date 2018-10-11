@@ -1,4 +1,4 @@
-nombre: 'drum 808'
+nombre: 'Billie Jean: Drum'
 base: &base 
   clave: 0
   intervalos: [ 
@@ -14,31 +14,31 @@ base: &base
   dinamicas: [ 1 ]
   canal: 9 
 unidades: 
-  test:
-    <<: *base
-    alturas: [ 
-      1,  2,  3,  4 ,  5,  6,  7,  8,  9, 10, 
-     11, 12, 13, 14, 15 , 16, 17, 18, 19, 20, 
-     21, 22, 23, 24, 25,
-    ] 
   a:
     <<: *base
-    alturas: [ 8,8,8,8 ] 
+    alturas: [ 8, 8, 8, 8 ] 
     voces:
       - [1]
       - [-6,0,-1,0]
     duraciones: [ .5 ]
+  test:
+    # Tocar todo el drum-set
+    <<: *base
+    alturas: [ 
+       1,  2,  3,  4 , 5,  6,  7,  8,  9, 10, 
+      11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 
+      21, 22, 23, 24, 25
+    ] 
 macroforma: [
+  'a', 'a',
+  'a', 'a',
+  'a', 'a',
+  'a', 'a',
+  'a', 'a',
+  'a', 'a',
+  'a', 'a',
+  'a', 'a',
   #'test',
-  'a',
-  'a',
-  'a',
-  'a',
-  'a',
-  'a',
-  'a',
-  'a',
-  'a',
 ]
 
 

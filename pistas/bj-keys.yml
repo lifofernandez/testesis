@@ -1,4 +1,4 @@
-nombre: 'Billy Jean: keys'
+nombre: 'Billie Jean: Keys'
 base: &base 
   intervalos: [ 
     -12, -10, -9, -7, -5, -3, -2,
@@ -26,34 +26,10 @@ unidades:
     <<: *base
     alturas: [ 10, 9 ] 
 macroforma: [
-  'a',
-  'b',
-  'a',
-  'b',
-  'a',
-  'b',
-  'a',
-  'b',
-  'a',
-  'b',
-  'a',
-  'b',
-  'a',
-  'b',
-  'a',
-  'b',
-  'a',
-  'b',
-  'a',
-  'b',
-  'a',
-  'b',
-  'a',
-  'b',
-  'a',
-  'b',
-  'a',
-  'b',
+  'a', 'b',
+  'a', 'b',
+  'a', 'b',
+  'a', 'b',
 ]
 
 
