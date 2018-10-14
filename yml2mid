@@ -101,71 +101,92 @@ class Pista:
         # Mix propiedades con unidad referente
         referente = { **uo.parametros , **pisar }
         if uo.unidades:
-          # estudiando: https://www.python.org/doc/essays/graphs/
           referente.setdefault( 'referentes', [] ).insert( 0, str( u ) )
+          referente['referente'] = str( u )
           sequencia += self.secuenciar( uo.unidades, nivel, referente ) 
         # Solo unidades de nivel 0 (no UoU) se secuencian 
         else: 
           # Mix parametros con unidad referente
-          resu = { **uo.parametros, **referente } 
-          unid = str( uo )
-          refe = resu['referentes'] if 'referentes'       in resu else None
-          bpm  = resu['bpm']        if 'bpm'              in resu else 60 
-          cana = resu['canal']      if 'canal'            in resu else 1 
-          prog = resu['programa']   if 'programa'         in resu else None 
-          metr = resu['metro']      if 'metro'            in resu else '4/4'
-          alts = resu['alturas']    if 'alturas'          in resu else [1] 
-          ints = resu['intervalos'] if 'intervalos'       in resu else [1]
-          vozs = resu['voces']      if 'voces'            in resu else None
-          durs = resu['duraciones'] if 'duraciones'       in resu else [1]
-          dins = resu['dinamicas']  if 'dinamicas'        in resu else [1]
-          #octa = resu['octava']     if 'octava'          in resu else 0
-          trar = resu['transportar'] if 'transportar'     in resu else 0
-          ctrs = resu['controladores'] if 'controladores' in resu else [0] 
+          defactos = {
+            'referentes'    : [ None ],
+            'bpm'           : 60,
+            'canal'         : 1,
+            'programa'      : None,
+            'metro'         : '4/4',
+            'alturas'       : [ 1 ],
+            'intervalos'    : [ 1 ],
+            'voces'         : [ [ 0 ] ],
+            #'voces'         : None,
+            'duraciones'    : [ 1 ],
+            'dinamicas'     : [ 1 ],
+            'transportar'   : 0,
+            #'octava'        : 0,
+            'controladores' : [ None ],
+          }
+
+          temp = { **defactos, **uo.parametros } 
+          resultado = { **temp, **referente } 
+
+          unidad = str( uo )
+          print('----'+unidad)
+          pprint.pprint( resultado )
+
+          #for refe in resu['referentes']:
+          #  if refe and ( unidad in paleta[ refe ].unidades ):
+          #    print(refe)
+
+          intervalos = resultado['intervalos']
+          alturas = resultado['alturas']
+          voces = resultado['voces']
+          duraciones = resultado['duraciones']
+          dinamicas = resultado['dinamicas']
+          controladores = resultado['controladores']
+
           candidatos = [ 
-            dins,
-            durs,
-            alts,
-            ctrs,
+            dinamicas,
+            duraciones,
+            alturas,
+            controladores,
+            voces,
           ]
           ganador = max( candidatos, key=len )
           pasos = len( ganador )
           # Combinar parametros: altura, duracion, dinamica, etc
           for paso in range( pasos ):
-            alt  = alts[ paso % len( alts ) ]
-            acor = []
+            duracion  = duraciones[ paso % len( duraciones ) ]
+            dinamica  = dinamicas[ paso % len( dinamicas ) ]
+            controlador  = controladores[ paso % len( controladores ) ]
+            alt  = alturas[ paso % len( alturas ) ]
+            acorde = []
             if alt != 0:
-              # Ajuste relacion altura /puntero intervalo
+              # Ajuste relacion altura / puntero intervalo
               alt = alt - 1
-              nota = ints[ alt % len( ints ) ] + trar
-              if vozs:
-               for voz in vozs:
+              nota = intervalos[ alt % len( intervalos ) ] + resultado['transportar']
+              if voces:
+               for voz in voces:
                  if voz[ paso % len( voz ) ] != 0:
                    fund = alt + ( voz[ paso % len( voz ) ] - 1)
-                   acor += [ ints[ fund % len( ints ) ]  + trar]
+                   acorde += [ intervalos[ fund % len( intervalos ) ]  + resultado['transportar']]
                  else:
-                   acor += [ 'S' ]
+                   acorde += [ 'S' ]
             else:
               # Silencio
               nota = 'S'
-            dura  = durs[ paso % len( durs ) ]
-            dina  = dins[ paso % len( dins ) ]
-            ctrl  = ctrs[ paso % len( ctrs ) ]
             evento = {
               'orden'       : paso,
-              'canal'       : cana,
-              'programa'    : prog,
-              'unidad'      : unid,
-              'referentes'  : refe,
-              'bpm'         : bpm,
-              'metro'       : metr,
+              'unidad'      : unidad,
+              'referentes'  : resultado['referentes'],
+              'canal'       : resultado['canal'],
+              'programa'    : resultado['programa'],
+              'bpm'         : resultado['bpm'],
+              'metro'       : resultado['metro'],
+              'transportar' : resultado['transportar'],
+              #'octava'     : resultado['octava'],
               'altura'      : nota,
-              'acorde'      : acor,
-              'duracion'    : dura,
-              'dinamica'    : dina,
-              #'octava'     : octa,
-              'transportar' : trar,
-              'controlador' : ctrl,
+              'acorde'      : acorde,
+              'duracion'    : duracion,
+              'dinamica'    : dinamica,
+              'controlador' : controlador,
             }
             sequencia.append( evento )
     return sequencia
