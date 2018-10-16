@@ -27,17 +27,30 @@ unidades:
     <<: *a
   pri: 
     <<: *a
+  
+  priSegundo: 
+    <<: *a
 
   Pap: 
     unidades: [ 'hij','her' ] 
   Tio: 
     unidades: [ 'pri']
+
+  TioSegundo: 
+    unidades: [ 'priSegundo']
+
   Abu: 
     unidades: [ 'Pap','Tio' ] 
+  TioAbu: 
+    unidades: [ 'TioSegundo' ] 
 
+  TaTa: 
+    unidades: [ 
+      'Abu',
+      'TioAbu'
+    ] 
 macroforma: [
-  'a',
-  'Abu'
+  'TaTa'
 ]
 
 

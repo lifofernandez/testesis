@@ -94,16 +94,40 @@ class Pista:
     paleta = self.unidades
     nivel += 1
     sequencia = []
+    referente =  pisar 
     for u in unidades:  
       verboseprint( '-' * ( nivel - 1 ) + str( u ) )
       if u in paleta:
         uo = paleta[ u ]
         # Mix propiedades con unidad referente
-        referente = { **uo.parametros , **pisar }
+        mezcla = { **uo.parametros , **referente }
+
         if uo.unidades:
-          referente.setdefault( 'referentes', [] ).insert( 0, str( u ) )
-          referente['referente'] = str( u )
-          sequencia += self.secuenciar( uo.unidades, nivel, referente ) 
+
+          familia = {}
+          temp = {}
+          for r in uo.unidades:
+            temp.setdefault( r, None)
+
+          familia.setdefault( u, temp )
+
+          if 'arbol' in mezcla:
+            for k in mezcla['arbol']:
+             #print(k) 
+             mezcla['arbol'][k] = u
+          else:
+            #mezcla.setdefault( 'arbol', familia )
+            mezcla.setdefault( 'arbol', temp)
+
+
+          
+
+          #mezcla.setdefault( 'arbol', [] ).insert( 0, familia )
+          #mezcla.setdefault( 'falimia', [] ).insert( 0, nodo )
+          #mezcla.setdefault( 'familia', [] ).insert( 0, ramas )
+
+          mezcla['referente'] =  u 
+          sequencia += self.secuenciar( uo.unidades, nivel, mezcla ) 
         # Solo unidades de nivel 0 (no UoU) se secuencian 
         else: 
           # Mix parametros con unidad referente
@@ -129,7 +153,8 @@ class Pista:
 
           unidad = str( uo )
           print('----'+unidad)
-          pprint.pprint( resultado )
+          pprint.pprint(resultado['arbol'])
+          #pprint.pprint( resultado )
 
           #for refe in resu['referentes']:
           #  if refe and ( unidad in paleta[ refe ].unidades ):
@@ -322,7 +347,6 @@ for pista in pistas:
       if referentes and ( 
         previo['referentes'] != referentes 
       ):
-      #if referentes:
         for i,r in enumerate( referentes ):
           st = st + '\n'+ str( r )
 
