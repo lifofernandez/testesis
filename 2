@@ -57,8 +57,6 @@ class Pista:
     self.paleta = paleta
     self.macroforma = macroforma
     self.arbol = {}
-    for r in macroforma:
-      self.arbol.setdefault( r , {})
 
     self.secuencia  = self.secuenciar()
     self.orden = Pista.cantidad 
@@ -106,21 +104,15 @@ class Pista:
         mezcla = { **uo.parametros , **referente }
 
         if uo.unidades:
-          brote = {}
+          brotes = {}
           for r in uo.unidades:
-            brote.setdefault( r, {} )
+            brotes.setdefault( r, None )
 
-          if u in self.arbol:
-            print(u)
-            print(self.arbol[u])
-            for rama in self.arbol[u]:
-              self.arbol[ u ][ rama ] = brote 
-              print( self.arbol[ u ][rama] )
+          for rama in self.arbol:
+              print(rama)
 
-          else:
-            self.arbol[ u ] = brote 
-          #self.arbol.setdefault( u, brote )
-              
+          if u not in self.arbol:
+            self.arbol.setdefault( u, brotes)
 
           mezcla['referente'] = u 
           sequencia += self.secuenciar( uo.unidades, nivel, mezcla ) 

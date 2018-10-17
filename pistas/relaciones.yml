@@ -58,13 +58,15 @@ unidades:
       'Abu',
       'TioAbu'
     ] 
+  TaTi: 
+    unidades: [ 'TaTa' ] 
   otros: 
     unidades: [ 
       'perros',
       'ositos'
     ] 
 macroforma: [
-  'TaTa',
+  'TaTi',
   'otros'
 ]
 
