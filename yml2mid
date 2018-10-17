@@ -104,20 +104,20 @@ class Pista:
 
         if uo.unidades:
 
-          familia = {}
-          temp = {}
+          rama = {}
           for r in uo.unidades:
-            temp.setdefault( r, None)
-
-          familia.setdefault( u, temp )
+            brote =  {}
+            if paleta[r].unidades:
+              for c in paleta[r].unidades:
+                brote.setdefault( c, {})
+            rama.setdefault( r, brote)
 
           if 'arbol' in mezcla:
-            for k in mezcla['arbol']:
-             #print(k) 
-             mezcla['arbol'][k] = u
+            if u in mezcla['arbol']:
+              mezcla['arbol'][u] = rama
           else:
-            #mezcla.setdefault( 'arbol', familia )
-            mezcla.setdefault( 'arbol', temp)
+              mezcla.setdefault( 'arbol', { u : rama })
+              #mezcla.setdefault( 'arbol', rama)
 
 
           

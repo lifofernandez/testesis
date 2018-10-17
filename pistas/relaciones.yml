@@ -31,6 +31,12 @@ unidades:
   priSegundo: 
     <<: *a
 
+  ositos: 
+    <<: *a
+
+  perrito: 
+    <<: *a
+
   Pap: 
     unidades: [ 'hij','her' ] 
   Tio: 
@@ -44,13 +50,22 @@ unidades:
   TioAbu: 
     unidades: [ 'TioSegundo' ] 
 
+  perros: 
+    unidades: [ 'perrito' ] 
+
   TaTa: 
     unidades: [ 
       'Abu',
       'TioAbu'
     ] 
+  otros: 
+    unidades: [ 
+      'perros',
+      'ositos'
+    ] 
 macroforma: [
-  'TaTa'
+  'TaTa',
+  'otros'
 ]
 
 
