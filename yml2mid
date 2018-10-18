@@ -93,10 +93,12 @@ class Pista:
     pisar = {},
   ):
     unidades = unidades if unidades is not None else self.macroforma
-    paleta = self.unidades
     nivel += 1
-    sequencia = []
     referente = pisar 
+
+    sequencia = []
+    paleta = self.unidades
+
     for u in unidades:  
       verboseprint( '-' * ( nivel - 1 ) +  u  )
 
@@ -123,6 +125,7 @@ class Pista:
               
 
           mezcla['referente'] = u 
+          uo.referente = u
           sequencia += self.secuenciar( uo.unidades, nivel, mezcla ) 
         # Solo unidades de nivel 0 (no UoU) se secuencian 
         else: 
@@ -145,6 +148,8 @@ class Pista:
           temp = { **defactos, **uo.parametros } 
           # Mix parametros con unidad referente
           resultado = { **temp, **referente } 
+          if resultado['referente']:
+            uo.referente = resultado['referente']
 
           #unidad = str( uo )
 
@@ -189,7 +194,7 @@ class Pista:
             evento = {
               'orden'       : paso,
               'unidad'      : u,
-              'referentes'  : resultado['referentes'],
+              'referente'   : resultado['referente'],
               'canal'       : resultado['canal'],
               'programa'    : resultado['programa'],
               'bpm'         : resultado['bpm'],
@@ -219,6 +224,7 @@ class Unidad:
   ):
     self.nombre = nombre 
     self.parametros = parametros 
+    self.referente = ''
     self.track = weakref.ref( track )
     Unidad.cantidad += 1
 
@@ -254,7 +260,7 @@ en una Parte para finalmente agregarlas a una Partirtura de Musescore
 """
 opus = MIDIFile( Pista.cantidad ) 
 for pista in pistas:
-  pprint.pprint(pista.arbol)
+  #pprint.pprint(pista.arbol)
   momento = 0
   track = pista.orden
   opus.addTrackName(
@@ -333,12 +339,14 @@ for pista in pistas:
     if ( evento['orden'] == 0 ):
       # TODO mejorar referencias
       st = unidad
-      referentes = evento['referentes'] 
-      if referentes and ( 
-        previo['referentes'] != referentes 
+      if (
+         'referente' in evento
+      ) and ( 
+        previo['referente'] != evento['referente']
       ):
-        for i,r in enumerate( referentes ):
-          st = st + '\n'+ str( r )
+        #for i,r in enumerate( referentes ):
+        st = st + '--\n'+ str( evento['referente'])
+        print(st)
 
       opus.addText(
         track,
