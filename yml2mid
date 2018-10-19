@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import argparse
 import yaml
@@ -6,6 +6,7 @@ import weakref
 import pprint
 import math
 #from music21 import *
+import networkx as nx
 
 from midiutil import MIDIFile
 
@@ -38,6 +39,9 @@ for archivo in args.archivos:
   definiciones.append( yaml.load( data ) )
 verboseprint = print if args.verbosity else lambda *a, **k: None
 salida = args.output
+
+
+G = nx.Graph()
 
 class Pista:
   """
@@ -90,47 +94,28 @@ class Pista:
     self,
     unidades = None,
     nivel = 0,
-    pisar = {},
+    referente = {},
   ):
     unidades = unidades if unidades is not None else self.macroforma
     nivel += 1
-    referente = pisar 
+    #referente = pisar 
 
     sequencia = []
     paleta = self.unidades
 
     for u in unidades:  
       verboseprint( '-' * ( nivel - 1 ) +  u  )
-
+      G.add_node( u )
+      if 'referente' in referente:
+        G.add_node( referente['referente'] )
+        G.add_nodes_from( [ referente['referente'], u ] )
       if u in paleta:
         uo = paleta[ u ]
         # Mix propiedades con unidad referente
-        mezcla = { **uo.parametros , **referente }
 
-        if uo.unidades:
-          brote = {}
-          for r in uo.unidades:
-            brote.setdefault( r, {} )
-
-          if u in self.arbol:
-            print(u)
-            print(self.arbol[u])
-            for rama in self.arbol[u]:
-              self.arbol[ u ][ rama ] = brote 
-              print( self.arbol[ u ][rama] )
-
-          else:
-            self.arbol[ u ] = brote 
-          #self.arbol.setdefault( u, brote )
-              
-
-          mezcla['referente'] = u 
-          uo.referente = u
-          sequencia += self.secuenciar( uo.unidades, nivel, mezcla ) 
-        # Solo unidades de nivel 0 (no UoU) se secuencian 
-        else: 
+        if not uo.unidades:
+          # Solo unidades de nivel 0 (no UoU) se secuencian 
           defactos = {
-            'referentes'    : [ None ],
             'bpm'           : 60,
             'canal'         : 1,
             'programa'      : None,
@@ -145,13 +130,12 @@ class Pista:
             #'octava'        : 0,
             'controladores' : [ None ],
           }
-          temp = { **defactos, **uo.parametros } 
           # Mix parametros con unidad referente
-          resultado = { **temp, **referente } 
-          if resultado['referente']:
-            uo.referente = resultado['referente']
-
-          #unidad = str( uo )
+          resultado = {
+            **defactos,
+            **uo.parametros,
+            **referente
+          } 
 
           intervalos = resultado['intervalos']
           alturas = resultado['alturas']
@@ -170,8 +154,8 @@ class Pista:
 
           ganador = max( candidatos, key=len )
           pasos = len( ganador )
-          # Combinar parametros: altura, duracion, dinamica, etc
           for paso in range( pasos ):
+            # Combinar parametros: altura, duracion, dinamica, etc
             duracion  = duraciones[ paso % len( duraciones ) ]
             dinamica  = dinamicas[ paso % len( dinamicas ) ]
             controlador  = controladores[ paso % len( controladores ) ]
@@ -195,6 +179,7 @@ class Pista:
               'orden'       : paso,
               'unidad'      : u,
               'referente'   : resultado['referente'],
+              #'referentes'  : resultado['referentes'],
               'canal'       : resultado['canal'],
               'programa'    : resultado['programa'],
               'bpm'         : resultado['bpm'],
@@ -208,6 +193,33 @@ class Pista:
               'controlador' : controlador,
             }
             sequencia.append( evento )
+        else: 
+          # Unidades con Unidades
+          ## RELACIONES  
+          #brote = {}
+          #for r in uo.unidades:
+          #  brote.setdefault( r, {} )
+
+          #if u in self.arbol:
+          #  print(u)
+          #  print(self.arbol[u])
+          #  for rama in self.arbol[u]:
+          #    self.arbol[ u ][ rama ] = brote 
+          #    print( self.arbol[ u ][rama] )
+
+          #else:
+          #  self.arbol[ u ] = brote 
+          ##self.arbol.setdefault( u, brote )
+              
+
+          mezcla = { **uo.parametros , **referente }
+          mezcla['referente'] = u 
+          #mezcla.setdefault( 'referentes', [] ).append( u )
+          sequencia += self.secuenciar( 
+            uo.unidades,
+            nivel,
+            mezcla
+          ) 
     return sequencia
 
 class Unidad:
@@ -224,7 +236,6 @@ class Unidad:
   ):
     self.nombre = nombre 
     self.parametros = parametros 
-    self.referente = ''
     self.track = weakref.ref( track )
     Unidad.cantidad += 1
 
@@ -340,12 +351,15 @@ for pista in pistas:
       # TODO mejorar referencias
       st = unidad
       if (
-         'referente' in evento
-      ) and ( 
-        previo['referente'] != evento['referente']
+        'referente' in evento
       ):
-        #for i,r in enumerate( referentes ):
-        st = st + '--\n'+ str( evento['referente'])
+      #) and ( 
+      #  previo['referente'] != evento['referente']
+      #):
+        #for i,r in enumerate( evento['referentes'] ):
+        #  st = st + '\n'+ str( r )
+
+        st =  evento[ 'referente' ]  + '-->' + unidad 
         print(st)
 
       opus.addText(
@@ -392,3 +406,22 @@ Salida
 with open( salida + ".mid", "wb" ) as output_file:
   opus.writeFile( output_file )
 
+import matplotlib.pyplot as plt
+nx.draw(
+ G, 
+ with_labels=True, 
+)
+plt.savefig('prueba.png')
+
+#pprint.pprint(G)
+#G = nx.petersen_graph()
+#plt.savefig('prueba.png')
+#plt.subplot(121)
+#nx.draw(G, with_labels=True, font_weight='bold')
+#plt.subplot(122)
+#nx.draw_shell(G, nlist=[range(5, 10), range(5)], with_labels=True, font_weight='bold')
+#
+#from networkx.drawing.nx_pydot import write_dot
+#pos = nx.nx_agraph.graphviz_layout(G)
+#nx.draw(G, pos=pos)
+#write_dot(G, 'file.dot')

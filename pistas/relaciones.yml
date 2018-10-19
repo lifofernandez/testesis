@@ -25,10 +25,8 @@ unidades:
     <<: *a
   her: 
     <<: *a
+    metro: 2/4
   pri: 
-    <<: *a
-  
-  priSegundo: 
     <<: *a
 
   ositos: 
@@ -38,12 +36,13 @@ unidades:
     <<: *a
 
   Pap: 
+    metro : 4/4
     unidades: [ 'hij','her' ] 
   Tio: 
-    unidades: [ 'pri']
+    unidades: [ 'pri', 'her']
 
   TioSegundo: 
-    unidades: [ 'priSegundo']
+    unidades: [ 'pri']
 
   Abu: 
     unidades: [ 'Pap','Tio' ] 
