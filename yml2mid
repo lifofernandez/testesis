@@ -5,14 +5,11 @@ import yaml
 import weakref
 import pprint
 import math
-#from music21 import *
+from midiutil import MIDIFile
 import networkx as nx
 
-from midiutil import MIDIFile
-
-
 """
-Manejo de argumentos y parametros globales
+Argumentos y parametros globales
 """
 parser = argparse.ArgumentParser()
 parser.add_argument( 
@@ -32,16 +29,23 @@ parser.add_argument(
  default = 'output',
  help = 'Nombre del archivo de salida',
 )
+parser.add_argument( 
+ '-p',
+ '--plot',
+ help = 'Ploteo del arbol de relaciones entre unidades',
+)
 args = parser.parse_args()
+
 definiciones = []
 for archivo in args.archivos:
   data = open( archivo.name, 'r' )
   definiciones.append( yaml.load( data ) )
+
 verboseprint = print if args.verbosity else lambda *a, **k: None
 salida = args.output
 
-
-G = nx.Graph()
+if args.plot:
+  import matplotlib.pyplot as plt
 
 class Pista:
   """
@@ -60,9 +64,8 @@ class Pista:
     self.defaults = defaults
     self.paleta = paleta
     self.macroforma = macroforma
-    self.arbol = {}
-    for r in macroforma:
-      self.arbol.setdefault( r , {})
+
+    self.arbol = nx.OrderedDiGraph()
 
     self.secuencia  = self.secuenciar()
     self.orden = Pista.cantidad 
@@ -77,9 +80,9 @@ class Pista:
       o += l + '\n'
     return o
 
-  # Paleta de Unidades
   @property
   def unidades( self ):
+    # Paleta de Unidades
     unidades = {} 
     for unidad in self.paleta:
       unidades[ unidad ] = Unidad( 
@@ -96,22 +99,24 @@ class Pista:
     nivel = 0,
     referente = {},
   ):
+    #unidades a secuenciar
     unidades = unidades if unidades is not None else self.macroforma
     nivel += 1
     #referente = pisar 
 
     sequencia = []
+    # paleta de unidades de la pista
     paleta = self.unidades
 
     for u in unidades:  
       verboseprint( '-' * ( nivel - 1 ) +  u  )
-      G.add_node( u )
+
+      self.arbol.add_node( u )
       if 'referente' in referente:
-        G.add_node( referente['referente'] )
-        G.add_nodes_from( [ referente['referente'], u ] )
+        self.arbol.add_edge( referente['referente'], u )
+
       if u in paleta:
         uo = paleta[ u ]
-        # Mix propiedades con unidad referente
 
         if not uo.unidades:
           # Solo unidades de nivel 0 (no UoU) se secuencian 
@@ -136,7 +141,6 @@ class Pista:
             **uo.parametros,
             **referente
           } 
-
           intervalos = resultado['intervalos']
           alturas = resultado['alturas']
           voces = resultado['voces']
@@ -194,6 +198,7 @@ class Pista:
             }
             sequencia.append( evento )
         else: 
+
           # Unidades con Unidades
           ## RELACIONES  
           #brote = {}
@@ -214,7 +219,6 @@ class Pista:
 
           mezcla = { **uo.parametros , **referente }
           mezcla['referente'] = u 
-          #mezcla.setdefault( 'referentes', [] ).append( u )
           sequencia += self.secuenciar( 
             uo.unidades,
             nivel,
@@ -232,11 +236,11 @@ class Unidad:
     self,
     nombre,
     parametros,
-    track
+    pista 
   ):
     self.nombre = nombre 
     self.parametros = parametros 
-    self.track = weakref.ref( track )
+    self.pista = weakref.ref( pista )
     Unidad.cantidad += 1
 
   def __str__( self ):
@@ -271,7 +275,16 @@ en una Parte para finalmente agregarlas a una Partirtura de Musescore
 """
 opus = MIDIFile( Pista.cantidad ) 
 for pista in pistas:
-  #pprint.pprint(pista.arbol)
+
+  if args.plot:
+    # TODO mejorar graph
+    pprint.pprint(pista.arbol)
+    nx.draw(
+     pista.arbol, 
+     with_labels = True, 
+    )
+    plt.savefig( pista.nombre + '.png' )
+
   momento = 0
   track = pista.orden
   opus.addTrackName(
@@ -406,18 +419,9 @@ Salida
 with open( salida + ".mid", "wb" ) as output_file:
   opus.writeFile( output_file )
 
-import matplotlib.pyplot as plt
-nx.draw(
- G, 
- with_labels=True, 
-)
-plt.savefig('prueba.png')
 
 #pprint.pprint(G)
-#G = nx.petersen_graph()
-#plt.savefig('prueba.png')
 #plt.subplot(121)
-#nx.draw(G, with_labels=True, font_weight='bold')
 #plt.subplot(122)
 #nx.draw_shell(G, nlist=[range(5, 10), range(5)], with_labels=True, font_weight='bold')
 #
