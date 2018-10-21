@@ -134,6 +134,7 @@ class Pista:
             'transportar'   : 0,
             #'octava'        : 0,
             'controladores' : [ None ],
+            'repeticiones'  : 1,
           }
           # Mix parametros con unidad referente
           resultado = {

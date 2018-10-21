@@ -77,6 +77,10 @@ base: &base !!map
     # No aplicado
     0
 
+  repeticiones: !!int
+    # Catidad de veces q se toca esta unidad 
+    1
+
   dinamicas: !!seq 
    # Lista ordenada de dinámicas
    [ 1, .5, .4 ]
