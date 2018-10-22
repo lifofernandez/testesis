@@ -112,12 +112,11 @@ class Pista:
       verboseprint( '-' * ( nivel - 1 ) +  u  )
 
       self.arbol.add_node( u )
-      if 'referente' in referente:
-        self.arbol.add_edge( referente['referente'], u )
 
       if u in paleta:
         uo = paleta[ u ]
-
+        if 'referente' in referente:
+         self.arbol.add_edge( referente['referente'], u )
         if not uo.unidades:
           # Solo unidades de nivel 0 (no UoU) se secuencian 
           defactos = {
@@ -135,6 +134,7 @@ class Pista:
             #'octava'        : 0,
             'controladores' : [ None ],
             'repeticiones'  : 1,
+            'referente'  : None,
           }
           # Mix parametros con unidad referente
           resultado = {
@@ -199,6 +199,9 @@ class Pista:
             }
             sequencia.append( evento )
         else: 
+          if 'referente' in referente:
+            self.arbol.add_nodes_from( uo.unidades )
+            #self.arbol.add_edges_from( referente['referente'], u )
 
           # Unidades con Unidades
           ## RELACIONES  
@@ -278,9 +281,9 @@ opus = MIDIFile( Pista.cantidad )
 for pista in pistas:
 
   if args.plot:
-    # TODO mejorar graph
-    pprint.pprint(pista.arbol)
-    nx.draw(
+    # TODO mejorar grafico del graph 
+    pprint.pprint( pista.arbol )
+    nx.draw_shell(
      pista.arbol, 
      with_labels = True, 
     )
@@ -363,17 +366,14 @@ for pista in pistas:
         #opus.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
     if ( evento['orden'] == 0 ):
       # TODO mejorar referencias
+      #print( pista.arbol[ unidad ] )
+      print(list( pista.arbol.neighbors(  unidad ) ) )
+
       st = unidad
       if (
         'referente' in evento
       ):
-      #) and ( 
-      #  previo['referente'] != evento['referente']
-      #):
-        #for i,r in enumerate( evento['referentes'] ):
-        #  st = st + '\n'+ str( r )
-
-        st =  evento[ 'referente' ]  + '-->' + unidad 
+        st =  str( evento[ 'referente' ] )  + '-->' + unidad 
         print(st)
 
       opus.addText(
