@@ -66,6 +66,7 @@ class Pista:
     self.macroforma = macroforma
 
     self.arbol = nx.OrderedDiGraph()
+    #self.arbol = nx.DiGraph()
 
     self.secuencia  = self.secuenciar()
     self.orden = Pista.cantidad 
@@ -367,7 +368,7 @@ for pista in pistas:
     if ( evento['orden'] == 0 ):
       # TODO mejorar referencias
       #print( pista.arbol[ unidad ] )
-      print(list( pista.arbol.neighbors(  unidad ) ) )
+      print( nx.ancestors( pista.arbol,unidad ) )
 
       st = unidad
       if (
@@ -429,4 +430,4 @@ with open( salida + ".mid", "wb" ) as output_file:
 #from networkx.drawing.nx_pydot import write_dot
 #pos = nx.nx_agraph.graphviz_layout(G)
 #nx.draw(G, pos=pos)
-#write_dot(G, 'file.dot')
+#WRITE_DOt(G, 'file.dot')
