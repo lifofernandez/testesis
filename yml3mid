@@ -1,0 +1,7 @@
+write_dot(G,'test.dot')
+
+# same layout using matplotlib with no labels
+plt.title('draw_networkx')
+pos =graphviz_layout(G, prog='dot')
+nx.draw(G, pos, with_labels=False, arrows=True)
+plt.savefig('nx_test.png')

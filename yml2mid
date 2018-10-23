@@ -32,7 +32,7 @@ parser.add_argument(
 parser.add_argument( 
  '-p',
  '--plot',
- help = 'Ploteo del arbol de relaciones entre unidades',
+ help = 'Ploteo del arbol de relaciones entre unidades.(dot ó png)',
 )
 args = parser.parse_args()
 
@@ -46,6 +46,8 @@ salida = args.output
 
 if args.plot:
   import matplotlib.pyplot as plt
+  if args.plot == 'dot':
+    from networkx.drawing.nx_agraph import write_dot, graphviz_layout
 
 class Pista:
   """
@@ -116,8 +118,11 @@ class Pista:
 
       if u in paleta:
         uo = paleta[ u ]
+
+        self.arbol.add_node( u )
         if 'referente' in referente:
          self.arbol.add_edge( referente['referente'], u )
+
         if not uo.unidades:
           # Solo unidades de nivel 0 (no UoU) se secuencian 
           defactos = {
@@ -200,8 +205,8 @@ class Pista:
             }
             sequencia.append( evento )
         else: 
-          if 'referente' in referente:
-            self.arbol.add_nodes_from( uo.unidades )
+          #if 'referente' in referente:
+          #  self.arbol.add_nodes_from( uo.unidades )
             #self.arbol.add_edges_from( referente['referente'], u )
 
           # Unidades con Unidades
@@ -284,11 +289,33 @@ for pista in pistas:
   if args.plot:
     # TODO mejorar grafico del graph 
     pprint.pprint( pista.arbol )
-    nx.draw_shell(
-     pista.arbol, 
-     with_labels = True, 
-    )
-    plt.savefig( pista.nombre + '.png' )
+
+    #nx.draw_shell(
+    # pista.arbol, 
+    # with_labels = True, 
+    #)
+    #plt.savefig( pista.nombre + '.png' )
+
+    if args.plot == 'dot':
+      write_dot(
+        pista.arbol,
+        pista.nombre + '.dot'
+      )
+    
+      
+    if args.plot == 'png':
+      plt.title(  pista.nombre )
+      pos = graphviz_layout( 
+        pista.arbol,
+        prog='dot'
+      )
+      nx.draw(
+        pista.arbol,
+        pos,
+        with_labels=True,
+        arrows=True
+      )
+      plt.savefig( pista.nombre + '.png' )
 
   momento = 0
   track = pista.orden
@@ -421,13 +448,3 @@ Salida
 with open( salida + ".mid", "wb" ) as output_file:
   opus.writeFile( output_file )
 
-
-#pprint.pprint(G)
-#plt.subplot(121)
-#plt.subplot(122)
-#nx.draw_shell(G, nlist=[range(5, 10), range(5)], with_labels=True, font_weight='bold')
-#
-#from networkx.drawing.nx_pydot import write_dot
-#pos = nx.nx_agraph.graphviz_layout(G)
-#nx.draw(G, pos=pos)
-#WRITE_DOt(G, 'file.dot')
