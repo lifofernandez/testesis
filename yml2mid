@@ -126,7 +126,7 @@ class Pista:
           self.arbol.add_edge(
             referente['referente'],
             u,
-            weight = nivel
+            #weight = nivel
           )
 
         if not uo.unidades:
