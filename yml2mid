@@ -46,8 +46,10 @@ salida = args.output
 
 if args.plot:
   import matplotlib.pyplot as plt
+  if args.plot == 'png':
+    from networkx.drawing.nx_agraph import graphviz_layout
   if args.plot == 'dot':
-    from networkx.drawing.nx_agraph import write_dot, graphviz_layout
+    from networkx.drawing.nx_agraph import write_dot
 
 class Pista:
   """
@@ -121,7 +123,11 @@ class Pista:
 
         self.arbol.add_node( u )
         if 'referente' in referente:
-         self.arbol.add_edge( referente['referente'], u )
+          self.arbol.add_edge(
+            referente['referente'],
+            u,
+            weight = nivel
+          )
 
         if not uo.unidades:
           # Solo unidades de nivel 0 (no UoU) se secuencian 
@@ -206,8 +212,9 @@ class Pista:
             sequencia.append( evento )
         else: 
           #if 'referente' in referente:
-          #  self.arbol.add_nodes_from( uo.unidades )
             #self.arbol.add_edges_from( referente['referente'], u )
+
+          #self.arbol.add_nodes_from( uo.unidades )
 
           # Unidades con Unidades
           ## RELACIONES  
@@ -287,35 +294,32 @@ opus = MIDIFile( Pista.cantidad )
 for pista in pistas:
 
   if args.plot:
-    # TODO mejorar grafico del graph 
-    pprint.pprint( pista.arbol )
+    # TODO ordenar grafico del graph 
 
-    #nx.draw_shell(
-    # pista.arbol, 
-    # with_labels = True, 
-    #)
-    #plt.savefig( pista.nombre + '.png' )
+    print('#### PLOTEANDO ####')
+    if args.plot == 'png':
+      #pista.arbol.graph_attr['outputorder']='edgesfirst'
+      plt.title(  pista.nombre )
+      pos = graphviz_layout( 
+        pista.arbol,
+        prog = 'dot',
+        #ordering = 'out',
+        args='',
+      )
+      nx.draw(
+        pista.arbol,
+        pos,
+        with_labels = True,
+        arrows = True,
+      )
+      plt.savefig( pista.nombre + '.png' )
 
     if args.plot == 'dot':
       write_dot(
         pista.arbol,
         pista.nombre + '.dot'
       )
-    
       
-    if args.plot == 'png':
-      plt.title(  pista.nombre )
-      pos = graphviz_layout( 
-        pista.arbol,
-        prog='dot'
-      )
-      nx.draw(
-        pista.arbol,
-        pos,
-        with_labels=True,
-        arrows=True
-      )
-      plt.savefig( pista.nombre + '.png' )
 
   momento = 0
   track = pista.orden
