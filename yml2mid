@@ -65,17 +65,14 @@ class Pista:
     macroforma,
   ):
     self.nombre = nombre
+    self.orden = Pista.cantidad 
+    self.uid = self.nombre + str(self.orden)
     self.defaults = defaults
     self.paleta = paleta
     self.macroforma = macroforma
-
     self.arbol = nx.OrderedDiGraph()
-    #self.arbol = nx.DiGraph()
-
     self.secuencia  = self.secuenciar()
-    self.orden = Pista.cantidad 
     Pista.cantidad += 1
-
     verboseprint( '\n#### ', self.nombre, ' ####' )
 
   def __str__( self ):
@@ -108,28 +105,28 @@ class Pista:
     unidades = unidades if unidades is not None else self.macroforma
     nivel += 1
     #referente = pisar 
-
     sequencia = []
     # paleta de unidades de la pista
     paleta = self.unidades
 
-    for u in unidades:  
+    for i, u in enumerate( unidades ):  
       verboseprint( '-' * ( nivel - 1 ) +  u  )
-
-      self.arbol.add_node( u )
 
       if u in paleta:
         uo = paleta[ u ]
-
-        self.arbol.add_node( u )
-        if 'referente' in referente:
-          self.arbol.add_edge(
-            referente['referente'],
-            u,
-            #weight = nivel
-          )
+        #if 'referente' in referente:
+        #  self.arbol.add_edge(
+        #    referente['referente'],
+        #    u,
+        #    #weight = nivel
+        #  )
 
         if not uo.unidades:
+          self.arbol.add_node( 
+            u + str( uo.repeticion ),
+            #etiqueta = str( nivel ),
+            #label = str( nivel ),
+          )
           # Solo unidades de nivel 0 (no UoU) se secuencian 
           defactos = {
             'bpm'           : 60,
@@ -239,8 +236,9 @@ class Pista:
           sequencia += self.secuenciar( 
             uo.unidades,
             nivel,
-            mezcla
+            mezcla,
           ) 
+          
     return sequencia
 
 class Unidad:
@@ -249,6 +247,7 @@ class Unidad:
   TO DO: pasar a dataclass
   """
   cantidad = 0
+  registro = []
   def __init__( 
     self,
     nombre,
@@ -258,8 +257,10 @@ class Unidad:
     self.nombre = nombre 
     self.parametros = parametros 
     self.pista = weakref.ref( pista )
+    Unidad.orden = Unidad.cantidad
     Unidad.cantidad += 1
-
+    self.uid = self.nombre + str( self.orden )
+    self.repeticion = 0 
   def __str__( self ):
     return self.nombre
 
@@ -271,6 +272,14 @@ class Unidad:
   def unidades( self ):
     if 'unidades' in self.parametros:
       return self.parametros['unidades']
+    else: 
+      if self.nombre in Unidad.registro:
+        self.repeticion = Unidad.registro.count( self.nombre ) 
+      Unidad.registro.append( self.nombre )
+      print( self.nombre )
+      print( self.repeticion )
+      print( Unidad.registro )
+
       
 """
 Carga de pistas a partir de las definiciones
@@ -399,7 +408,9 @@ for pista in pistas:
     if ( evento['orden'] == 0 ):
       # TODO mejorar referencias
       #print( pista.arbol[ unidad ] )
-      print( nx.ancestors( pista.arbol,unidad ) )
+      #uo = pista.unidades[ unidad ] 
+
+      #print( nx.ancestors( pista.arbol, unidad + str( uo.orden ) ) )
 
       st = unidad
       if (
