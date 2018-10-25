@@ -2,7 +2,7 @@
 
 import argparse
 import yaml
-#import weakref
+import weakref
 import pprint
 import math
 from midiutil import MIDIFile
@@ -70,19 +70,11 @@ class Pista:
     self.defaults = defaults
     self.paleta = paleta
     self.macroforma = macroforma
-    
-    self.registro = []
-
-    self.raices = nx.OrderedDiGraph()
-    self.raices.add_nodes_from( self.macroforma )
-
-    self.ramaje = nx.OrderedDiGraph()
+    self.ramaje= nx.OrderedDiGraph()
     self.copa = nx.OrderedDiGraph()
-
     self.arbol = nx.OrderedDiGraph()
-    self.arbol.add_nodes_from( self.copa )
-    self.arbol.add_nodes_from( self.ramaje )
-
+    self.arbol.add_nodes_from(copa)
+    self.arbol.add_nodes_from(ramaje)
     self.secuencia  = self.secuenciar()
     Pista.cantidad += 1
     verboseprint( '\n#### ', self.nombre, ' ####' )
@@ -218,9 +210,6 @@ class Pista:
             }
             sequencia.append( evento )
         else: 
-          self.ramaje.add_node( 
-            uo.uid,
-          )
           mezcla = { 
             **uo.parametros,
             **referente
@@ -240,6 +229,7 @@ class Unidad:
   TO DO: pasar a dataclass
   """
   cantidad = 0
+  registro = []
   def __init__( 
     self,
     nombre,
@@ -248,8 +238,7 @@ class Unidad:
   ):
     self.nombre = nombre 
     self.parametros = parametros 
-    #self.pesta = weakref.ref( pista )
-    self.pista = pista 
+    self.pista = weakref.ref( pista )
     Unidad.orden = Unidad.cantidad
     Unidad.cantidad += 1
     self.uid = self.nombre + str( self.orden )
@@ -266,12 +255,12 @@ class Unidad:
     if 'unidades' in self.parametros:
       return self.parametros['unidades']
     else: 
-      if self.nombre in self.pista.registro:
-        self.repeticion = self.pista.registro.count( self.nombre ) 
-      self.pista.registro.append( self.nombre )
+      if self.nombre in Unidad.registro:
+        self.repeticion = Unidad.registro.count( self.nombre ) 
+      Unidad.registro.append( self.nombre )
       print( self.nombre )
       print( self.repeticion )
-      print( self.pista.registro )
+      print( Unidad.registro )
 
       
 """
@@ -297,17 +286,19 @@ for pista in pistas:
 
   if args.plot:
     # TODO ordenar grafico del graph 
+
     print('#### PLOTEANDO ####')
     if args.plot == 'png':
+      #pista.arbol.graph_attr['outputorder']='edgesfirst'
       plt.title(  pista.nombre )
       pos = graphviz_layout( 
-        pista.copa,
+        pista.arbol,
         prog = 'dot',
         #ordering = 'out',
         args='',
       )
       nx.draw(
-        pista.copa,
+        pista.arbol,
         pos,
         with_labels = True,
         arrows = True,
@@ -316,9 +307,10 @@ for pista in pistas:
 
     if args.plot == 'dot':
       write_dot(
-        pista.copa,
+        pista.arbol,
         pista.nombre + '.dot'
       )
+      
 
   momento = 0
   track = pista.orden
