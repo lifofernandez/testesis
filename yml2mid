@@ -76,10 +76,8 @@ class Pista:
 
     self.raices = nx.OrderedDiGraph()
     self.raices.add_nodes_from( self.macroforma )
-
     self.ramaje = nx.OrderedDiGraph()
     self.copa = nx.OrderedDiGraph()
-
     self.arbol = nx.OrderedDiGraph()
     self.arbol.add_nodes_from( self.copa )
     self.arbol.add_nodes_from( self.ramaje )
@@ -127,7 +125,6 @@ class Pista:
       verboseprint( '-' * ( nivel - 1 ) +  u  )
 
       if u in paleta:
-        self.registros.setdefault(nivel,[]).append(u)
         uo = paleta[ u ]
         #if 'referente' in referente:
         #  self.arbol.add_edge(
@@ -221,6 +218,8 @@ class Pista:
             }
             sequencia.append( evento )
         else: 
+          self.registros.setdefault( nivel, [] ).append( u )
+          #pprint.pprint(self.registros[nivel])
           self.ramaje.add_node( 
             uo.uid,
           )
@@ -257,6 +256,7 @@ class Unidad:
     Unidad.cantidad += 1
     self.uid = self.nombre + str( self.orden )
     self.repeticion = 0 
+
   def __str__( self ):
     return self.nombre
 
@@ -274,8 +274,8 @@ class Unidad:
       self.pista.registro.append( self.nombre )
       print( self.nombre )
       print( self.repeticion )
+      pprint.pprint( self.pista.registros )
       print( self.pista.registro )
-      print( self.pista.registros )
       print( '\n')
 
       
