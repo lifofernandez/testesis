@@ -72,6 +72,7 @@ class Pista:
     self.macroforma = macroforma
     
     self.registro = []
+    self.registros = {}
 
     self.raices = nx.OrderedDiGraph()
     self.raices.add_nodes_from( self.macroforma )
@@ -120,11 +121,13 @@ class Pista:
     sequencia = []
     # paleta de unidades de la pista
     paleta = self.unidades
+    
 
     for i, u in enumerate( unidades ):  
       verboseprint( '-' * ( nivel - 1 ) +  u  )
 
       if u in paleta:
+        self.registros.setdefault(nivel,[]).append(u)
         uo = paleta[ u ]
         #if 'referente' in referente:
         #  self.arbol.add_edge(
@@ -272,6 +275,8 @@ class Unidad:
       print( self.nombre )
       print( self.repeticion )
       print( self.pista.registro )
+      print( self.pista.registros )
+      print( '\n')
 
       
 """
