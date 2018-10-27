@@ -22,14 +22,14 @@ unidades:
     <<: *base
     alturas: [ 7, 5, 4, 5 ] 
 macroforma: [
-  'a', 'b',
-  'a', 'b',
-  'a', 'b',
-  'a', 'b',
-  'a', 'b',
-  'a', 'b',
-  'a', 'b',
-  'a', 'b',
+  'a',
+  'a',
+  'a',
+  'a',
+  'a',
+  'a',
+  'a',
+  'a',
 ]
 
 

@@ -71,16 +71,13 @@ class Pista:
     self.paleta = paleta
     self.macroforma = macroforma
     
-    self.registro = []
     self.registros = {}
+    self.registro = []
 
-    self.raices = nx.OrderedDiGraph()
-    self.raices.add_nodes_from( self.macroforma )
-    self.ramaje = nx.OrderedDiGraph()
-    self.copa = nx.OrderedDiGraph()
+
     self.arbol = nx.OrderedDiGraph()
-    self.arbol.add_nodes_from( self.copa )
-    self.arbol.add_nodes_from( self.ramaje )
+    self.arbol.add_nodes_from( self.registro)
+    self.copa = nx.OrderedDiGraph()
 
     self.secuencia  = self.secuenciar()
     Pista.cantidad += 1
@@ -220,7 +217,7 @@ class Pista:
         else: 
           self.registros.setdefault( nivel, [] ).append( u )
           #pprint.pprint(self.registros[nivel])
-          self.ramaje.add_node( 
+          self.arbol.add_node( 
             uo.uid,
           )
           mezcla = { 
