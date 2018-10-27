@@ -75,12 +75,16 @@ class Pista:
     self.registro = []
 
 
-    self.arbol = nx.OrderedDiGraph()
-    self.arbol.add_nodes_from( self.registro)
-    self.copa = nx.OrderedDiGraph()
 
     self.secuencia  = self.secuenciar()
     Pista.cantidad += 1
+
+    self.arbol = nx.OrderedDiGraph()
+    for r in self.registros:
+      self.arbol.add_nodes_from( self.registros[r] )
+    self.arbol.add_nodes_from( self.registro )
+    #self.copa = nx.OrderedDiGraph()
+
     verboseprint( '\n#### ', self.nombre, ' ####' )
 
   def __str__( self ):
@@ -131,9 +135,11 @@ class Pista:
         #  )
 
         if not uo.unidades:
-          self.copa.add_node( 
-            uo.uid,
-          )
+          if uo.nombre in self.registro:
+             uo.repeticion = self.registro.count(  uo.nombre ) 
+             #uo.uid = uo.nombre + str( self.repeticion)
+          self.registro.append(uo.nombre )
+          self.registros.setdefault('copa', []).append(uo.nombre )
           # Solo unidades de nivel 0 (no UoU) se secuencian 
           defactos = {
             'bpm'           : 60,
@@ -190,7 +196,7 @@ class Pista:
                for voz in voces:
                  if voz[ paso % len( voz ) ] != 0:
                    fund = alt + ( voz[ paso % len( voz ) ] - 1)
-                   acorde += [ intervalos[ fund % len( intervalos ) ]  + resultado['transportar']]
+                   acorde += [ intervalos[ fund % len( intervalos ) ]  + resultado['transportar'] ]
                  else:
                    acorde += [ 'S' ]
             else:
@@ -216,10 +222,6 @@ class Pista:
             sequencia.append( evento )
         else: 
           self.registros.setdefault( nivel, [] ).append( u )
-          #pprint.pprint(self.registros[nivel])
-          self.arbol.add_node( 
-            uo.uid,
-          )
           mezcla = { 
             **uo.parametros,
             **referente
@@ -251,8 +253,9 @@ class Unidad:
     self.pista = pista 
     Unidad.orden = Unidad.cantidad
     Unidad.cantidad += 1
-    self.uid = self.nombre + str( self.orden )
     self.repeticion = 0 
+    self.uid = self.nombre + str( self.orden ) 
+    self.rid = self.nombre 
 
   def __str__( self ):
     return self.nombre
@@ -264,11 +267,11 @@ class Unidad:
   @property
   def unidades( self ):
     if 'unidades' in self.parametros:
-      return self.parametros['unidades']
+      return self.parametros[ 'unidades' ]
     else: 
       if self.nombre in self.pista.registro:
         self.repeticion = self.pista.registro.count( self.nombre ) 
-      self.pista.registro.append( self.nombre )
+        self.rid = self.nombre + str( self.repeticion )
       print( self.nombre )
       print( self.repeticion )
       pprint.pprint( self.pista.registros )
@@ -298,28 +301,29 @@ opus = MIDIFile( Pista.cantidad )
 for pista in pistas:
 
   if args.plot:
-    # TODO ordenar grafico del graph 
+
     print('#### PLOTEANDO ####')
+    # TODO ordenar grafico del graph 
     if args.plot == 'png':
       plt.title(  pista.nombre )
       pos = graphviz_layout( 
-        pista.copa,
+        pista.arbol,
         prog = 'dot',
         #ordering = 'out',
         args='',
       )
       nx.draw(
-        pista.copa,
+        pista.arbol,
         pos,
         with_labels = True,
         arrows = True,
       )
-      plt.savefig( pista.nombre + '.png' )
+      plt.savefig( pista.nombre.lower() + '.png' )
 
     if args.plot == 'dot':
       write_dot(
-        pista.copa,
-        pista.nombre + '.dot'
+        pista.arbol,
+        pista.nombre.lower() + '.dot'
       )
 
   momento = 0
