@@ -89,6 +89,13 @@ class Pista:
     self.paleta = paleta # paleta de unidades, no objetadas todavia
     self.macroforma = macroforma
     self.registros = {}
+    self.unidades = {} 
+    for unidad in self.paleta:
+      self.unidades[ unidad ] = Unidad( 
+        unidad, #nombre
+        self.paleta[ unidad ], # propiedades de la unidad 
+        self,
+      )
     self.secuencia  = self.secuenciar()
 
     pprint.pprint( self.registros )
@@ -115,18 +122,6 @@ class Pista:
       o += l + '\n'
     return o
 
-  @property
-  def unidades( self ):
-    # Paleta de Unidades
-    unidades = {} 
-    for unidad in self.paleta:
-      unidades[ unidad ] = Unidad( 
-        unidad, #nombre
-        self.paleta[ unidad ], # propiedades de la unidad 
-        self,
-      )
-    return unidades
-
   # Genera una secuencia a partir de unidades/parametros
   def secuenciar( 
     self,
@@ -147,7 +142,7 @@ class Pista:
 
         if not uo.unidades:
           # Solo unidades de nivel 0 (no UoU) se secuencian 
-          self.registros.setdefault( 'copa', [] ).append( uo.nombre )
+          self.registros.setdefault( 'copa', [] ).append( uo.uid)
           # Mix parametros con unidad referente
           resultado = {
             **Pista.defactos,
@@ -211,7 +206,7 @@ class Pista:
             }
             sequencia.append( evento )
         else: 
-          self.registros.setdefault( nivel, [] ).append( uo.nombre )
+          self.registros.setdefault( nivel, [] ).append( uo.uid)
           mezcla = { 
             **uo.parametros,
             **referente
@@ -248,8 +243,8 @@ class Unidad:
     self.uid = self.nombre + str( self.orden ) 
     self.etiqueta = self.uid
     # TODO contar repeticiones en todos los niveles
-    self.repeticion = self.pista.registros['copa'].count( self.nombre ) if 'copa' in self.pista.registros else 0 
-    self.rid = self.nombre + str( self.repeticion )
+    #self.repeticion = self.pista.registros['copa'].count( self.nombre ) if 'copa' in self.pista.registros else 0 
+    #self.rid = self.nombre + str( self.repeticion )
 
   def __str__( self ):
     return self.nombre
@@ -284,7 +279,6 @@ en una Parte para finalmente agregarlas a una Partirtura de Musescore
 """
 opus = MIDIFile( Pista.cantidad ) 
 for pista in pistas:
-
   if args.plot:
     print('#### PLOTEANDO ####')
     # TODO ordenar grafico del graph 
@@ -402,12 +396,9 @@ for pista in pistas:
         momento,
         st
       )
-    #altura = evento['altura']
-    # ARREGLAR PROBLEMA CON VOCES, si no tiene voces no suena
-    voces = [ evento['altura'] ]
-
-    if evento['acorde']:
-      voces = evento['acorde']
+    # altura = evento['altura']
+    # ARREGLAR RELACION ENTRE VOZ de ACORDE y ALTURA 
+    voces = evento['acorde'] if evento['acorde'] else [ evento['altura'] ]
 
     duracion = evento['duracion'] 
     dinamica = int( evento['dinamica'] * 126 )

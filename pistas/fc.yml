@@ -46,7 +46,6 @@ unidades:
   A`: 
     unidades: [ 'a' , 'b`' ]
   B: 
-    metro: 4/4
     unidades: [ 'a`', 'a``' ] 
   A``: 
     unidades: [ 'a```', 'b`' ] 
