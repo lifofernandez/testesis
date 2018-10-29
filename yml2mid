@@ -51,45 +51,60 @@ if args.plot:
   if args.plot == 'dot':
     from networkx.drawing.nx_agraph import write_dot
 
+
 class Pista:
   """
   Clase para cada track a partir de archivos.yml
   """
   cantidad = 0 
+  defactos = {
+    'bpm'           : 60,
+    'canal'         : 1,
+    'programa'      : None,
+    'metro'         : '4/4',
+    'alturas'       : [ 1 ],
+    'intervalos'    : [ 1 ],
+    'voces'         : None,
+    'duraciones'    : [ 1 ],
+    'dinamicas'     : [ 1 ],
+    'transportar'   : 0,
+    #'octava'        : 0,
+    'controladores' : [ None ],
+    'repeticiones'  : 1,
+    'referente'  : None,
+  }
  
   def __init__( 
     self,
     nombre,
-    defaults,
+    base,
     paleta,
     macroforma,
   ):
     self.nombre = nombre
     self.orden = Pista.cantidad 
-    self.uid = self.nombre + str( self.orden )
-    self.defaults = defaults
-    self.paleta = paleta
-    self.macroforma = macroforma
-    
-    self.registros = {}
-
-    self.secuencia  = self.secuenciar()
     Pista.cantidad += 1
+    self.uid = self.nombre + str( self.orden )
+    self.base = base
+    self.paleta = paleta # paleta de unidades, no objetadas todavia
+    self.macroforma = macroforma
+    self.registros = {}
+    self.secuencia  = self.secuenciar()
 
-    pprint.pprint(self.registros)
+    pprint.pprint( self.registros )
 
     # encapsular
     self.arbol = nx.OrderedDiGraph()
     for r in self.registros:
-      registrar = self.registros[ r ]
-      R = [] 
-      for u in registrar:
+      registro = self.registros[ r ]
+      NODOS = [] 
+      RELACIONES = [] 
+      for u in registro:
           if u in self.paleta:
            uo = self.unidades[ u ]
-           R.append( uo.rid )
-      self.arbol.add_nodes_from( R )
-    #self.arbol.add_nodes_from( self.registro )
-    #self.copa = nx.OrderedDiGraph()
+           NODOS.append( uo.rid )
+
+      self.arbol.add_nodes_from( NODOS )
 
     verboseprint( '\n#### ', self.nombre, ' ####' )
 
@@ -106,10 +121,9 @@ class Pista:
     unidades = {} 
     for unidad in self.paleta:
       unidades[ unidad ] = Unidad( 
-        unidad, 
-        self.paleta[ unidad ], 
+        unidad, #nombre
+        self.paleta[ unidad ], # propiedades de la unidad 
         self,
-        0,
       )
     return unidades
 
@@ -123,47 +137,20 @@ class Pista:
     #unidades a secuenciar
     unidades = unidades if unidades is not None else self.macroforma
     nivel += 1
-    #referente = pisar 
     sequencia = []
-    # paleta de unidades de la pista
-    paleta = self.unidades
-    
 
     for i, u in enumerate( unidades ):  
       verboseprint( '-' * ( nivel - 1 ) +  u  )
 
-      if u in paleta:
-        uo = paleta[ u ]
-        #if 'referente' in referente:
-        #  self.arbol.add_edge(
-        #    referente['referente'],
-        #    u,
-        #    #weight = nivel
-        #  )
+      if u in self.unidades:
+        uo = self.unidades[ u ]
 
         if not uo.unidades:
-          self.registros.setdefault( 'copa', [] ).append( uo.nombre )
           # Solo unidades de nivel 0 (no UoU) se secuencian 
-          defactos = {
-            'bpm'           : 60,
-            'canal'         : 1,
-            'programa'      : None,
-            'metro'         : '4/4',
-            'alturas'       : [ 1 ],
-            'intervalos'    : [ 1 ],
-            'voces'         : [ [ 0 ] ],
-            #'voces'         : None,
-            'duraciones'    : [ 1 ],
-            'dinamicas'     : [ 1 ],
-            'transportar'   : 0,
-            #'octava'        : 0,
-            'controladores' : [ None ],
-            'repeticiones'  : 1,
-            'referente'  : None,
-          }
+          self.registros.setdefault( 'copa', [] ).append( uo.nombre )
           # Mix parametros con unidad referente
           resultado = {
-            **defactos,
+            **Pista.defactos,
             **uo.parametros,
             **referente
           } 
@@ -173,17 +160,15 @@ class Pista:
           duraciones = resultado['duraciones']
           dinamicas = resultado['dinamicas']
           controladores = resultado['controladores']
-
           candidatos = [ 
             dinamicas,
             duraciones,
             alturas,
             controladores,
-            voces,
           ]
-
           ganador = max( candidatos, key=len )
           pasos = len( ganador )
+
           for paso in range( pasos ):
             # Combinar parametros: altura, duracion, dinamica, etc
             duracion  = duraciones[ paso % len( duraciones ) ]
@@ -191,17 +176,19 @@ class Pista:
             controlador  = controladores[ paso % len( controladores ) ]
             alt  = alturas[ paso % len( alturas ) ]
             acorde = []
+
             if alt != 0:
               # Ajuste relacion altura / puntero intervalo
               alt = alt - 1
               nota = intervalos[ alt % len( intervalos ) ] + resultado['transportar']
+
               if voces:
-               for voz in voces:
-                 if voz[ paso % len( voz ) ] != 0:
-                   fund = alt + ( voz[ paso % len( voz ) ] - 1)
-                   acorde += [ intervalos[ fund % len( intervalos ) ]  + resultado['transportar'] ]
-                 else:
-                   acorde += [ 'S' ]
+                for voz in voces:
+                  if voz[ paso % len( voz ) ] != 0:
+                    fund = alt + ( voz[ paso % len( voz ) ] - 1 )
+                    acorde += [ intervalos[ fund % len( intervalos ) ]  + resultado[ 'transportar' ] ]
+                  else:
+                    acorde += [ 'S' ]
             else:
               # Silencio
               nota = 'S'
@@ -229,7 +216,7 @@ class Pista:
             **uo.parametros,
             **referente
           }
-          mezcla['referente'] = u 
+          mezcla['referente'] = uo.uid 
           sequencia += self.secuenciar( 
             uo.unidades,
             nivel,
@@ -244,21 +231,23 @@ class Unidad:
   TO DO: pasar a dataclass
   """
   cantidad = 0
+
   def __init__( 
     self,
     nombre,
     parametros,
-    pista, # Pista a la que pertenese esta unidad
-    nivel = 0, # Capa en la que es invocada esta unidad
+    pista, 
   ):
     self.nombre = nombre 
     self.parametros = parametros 
+    self._referentes = []
     #self.pesta = weakref.ref( pista )
     self.pista = pista 
     Unidad.orden = Unidad.cantidad
     Unidad.cantidad += 1
     self.uid = self.nombre + str( self.orden ) 
     self.etiqueta = self.uid
+    # TODO contar repeticiones en todos los niveles
     self.repeticion = self.pista.registros['copa'].count( self.nombre ) if 'copa' in self.pista.registros else 0 
     self.rid = self.nombre + str( self.repeticion )
 
@@ -270,13 +259,6 @@ class Unidad:
   def unidades( self ):
     if 'unidades' in self.parametros:
       return self.parametros[ 'unidades' ]
-    else: 
-      #if self.nombre in self.pista.registro:
-      print( self.nombre )
-      print( self.repeticion )
-      #pprint.pprint( self.pista.registros )
-      #print( self.pista.registro )
-      print( '-----')
 
   def mostrar_cantidad( self ):
     print( "Cantidad de Unidades: %d" % Unidad.cantidad )
@@ -304,9 +286,9 @@ opus = MIDIFile( Pista.cantidad )
 for pista in pistas:
 
   if args.plot:
-
     print('#### PLOTEANDO ####')
     # TODO ordenar grafico del graph 
+
     if args.plot == 'png':
       plt.title(  pista.nombre )
       pos = graphviz_layout( 
@@ -339,7 +321,7 @@ for pista in pistas:
   opus.addTempo(
     track,
     momento,
-    pista.defaults['bpm']
+    pista.base['bpm']
   )
   """
   Time Signature event
@@ -347,7 +329,7 @@ for pista in pistas:
   The denominator is a negative power of two: log10( X ) / log10( 2 ) 
   2 represents a quarter-note, 3 represents an eighth-note, etc.
   """
-  numerador, denominador = pista.defaults['metro'].split( '/' )
+  numerador, denominador = pista.base['metro'].split( '/' )
   denominador = int( math.log10( int( denominador ) ) / math.log10( 2 ) )
   relojes_por_tick = 12 * denominador
   notas_por_negra = 8
@@ -360,12 +342,12 @@ for pista in pistas:
     notas_por_negra
   )
 
-  if 'programa' in pista.defaults:
+  if 'programa' in pista.base:
     opus.addProgramChange(
       track,
-      pista.defaults['canal'],
+      pista.base['canal'],
       momento, 
-      pista.defaults['programa']
+      pista.base['programa']
     )
   for index, evento in enumerate( pista.secuencia ):
     evento = pista.secuencia[ index ]
@@ -405,10 +387,7 @@ for pista in pistas:
         )
         #opus.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
     if ( evento['orden'] == 0 ):
-      # TODO mejorar referencias
-      #print( pista.arbol[ unidad ] )
-      #uo = pista.unidades[ unidad ] 
-
+      uo = pista.unidades[ unidad ] 
       #print( nx.ancestors( pista.arbol, unidad + str( uo.orden ) ) )
 
       st = unidad
@@ -423,14 +402,16 @@ for pista in pistas:
         momento,
         st
       )
-
     #altura = evento['altura']
+    # ARREGLAR PROBLEMA CON VOCES, si no tiene voces no suena
     voces = [ evento['altura'] ]
+
     if evento['acorde']:
       voces = evento['acorde']
 
     duracion = evento['duracion'] 
     dinamica = int( evento['dinamica'] * 126 )
+
     for voz in voces:
       altura = voz 
       if voz == 'S':

@@ -15,6 +15,7 @@ base: &base
   dinamicas: [ 1 ]
   canal: 1
   programa: 1
+
 unidades: 
   espera:
     alturas: [ 0 ] 
@@ -45,6 +46,7 @@ unidades:
   A`: 
     unidades: [ 'a' , 'b`' ]
   B: 
+    metro: 4/4
     unidades: [ 'a`', 'a``' ] 
   A``: 
     unidades: [ 'a```', 'b`' ] 
