@@ -102,15 +102,15 @@ class Pista:
 
     # encapsular
     self.arbol = nx.OrderedDiGraph()
-    #for r in self.registros:
-    #  registro = self.registros[ r ]
-    #  NODOS = [] 
-    #  RELACIONES = [] 
-    #  for u in registro:
-    #    uo = self.unidades[ u ]
-    #    NODOS.append( u )
-    #  self.arbol.add_nodes_from( NODOS )
-    #  pprint.pprint( self.arbol )
+    for r in self.registros:
+      registro = self.registros[ r ]
+      NODOS = [] 
+      RELACIONES = [] 
+      for u in registro:
+        uo = self.unidades[ u ]
+        NODOS.append( uo )
+      self.arbol.add_nodes_from( NODOS )
+      pprint.pprint( self.arbol )
 
     verboseprint( '\n#### ', self.nombre, ' ####' )
 
@@ -141,12 +141,7 @@ class Pista:
 
         if not uo.unidades:
           # Solo unidades de nivel 0 (no UoU) se secuencian 
-          repeticion = sum([ 1 for o in self.registros['copa'] if uo.nombre in o]) if 'copa' in self.registros else 0 
-          print( repeticion )
-
-          registro = { uo.nombre : repeticion }
-          self.registros.setdefault( 'copa', [] ).append( registro  )
-          #print(registro.keys())
+          self.registros.setdefault( 'copa', [] ).append( uo.nombre )
 
           #*estosepuede sacar de aca
           # Mix parametros con unidad referente
@@ -248,14 +243,14 @@ class Unidad:
     Unidad.orden = Unidad.cantidad
     Unidad.cantidad += 1
     self.uid = str( self.orden ) + self.nombre 
+    self.etiqueta = self.uid
 
-    #if self.nombre in self.pista.unidades:
-    #  self.repeticion += 1
-    #else:
-    #  self.repeticion = 0
-    #pprint.pprint( self.repeticion )
+    if self.nombre in self.pista.unidades:
+      self.repeticion += 1
+    else:
+      self.repeticion = 0
+    pprint.pprint( self.repeticion )
     #self.repeticion = self.pista['unidades'].count( self.nombre ) if 'unidades' in self.pista else 0 
-    #self.repeticion = self.pista.registros['copa'].count( self.nombre ) if 'copa' in self.pista.registros else 0 
 
     #self.rid = self.nombre + str( self.repeticion )
 
