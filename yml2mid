@@ -102,15 +102,16 @@ class Pista:
 
     # encapsular
     self.arbol = nx.OrderedDiGraph()
-    #for r in self.registros:
-    #  registro = self.registros[ r ]
-    #  NODOS = [] 
-    #  RELACIONES = [] 
-    #  for u in registro:
-    #    uo = self.unidades[ u ]
-    #    NODOS.append( u )
-    #  self.arbol.add_nodes_from( NODOS )
-    #  pprint.pprint( self.arbol )
+    for r in self.registros:
+      registro = self.registros[ r ]
+      NODOS = [] 
+      RELACIONES = [] 
+      for u in registro:
+        #uo = self.unidades[ u ]
+        NODOS.append( u ) 
+      #print(NODOS)
+      #self.arbol.add_nodes_from( NODOS )
+      #pprint.pprint( self.arbol )
 
     verboseprint( '\n#### ', self.nombre, ' ####' )
 
@@ -141,20 +142,23 @@ class Pista:
 
         if not uo.unidades:
           # Solo unidades de nivel 0 (no UoU) se secuencian 
-          repeticion = sum([ 1 for o in self.registros['copa'] if uo.nombre in o]) if 'copa' in self.registros else 0 
-          print( repeticion )
 
-          registro = { uo.nombre : repeticion }
-          self.registros.setdefault( 'copa', [] ).append( registro  )
-          #print(registro.keys())
-
-          #*estosepuede sacar de aca
           # Mix parametros con unidad referente
           resultado = {
             **Pista.defactos,
             **uo.parametros,
             **referente
           } 
+
+          repeticion = sum( [ 1 for o in self.registros[ 'copa' ] if o['nombre'] is uo.nombre ]) if 'copa' in self.registros else 0 
+          registro = { 
+            'nombre'   : uo.nombre,
+            'repeticion' : repeticion,
+            'nivel'      : nivel,
+            'referente'  : resultado['referente'] if 'referente' in resultado else None
+          }
+          self.registros.setdefault( 'copa', [] ).append( registro  )
+
           intervalos = resultado['intervalos']
           alturas = resultado['alturas']
           voces = resultado['voces']
@@ -172,9 +176,9 @@ class Pista:
 
           for paso in range( pasos ):
             # Combinar parametros: altura, duracion, dinamica, etc
-            duracion  = duraciones[ paso % len( duraciones ) ]
-            dinamica  = dinamicas[ paso % len( dinamicas ) ]
-            controlador  = controladores[ paso % len( controladores ) ]
+            duracion = duraciones[ paso % len( duraciones ) ]
+            dinamica = dinamicas[ paso % len( dinamicas ) ]
+            controlador = controladores[ paso % len( controladores ) ]
             alt  = alturas[ paso % len( alturas ) ]
             acorde = []
 
@@ -191,8 +195,7 @@ class Pista:
                   else:
                     acorde += [ 'S' ]
             else:
-              # Silencio
-              nota = 'S'
+              nota = 'S' # Silencio
             evento = {
               'orden'       : paso,
               'unidad'      : u,
@@ -212,19 +215,25 @@ class Pista:
             }
             sequencia.append( evento )
         else: 
-          self.registros.setdefault( nivel, [] ).append( uo.nombre )
-
-          mezcla = { 
+          resultado = { 
             **uo.parametros,
             **referente
           }
-          mezcla['referente'] = uo.uid 
+          repeticion = sum( [ 1 for o in self.registros[ nivel ] if o['nombre'] is uo.nombre ]) if nivel in self.registros else 0 
+          registro = { 
+            'nombre'   : uo.nombre,
+            'repeticion' : repeticion,
+            'nivel'      : nivel,
+            'referente'  : resultado['referente'] if 'referente' in resultado else None
+          }
+          self.registros.setdefault( nivel , [] ).append( registro )
+
+          resultado['referente'] = registro 
           sequencia += self.secuenciar( 
             uo.unidades,
             nivel,
-            mezcla,
+            resultado,
           ) 
-          
     return sequencia
 
 class Unidad:
