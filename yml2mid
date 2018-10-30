@@ -84,7 +84,7 @@ class Pista:
     self.nombre = nombre
     self.orden = Pista.cantidad 
     Pista.cantidad += 1
-    self.uid = self.nombre + str( self.orden )
+    self.uid = str( self.orden ) + self.nombre 
     self.base = base
     self.paleta = paleta # paleta de unidades, no objetadas todavia
     self.macroforma = macroforma
@@ -142,7 +142,7 @@ class Pista:
 
         if not uo.unidades:
           # Solo unidades de nivel 0 (no UoU) se secuencian 
-          self.registros.setdefault( 'copa', [] ).append( uo.uid)
+          self.registros.setdefault( 'copa', [] ).append( uo.uid )
           # Mix parametros con unidad referente
           resultado = {
             **Pista.defactos,
@@ -240,7 +240,7 @@ class Unidad:
     self.pista = pista 
     Unidad.orden = Unidad.cantidad
     Unidad.cantidad += 1
-    self.uid = self.nombre + str( self.orden ) 
+    self.uid = str( self.orden ) + self.nombre 
     self.etiqueta = self.uid
     # TODO contar repeticiones en todos los niveles
     #self.repeticion = self.pista.registros['copa'].count( self.nombre ) if 'copa' in self.pista.registros else 0 

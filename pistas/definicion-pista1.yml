@@ -33,6 +33,11 @@ base: &base !!map
     # cada elemento equivale a el n de intervalo
     [ 1, 3, 5, 8 ] 
 
+  revertir:
+    # reorganizar un parametro del tipo !!seq
+    # no AplicadoO
+    parametro: 'alturas'
+
   voces: !!seq
     # Apilamiento de alturas 
     # cada voz es un lista
@@ -78,6 +83,7 @@ base: &base !!map
     0
 
   repeticiones: !!int
+    # No aplicado
     # Catidad de veces q se toca esta unidad 
     1
 
