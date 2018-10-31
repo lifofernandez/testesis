@@ -82,7 +82,7 @@ base: &base !!map
     # No aplicado
     0
 
-  repeticiones: !!int
+  reiterar: !!int
     # No aplicado
     # Catidad de veces q se toca esta unidad 
     1

@@ -70,8 +70,8 @@ class Pista:
     'transportar'   : 0,
     #'octava'        : 0,
     'controladores' : [ None ],
-    'repeticiones'  : 1,
-    'referente'  : None,
+    'reiterar'      : 0,
+    'referente'     : None,
   }
  
   def __init__( 
@@ -86,10 +86,11 @@ class Pista:
     Pista.cantidad += 1
     self.uid = str( self.orden ) + self.nombre 
     self.base = base
-    self.paleta = paleta # paleta de unidades, no objetadas todavia
+    self.paleta = paleta # paleta de unidades, no objetos todavia
     self.macroforma = macroforma
     self.registros = {}
     self.unidades = {} 
+
     for unidad in self.paleta:
       self.unidades[ unidad ] = Unidad( 
         unidad, #nombre
@@ -127,12 +128,13 @@ class Pista:
     self,
     unidades = None,
     nivel = 0,
-    referente = {},
+    herencia = {},
   ):
     #unidades a secuenciar
     unidades = unidades if unidades is not None else self.macroforma
     nivel += 1
     sequencia = []
+    herencia.pop( 'unidades', None )
 
     for i, u in enumerate( unidades ):  
       verboseprint( '-' * ( nivel - 1 ) +  u  )
@@ -143,22 +145,24 @@ class Pista:
         if not uo.unidades:
           # Solo unidades de nivel 0 (no UoU) se secuencian 
 
-          # Mix parametros con unidad referente
+          reiteracion = sum( 
+            [ 1 for o in self.registros[ 'copa' ] if o['nombre'] is uo.nombre ]
+          ) if 'copa' in self.registros else 0 
+          registro = { 
+            'nombre'     : uo.nombre,
+            'reiteracion' : reiteracion,
+            'nivel'      : nivel,
+            'referente'  : herencia['referente'] if 'referente' in  herencia else None
+          }
           resultado = {
             **Pista.defactos,
             **uo.parametros,
-            **referente
+            **herencia,
+            **registro
           } 
+          self.registros.setdefault( 'copa', [] ).append( resultado )
 
-          repeticion = sum( [ 1 for o in self.registros[ 'copa' ] if o['nombre'] is uo.nombre ]) if 'copa' in self.registros else 0 
-          registro = { 
-            'nombre'   : uo.nombre,
-            'repeticion' : repeticion,
-            'nivel'      : nivel,
-            'referente'  : resultado['referente'] if 'referente' in resultado else None
-          }
-          self.registros.setdefault( 'copa', [] ).append( registro  )
-
+          # Creacion de Eventos (considerar sacar/encapsular)
           intervalos = resultado['intervalos']
           alturas = resultado['alturas']
           voces = resultado['voces']
@@ -214,21 +218,26 @@ class Pista:
               'controlador' : controlador,
             }
             sequencia.append( evento )
+            # Termina creacion de Eventos
+
         else: 
           resultado = { 
             **uo.parametros,
-            **referente
+            **herencia
           }
-          repeticion = sum( [ 1 for o in self.registros[ nivel ] if o['nombre'] is uo.nombre ]) if nivel in self.registros else 0 
+          reiteracion = sum( 
+            [ 1 for o in self.registros[ nivel ] if o['nombre'] is uo.nombre ]
+          ) if nivel in self.registros else 0 
           registro = { 
-            'nombre'   : uo.nombre,
-            'repeticion' : repeticion,
-            'nivel'      : nivel,
-            'referente'  : resultado['referente'] if 'referente' in resultado else None
+            'nombre'      : uo.nombre,
+            'reiteracion' : reiteracion,
+            'nivel'       : nivel,
+            'referente'   : resultado['referente'] if 'referente' in resultado else None
           }
           self.registros.setdefault( nivel , [] ).append( registro )
 
           resultado['referente'] = registro 
+
           sequencia += self.secuenciar( 
             uo.unidades,
             nivel,
@@ -259,14 +268,14 @@ class Unidad:
     self.uid = str( self.orden ) + self.nombre 
 
     #if self.nombre in self.pista.unidades:
-    #  self.repeticion += 1
+    #  self.reiteracion += 1
     #else:
-    #  self.repeticion = 0
-    #pprint.pprint( self.repeticion )
-    #self.repeticion = self.pista['unidades'].count( self.nombre ) if 'unidades' in self.pista else 0 
-    #self.repeticion = self.pista.registros['copa'].count( self.nombre ) if 'copa' in self.pista.registros else 0 
+    #  self.reiteracion = 0
+    #pprint.pprint( self.reiteracion )
+    #self.reiteracion = self.pista['unidades'].count( self.nombre ) if 'unidades' in self.pista else 0 
+    #self.reiteracion = self.pista.registros['copa'].count( self.nombre ) if 'copa' in self.pista.registros else 0 
 
-    #self.rid = self.nombre + str( self.repeticion )
+    #self.rid = self.nombre + str( self.reiteracion )
 
   def __str__( self ):
     return self.nombre
@@ -365,6 +374,7 @@ for pista in pistas:
       momento, 
       pista.base['programa']
     )
+
   for index, evento in enumerate( pista.secuencia ):
     evento = pista.secuencia[ index ]
     verboseprint( evento )
