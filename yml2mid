@@ -91,13 +91,15 @@ class Pista:
     self.registros = {}
     self.unidades = {} 
 
-    for unidad in self.paleta:
-      self.unidades[ unidad ] = Unidad( 
-        unidad, #nombre
-        self.paleta[ unidad ], # propiedades de la unidad 
-        self,
-      )
-    self.secuencia  = self.secuenciar()
+    #for unidad in self.paleta:
+    #  self.unidades[ unidad ] = Unidad( 
+    #    unidad, #nombre
+    #    self.paleta[ unidad ], # propiedades de la unidad 
+    #    self,
+    #  )
+    #self.secuencia  = self.secuenciar()
+    self.secuencia  = [] 
+    self.secuenciar()
 
     pprint.pprint( self.registros )
 
@@ -133,162 +135,109 @@ class Pista:
     #unidades a secuenciar
     unidades = unidades if unidades is not None else self.macroforma
     nivel += 1
-    sequencia = []
+    #sequencia = []
     herencia.pop( 'unidades', None )
 
     for i, u in enumerate( unidades ):  
       verboseprint( '-' * ( nivel - 1 ) +  u  )
-
-      if u in self.unidades:
-        uo = self.unidades[ u ]
-
-        if not uo.unidades:
-          # Solo unidades de nivel 0 (no UoU) se secuencian 
-
+      if u in self.paleta:
+        uo = self.paleta[ u ]
+        if 'unidades' not in uo:
           reiteracion = sum( 
-            [ 1 for o in self.registros[ 'copa' ] if o['nombre'] is uo.nombre ]
+            [ 1 for o in self.registros[ 'copa' ] if o['nombre'] is u ]
           ) if 'copa' in self.registros else 0 
           registro = { 
-            'nombre'     : uo.nombre,
+            'nombre'     : u,
             'reiteracion' : reiteracion,
             'nivel'      : nivel,
             'referente'  : herencia['referente'] if 'referente' in  herencia else None
           }
           resultado = {
             **Pista.defactos,
-            **uo.parametros,
+            **uo,
             **herencia,
             **registro
           } 
           self.registros.setdefault( 'copa', [] ).append( resultado )
 
-          # Creacion de Eventos (considerar sacar/encapsular)
-          intervalos = resultado['intervalos']
-          alturas = resultado['alturas']
-          voces = resultado['voces']
-          duraciones = resultado['duraciones']
-          dinamicas = resultado['dinamicas']
-          controladores = resultado['controladores']
-          candidatos = [ 
-            dinamicas,
-            duraciones,
-            alturas,
-            controladores,
-          ]
-          ganador = max( candidatos, key=len )
-          pasos = len( ganador )
+      #    # Creacion de Eventos ( encapsular y volar de aca)
+      #    intervalos = resultado['intervalos']
+      #    alturas = resultado['alturas']
+      #    voces = resultado['voces']
+      #    duraciones = resultado['duraciones']
+      #    dinamicas = resultado['dinamicas']
+      #    controladores = resultado['controladores']
+      #    candidatos = [ 
+      #      dinamicas,
+      #      duraciones,
+      #      alturas,
+      #      controladores,
+      #    ]
+      #    ganador = max( candidatos, key=len )
+      #    pasos = len( ganador )
 
-          for paso in range( pasos ):
-            # Combinar parametros: altura, duracion, dinamica, etc
-            duracion = duraciones[ paso % len( duraciones ) ]
-            dinamica = dinamicas[ paso % len( dinamicas ) ]
-            controlador = controladores[ paso % len( controladores ) ]
-            alt  = alturas[ paso % len( alturas ) ]
-            acorde = []
+      #    for paso in range( pasos ):
+      #      # Combinar parametros: altura, duracion, dinamica, etc
+      #      duracion = duraciones[ paso % len( duraciones ) ]
+      #      dinamica = dinamicas[ paso % len( dinamicas ) ]
+      #      controlador = controladores[ paso % len( controladores ) ]
+      #      alt  = alturas[ paso % len( alturas ) ]
+      #      acorde = []
 
-            if alt != 0:
-              # Ajuste relacion altura / puntero intervalo
-              alt = alt - 1
-              nota = intervalos[ alt % len( intervalos ) ] + resultado['transportar']
+      #      if alt != 0:
+      #        # Ajuste relacion altura / puntero intervalo
+      #        alt = alt - 1
+      #        nota = intervalos[ alt % len( intervalos ) ] + resultado['transportar']
 
-              if voces:
-                for voz in voces:
-                  if voz[ paso % len( voz ) ] != 0:
-                    fund = alt + ( voz[ paso % len( voz ) ] - 1 )
-                    acorde += [ intervalos[ fund % len( intervalos ) ]  + resultado[ 'transportar' ] ]
-                  else:
-                    acorde += [ 'S' ]
-            else:
-              nota = 'S' # Silencio
-            evento = {
-              'orden'       : paso,
-              'unidad'      : u,
-              'referente'   : resultado['referente'],
-              #'referentes'  : resultado['referentes'],
-              'canal'       : resultado['canal'],
-              'programa'    : resultado['programa'],
-              'bpm'         : resultado['bpm'],
-              'metro'       : resultado['metro'],
-              'transportar' : resultado['transportar'],
-              #'octava'     : resultado['octava'],
-              'altura'      : nota,
-              'acorde'      : acorde,
-              'duracion'    : duracion,
-              'dinamica'    : dinamica,
-              'controlador' : controlador,
-            }
-            sequencia.append( evento )
-            # Termina creacion de Eventos
+      #        if voces:
+      #          for voz in voces:
+      #            if voz[ paso % len( voz ) ] != 0:
+      #              fund = alt + ( voz[ paso % len( voz ) ] - 1 )
+      #              acorde += [ intervalos[ fund % len( intervalos ) ]  + resultado[ 'transportar' ] ]
+      #            else:
+      #              acorde += [ 'S' ]
+      #      else:
+      #        nota = 'S' # Silencio
+      #      evento = {
+      #        'orden'       : paso,
+      #        'unidad'      : u,
+      #        'referente'   : resultado[ 'referente' ],
+      #        'canal'       : resultado[ 'canal' ],
+      #        'programa'    : resultado[ 'programa' ],
+      #        'bpm'         : resultado[ 'bpm' ],
+      #        'metro'       : resultado[ 'metro' ],
+      #        'transportar' : resultado[ 'transportar' ],
+      #        #'octava'     : resultado[ 'octava' ],
+      #        'altura'      : nota,
+      #        'acorde'      : acorde,
+      #        'duracion'    : duracion,
+      #        'dinamica'    : dinamica,
+      #        'controlador' : controlador,
+      #      }
+      #      sequencia.append( evento )
+      #      # Termina creacion de Eventos
 
         else: 
           resultado = { 
-            **uo.parametros,
+            **uo,
             **herencia
           }
           reiteracion = sum( 
-            [ 1 for o in self.registros[ nivel ] if o['nombre'] is uo.nombre ]
+            [ 1 for o in self.registros[ nivel ] if o['nombre'] is u ]
           ) if nivel in self.registros else 0 
           registro = { 
-            'nombre'      : uo.nombre,
+            'nombre'      : u,
             'reiteracion' : reiteracion,
             'nivel'       : nivel,
             'referente'   : resultado['referente'] if 'referente' in resultado else None
           }
           self.registros.setdefault( nivel , [] ).append( registro )
-
           resultado['referente'] = registro 
-
-          sequencia += self.secuenciar( 
-            uo.unidades,
+          self.secuenciar( 
+            uo['unidades'],
             nivel,
             resultado,
           ) 
-    return sequencia
-
-class Unidad:
-  """
-  Clase para las unidades de cada track
-  TO DO: pasar a dataclass
-  """
-  cantidad = 0
-
-  def __init__( 
-    self,
-    nombre,
-    parametros,
-    pista, 
-  ):
-    self.nombre = nombre 
-    self.parametros = parametros 
-    self._referentes = []
-    #self.pesta = weakref.ref( pista )
-    self.pista = pista 
-    Unidad.orden = Unidad.cantidad
-    Unidad.cantidad += 1
-    self.uid = str( self.orden ) + self.nombre 
-
-    #if self.nombre in self.pista.unidades:
-    #  self.reiteracion += 1
-    #else:
-    #  self.reiteracion = 0
-    #pprint.pprint( self.reiteracion )
-    #self.reiteracion = self.pista['unidades'].count( self.nombre ) if 'unidades' in self.pista else 0 
-    #self.reiteracion = self.pista.registros['copa'].count( self.nombre ) if 'copa' in self.pista.registros else 0 
-
-    #self.rid = self.nombre + str( self.reiteracion )
-
-  def __str__( self ):
-    return self.nombre
-
-  # Unidad de Unidades
-  @property
-  def unidades( self ):
-    if 'unidades' in self.parametros:
-      return self.parametros[ 'unidades' ]
-
-  def mostrar_cantidad( self ):
-    print( "Cantidad de Unidades: %d" % Unidad.cantidad )
-
       
 """
 Carga de pistas a partir de las definiciones
