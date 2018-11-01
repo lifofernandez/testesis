@@ -247,6 +247,20 @@ for d in definiciones:
   )
   pistas.append( pista )
 
+def referi(
+    analizar,
+    o = []
+    ):
+    r = analizar['referente'] if 'referente' in analizar else None
+    n = analizar[ 'nombre' ] if 'nombre' in analizar else None
+    l = analizar[ 'nivel' ] if 'nivel' in analizar else None
+    #o.setdefault([l] = n
+    if r:
+        referi( r, o )
+    else:
+      print('---')
+    print( str( l ) + ':' + n  )
+
 """
 Loop principal:
 Recorre cada pista y partir de su secuencia genera Notas o Silencios que agrupa
@@ -358,11 +372,9 @@ for pista in pistas:
       #print( nx.ancestors( pista.arbol, unidad + str( uo.orden ) ) )
 
       st = unidad
-      if (
-        'referente' in evento
-      ):
-        #st =  str( evento[ 'referente' ] )  + '-->' + unidad 
-        st =  unidad 
+      if ( 'referente' in evento ):
+        referi( evento[ 'referente' ] )  
+        st = 'e:' +  unidad 
         print(st)
 
       opus.addText(
