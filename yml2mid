@@ -89,17 +89,9 @@ class Pista:
     self.paleta = paleta # paleta de unidades, no objetos todavia
     self.macroforma = macroforma
     self.registros = {}
-    self.unidades = {} 
-
-    #for unidad in self.paleta:
-    #  self.unidades[ unidad ] = Unidad( 
-    #    unidad, #nombre
-    #    self.paleta[ unidad ], # propiedades de la unidad 
-    #    self,
-    #  )
-    #self.secuencia  = self.secuenciar()
     self.secuencia  = [] 
-    self.secuenciar()
+    self.ordenar()
+
 
     pprint.pprint( self.registros )
 
@@ -125,17 +117,15 @@ class Pista:
       o += l + '\n'
     return o
 
-  # Genera una secuencia a partir de unidades/parametros
-  def secuenciar( 
+  def ordenar( 
     self,
     unidades = None,
     nivel = 0,
     herencia = {},
   ):
-    #unidades a secuenciar
+    # Organiza unidades según relaciones de referencia
     unidades = unidades if unidades is not None else self.macroforma
     nivel += 1
-    #sequencia = []
     herencia.pop( 'unidades', None )
 
     for i, u in enumerate( unidades ):  
@@ -147,10 +137,10 @@ class Pista:
             [ 1 for o in self.registros[ 'copa' ] if o['nombre'] is u ]
           ) if 'copa' in self.registros else 0 
           registro = { 
-            'nombre'     : u,
+            'nombre'      : u,
             'reiteracion' : reiteracion,
-            'nivel'      : nivel,
-            'referente'  : herencia['referente'] if 'referente' in  herencia else None
+            'nivel'       : nivel,
+            'referente'   : herencia['referente'] if 'referente' in  herencia else None
           }
           resultado = {
             **Pista.defactos,
@@ -159,66 +149,9 @@ class Pista:
             **registro
           } 
           self.registros.setdefault( 'copa', [] ).append( resultado )
-
-      #    # Creacion de Eventos ( encapsular y volar de aca)
-      #    intervalos = resultado['intervalos']
-      #    alturas = resultado['alturas']
-      #    voces = resultado['voces']
-      #    duraciones = resultado['duraciones']
-      #    dinamicas = resultado['dinamicas']
-      #    controladores = resultado['controladores']
-      #    candidatos = [ 
-      #      dinamicas,
-      #      duraciones,
-      #      alturas,
-      #      controladores,
-      #    ]
-      #    ganador = max( candidatos, key=len )
-      #    pasos = len( ganador )
-
-      #    for paso in range( pasos ):
-      #      # Combinar parametros: altura, duracion, dinamica, etc
-      #      duracion = duraciones[ paso % len( duraciones ) ]
-      #      dinamica = dinamicas[ paso % len( dinamicas ) ]
-      #      controlador = controladores[ paso % len( controladores ) ]
-      #      alt  = alturas[ paso % len( alturas ) ]
-      #      acorde = []
-
-      #      if alt != 0:
-      #        # Ajuste relacion altura / puntero intervalo
-      #        alt = alt - 1
-      #        nota = intervalos[ alt % len( intervalos ) ] + resultado['transportar']
-
-      #        if voces:
-      #          for voz in voces:
-      #            if voz[ paso % len( voz ) ] != 0:
-      #              fund = alt + ( voz[ paso % len( voz ) ] - 1 )
-      #              acorde += [ intervalos[ fund % len( intervalos ) ]  + resultado[ 'transportar' ] ]
-      #            else:
-      #              acorde += [ 'S' ]
-      #      else:
-      #        nota = 'S' # Silencio
-      #      evento = {
-      #        'orden'       : paso,
-      #        'unidad'      : u,
-      #        'referente'   : resultado[ 'referente' ],
-      #        'canal'       : resultado[ 'canal' ],
-      #        'programa'    : resultado[ 'programa' ],
-      #        'bpm'         : resultado[ 'bpm' ],
-      #        'metro'       : resultado[ 'metro' ],
-      #        'transportar' : resultado[ 'transportar' ],
-      #        #'octava'     : resultado[ 'octava' ],
-      #        'altura'      : nota,
-      #        'acorde'      : acorde,
-      #        'duracion'    : duracion,
-      #        'dinamica'    : dinamica,
-      #        'controlador' : controlador,
-      #      }
-      #      sequencia.append( evento )
-      #      # Termina creacion de Eventos
-
+          self.secuenciar( resultado ) 
         else: 
-          resultado = { 
+          sucesion = { 
             **uo,
             **herencia
           }
@@ -229,26 +162,88 @@ class Pista:
             'nombre'      : u,
             'reiteracion' : reiteracion,
             'nivel'       : nivel,
-            'referente'   : resultado['referente'] if 'referente' in resultado else None
+            'referente'   : sucesion[ 'referente' ] if 'referente' in  sucesion else None
           }
           self.registros.setdefault( nivel , [] ).append( registro )
-          resultado['referente'] = registro 
-          self.secuenciar( 
-            uo['unidades'],
+          sucesion[ 'referente' ] = registro 
+          self.ordenar( 
+            uo[ 'unidades' ],
             nivel,
-            resultado,
+            sucesion,
           ) 
-      
+
+  def secuenciar( 
+    self,
+    resultado
+  ):
+    # Genera una secuencia a partir de unidades procesadas
+    intervalos    = resultado[ 'intervalos' ]
+    alturas       = resultado[ 'alturas' ]
+    voces         = resultado[ 'voces' ]
+    duraciones    = resultado[ 'duraciones' ]
+    dinamicas     = resultado[ 'dinamicas' ]
+    controladores = resultado[ 'controladores' ]
+    candidatos = [ 
+      dinamicas,
+      duraciones,
+      alturas,
+      controladores,
+    ]
+    ganador = max( candidatos, key=len )
+    pasos = len( ganador )
+ 
+    for paso in range( pasos ):
+      # Combinar parametros: altura, duracion, dinamica, etc
+      duracion = duraciones[ paso % len( duraciones ) ]
+      dinamica = dinamicas[ paso % len( dinamicas ) ]
+      controlador = controladores[ paso % len( controladores ) ]
+      alt  = alturas[ paso % len( alturas ) ]
+      acorde = []
+ 
+      if alt != 0:
+        # Ajuste relacion altura / puntero intervalo
+        alt = alt - 1
+        nota = intervalos[ alt % len( intervalos ) ] + resultado['transportar']
+ 
+        if voces:
+          for voz in voces:
+            if voz[ paso % len( voz ) ] != 0:
+              # TODO revisar relacion: voz / puntero intervalo
+              fund = alt + ( voz[ paso % len( voz ) ] - 1 )
+              acorde += [ intervalos[ fund % len( intervalos ) ]  + resultado[ 'transportar' ] ]
+            else:
+              acorde += [ 'S' ]
+      else:
+        nota = 'S' # Silencio
+      evento = {
+        'orden'       : paso,
+        'unidad'      : resultado[ 'nombre' ],
+        'referente'   : resultado[ 'referente' ],
+        'canal'       : resultado[ 'canal' ],
+        'programa'    : resultado[ 'programa' ],
+        'bpm'         : resultado[ 'bpm' ],
+        'metro'       : resultado[ 'metro' ],
+        'transportar' : resultado[ 'transportar' ],
+        'altura'      : nota,
+        'acorde'      : acorde,
+        'duracion'    : duracion,
+        'dinamica'    : dinamica,
+        'controlador' : controlador,
+      }
+      self.secuencia.append( evento )
+
+
+
 """
 Carga de pistas a partir de las definiciones
 """
 pistas = []
 for d in definiciones:
   pista = Pista(
-    d['nombre'],
-    d['base'],
-    d['unidades'],
-    d['macroforma'],
+    d[ 'nombre' ],
+    d[ 'base' ],
+    d[ 'unidades' ],
+    d[ 'macroforma' ],
   )
   pistas.append( pista )
 
@@ -261,15 +256,12 @@ opus = MIDIFile( Pista.cantidad )
 for pista in pistas:
   if args.plot:
     print('#### PLOTEANDO ####')
-    # TODO ordenar grafico del graph 
-
     if args.plot == 'png':
       plt.title(  pista.nombre )
       pos = graphviz_layout( 
         pista.arbol,
         prog = 'dot',
-        #ordering = 'out',
-        args='',
+        args = '',
       )
       nx.draw(
         pista.arbol,
@@ -362,14 +354,15 @@ for pista in pistas:
         )
         #opus.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
     if ( evento['orden'] == 0 ):
-      uo = pista.unidades[ unidad ] 
+      uo = pista.paleta[ unidad ] 
       #print( nx.ancestors( pista.arbol, unidad + str( uo.orden ) ) )
 
       st = unidad
       if (
         'referente' in evento
       ):
-        st =  str( evento[ 'referente' ] )  + '-->' + unidad 
+        #st =  str( evento[ 'referente' ] )  + '-->' + unidad 
+        st =  unidad 
         print(st)
 
       opus.addText(
