@@ -238,9 +238,9 @@ def referir(
   refs,
   oi = None,
   ):
-  referente = refs['referente'] if 'referente' in refs else None
-  nombre    = refs[ 'nombre' ] if 'nombre' in refs else None
-  nivel     = refs[ 'nivel' ] if 'nivel' in refs else None
+  referente = refs[ 'referente' ]  if 'referente' in refs else None
+  nombre    = refs[ 'nombre' ]     if 'nombre'    in refs else None
+  nivel     = refs[ 'nivel' ]      if 'nivel'     in refs else None
   output    = oi if oi is not None else [ None ] * nivel 
   output[ nivel - 1 ] = nombre
   if referente:
