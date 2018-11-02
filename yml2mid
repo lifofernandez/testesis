@@ -6,7 +6,6 @@ import yaml
 import pprint
 import math
 from midiutil import MIDIFile
-import networkx as nx
 
 """
 Argumentos y parametros globales
@@ -45,6 +44,7 @@ verboseprint = print if args.verbosity else lambda *a, **k: None
 salida = args.output
 
 if args.plot:
+  import networkx as nx
   import matplotlib.pyplot as plt
   if args.plot == 'png':
     from networkx.drawing.nx_agraph import graphviz_layout
@@ -96,16 +96,16 @@ class Pista:
     pprint.pprint( self.registros )
 
     # encapsular
-    self.arbol = nx.OrderedDiGraph()
-    for r in self.registros:
-      registro = self.registros[ r ]
-      NODOS = [] 
-      RELACIONES = [] 
-      for u in registro:
-        #uo = self.unidades[ u ]
-        NODOS.append( u ) 
-      #print(NODOS)
-      #self.arbol.add_nodes_from( NODOS )
+#    self.arbol = nx.OrderedDiGraph()
+#    for r in self.registros:
+#      registro = self.registros[ r ]
+#      NODOS = [] 
+#      RELACIONES = [] 
+#      for u in registro:
+#        #uo = self.unidades[ u ]
+#        NODOS.append( u ) 
+#      #print(NODOS)
+#      #self.arbol.add_nodes_from( NODOS )
       #pprint.pprint( self.arbol )
 
     verboseprint( '\n#### ', self.nombre, ' ####' )
@@ -234,6 +234,19 @@ class Pista:
 
 
 
+def referir(
+  refs,
+  oi = None,
+  ):
+  referente = refs['referente'] if 'referente' in refs else None
+  nombre    = refs[ 'nombre' ] if 'nombre' in refs else None
+  nivel     = refs[ 'nivel' ] if 'nivel' in refs else None
+  output    = oi if oi is not None else [ None ] * nivel 
+  output[ nivel - 1 ] = nombre
+  if referente:
+    referir( referente, output )
+  return output
+
 """
 Carga de pistas a partir de las definiciones
 """
@@ -246,20 +259,6 @@ for d in definiciones:
     d[ 'macroforma' ],
   )
   pistas.append( pista )
-
-def referi(
-    analizar,
-    o = []
-    ):
-    r = analizar['referente'] if 'referente' in analizar else None
-    n = analizar[ 'nombre' ] if 'nombre' in analizar else None
-    l = analizar[ 'nivel' ] if 'nivel' in analizar else None
-    #o.setdefault([l] = n
-    if r:
-        referi( r, o )
-    else:
-      print('---')
-    print( str( l ) + ':' + n  )
 
 """
 Loop principal:
@@ -373,8 +372,9 @@ for pista in pistas:
 
       st = unidad
       if ( 'referente' in evento ):
-        referi( evento[ 'referente' ] )  
-        st = 'e:' +  unidad 
+        rs = referir( evento[ 'referente' ] )  
+        print( rs )
+        st = 'u: ' +  unidad 
         print(st)
 
       opus.addText(
