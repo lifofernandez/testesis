@@ -56,7 +56,7 @@ unidades:
     unidades: [ 'mama' ] 
 
   abuelo: 
-    unidades: [ 'papa','tio' ] 
+    unidades: [ 'papa','tio','papa' ]
   tioAbuelo: 
     unidades: [ 'tioSegundo' ] 
 

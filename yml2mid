@@ -133,14 +133,23 @@ class Pista:
       if u in self.paleta:
         uo = self.paleta[ u ]
         if 'unidades' not in uo:
-          reiteracion = sum( 
-            [ 1 for o in self.registros[ 'copa' ] if o['nombre'] is u ]
+          recurrencia = sum( 
+            [ 1 for o in self.registros[ 'copa' ] if o['nombre'] == u ]
           ) if 'copa' in self.registros else 0 
+
+          #### @ł@đł@€đ€ł@đł€đ #### 
+          #if 'copa' in self.registros:
+          ##  print(  o for o in self.registros[ 'copa' ] )
+          #  for o in self.registros[ 'copa' ]:
+          #    if o['nombre'] == u:
+          #      print( o['nombre'] + '---->' + u )
+          ##  #print( sum( [ 1 for o in self.registros[ 'copa' ] if o['nombre'] is u ] ) )
+
           registro = { 
             'nombre'      : u,
-            'reiteracion' : reiteracion,
+            'recurrencia' : recurrencia,
             'nivel'       : nivel,
-            'referente'   : herencia['referente'] if 'referente' in  herencia else None
+            'referente'   : herencia['referente'] if 'referente' in herencia else None
           }
           resultado = {
             **Pista.defactos,
@@ -155,12 +164,12 @@ class Pista:
             **uo,
             **herencia
           }
-          reiteracion = sum( 
-            [ 1 for o in self.registros[ nivel ] if o['nombre'] is u ]
+          recurrencia = sum( 
+            [ 1 for o in self.registros[ nivel ] if o['nombre'] == u ]
           ) if nivel in self.registros else 0 
           registro = { 
             'nombre'      : u,
-            'reiteracion' : reiteracion,
+            'recurrencia' : recurrencia,
             'nivel'       : nivel,
             'referente'   : sucesion[ 'referente' ] if 'referente' in  sucesion else None
           }
@@ -174,15 +183,15 @@ class Pista:
 
   def secuenciar( 
     self,
-    resultado
+    unidad
   ):
     # Genera una secuencia a partir de unidades procesadas
-    intervalos    = resultado[ 'intervalos' ]
-    alturas       = resultado[ 'alturas' ]
-    voces         = resultado[ 'voces' ]
-    duraciones    = resultado[ 'duraciones' ]
-    dinamicas     = resultado[ 'dinamicas' ]
-    controladores = resultado[ 'controladores' ]
+    intervalos    = unidad[ 'intervalos' ]
+    alturas       = unidad[ 'alturas' ]
+    voces         = unidad[ 'voces' ]
+    duraciones    = unidad[ 'duraciones' ]
+    dinamicas     = unidad[ 'dinamicas' ]
+    controladores = unidad[ 'controladores' ]
     candidatos = [ 
       dinamicas,
       duraciones,
@@ -203,32 +212,30 @@ class Pista:
       if alt != 0:
         # Ajuste relacion altura / puntero intervalo
         alt = alt - 1
-        nota = intervalos[ alt % len( intervalos ) ] + resultado['transportar']
+        nota = intervalos[ alt % len( intervalos ) ] + unidad['transportar']
  
         if voces:
           for voz in voces:
             if voz[ paso % len( voz ) ] != 0:
               # TODO revisar relacion: voz / puntero intervalo
               fund = alt + ( voz[ paso % len( voz ) ] - 1 )
-              acorde += [ intervalos[ fund % len( intervalos ) ]  + resultado[ 'transportar' ] ]
+              acorde += [ intervalos[ fund % len( intervalos ) ]  + unidad[ 'transportar' ] ]
             else:
               acorde += [ 'S' ]
       else:
         nota = 'S' # Silencio
-      evento = {
+      procesada = {
+        'unidad'      : unidad[ 'nombre' ],
         'orden'       : paso,
-        'unidad'      : resultado[ 'nombre' ],
-        'referente'   : resultado[ 'referente' ],
-        'canal'       : resultado[ 'canal' ],
-        'programa'    : resultado[ 'programa' ],
-        'bpm'         : resultado[ 'bpm' ],
-        'metro'       : resultado[ 'metro' ],
-        'transportar' : resultado[ 'transportar' ],
         'altura'      : nota,
         'acorde'      : acorde,
         'duracion'    : duracion,
         'dinamica'    : dinamica,
         'controlador' : controlador,
+      }
+      evento = {
+        **unidad,
+        **procesada,
       }
       self.secuencia.append( evento )
 
@@ -238,11 +245,13 @@ def referir(
   refs,
   oi = None,
   ):
-  referente = refs[ 'referente' ]  if 'referente' in refs else None
-  nombre    = refs[ 'nombre' ]     if 'nombre'    in refs else None
-  nivel     = refs[ 'nivel' ]      if 'nivel'     in refs else None
-  output    = oi if oi is not None else [ None ] * nivel 
-  output[ nivel - 1 ] = nombre
+  # Extrae referentes recursivamente
+  nombre      = refs[ 'nombre' ]      if 'nombre'      in refs else None
+  recurrencia = refs[ 'recurrencia' ] if 'recurrencia' in refs else None
+  nivel       = refs[ 'nivel' ]       if 'nivel'       in refs else None
+  output      = oi                    if oi is not None        else [ None ] * nivel 
+  output[ nivel - 1 ] = ( nombre, recurrencia )
+  referente   = refs[ 'referente' ]   if 'referente'   in refs else None
   if referente:
     referir( referente, output )
   return output
@@ -268,7 +277,7 @@ en una Parte para finalmente agregarlas a una Partirtura de Musescore
 opus = MIDIFile( Pista.cantidad ) 
 for pista in pistas:
   if args.plot:
-    print('#### PLOTEANDO ####')
+    print( '#### PLOTEANDO ####' )
     if args.plot == 'png':
       plt.title(  pista.nombre )
       pos = graphviz_layout( 
@@ -371,23 +380,26 @@ for pista in pistas:
       #print( nx.ancestors( pista.arbol, unidad + str( uo.orden ) ) )
 
       st = unidad
-      if ( 'referente' in evento ):
+      if (
+         'referente' in evento
+      ) and(
+         evento[ 'referente' ] is not None  
+      ):
         rs = referir( evento[ 'referente' ] )  
-        print( rs )
+        verboseprint( rs )
+        pprint.pprint( rs )
         st = 'u: ' +  unidad 
-        print(st)
+        verboseprint( st )
 
       opus.addText(
         track,
         momento,
         st
       )
-    # altura = evento['altura']
-    # ARREGLAR RELACION ENTRE VOZ de ACORDE y ALTURA 
-    voces = evento['acorde'] if evento['acorde'] else [ evento['altura'] ]
 
     duracion = evento['duracion'] 
     dinamica = int( evento['dinamica'] * 126 )
+    voces = evento['acorde'] if evento['acorde'] else [ evento['altura'] ]
 
     for voz in voces:
       altura = voz 
