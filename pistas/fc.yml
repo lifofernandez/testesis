@@ -53,8 +53,6 @@ unidades:
     unidades: [
     'A',
     'A`',
-    'A',
-    'A',
   ]
   estribillo: 
     unidades: [
@@ -65,7 +63,6 @@ macroforma: !!seq [
   'espera',
   'estrofa',
   'estribillo',
-  'estrofa',
 ]
 
 
