@@ -79,6 +79,10 @@ unidades:
       'osos'
     ] 
 macroforma: [
+  'hija', # problemas con el nivel 'copa'
+  'papa',
+  'papa',
+  'animales',
   'tataraAbuelo',
   'abueles',
   'madrastra',

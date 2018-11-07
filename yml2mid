@@ -86,7 +86,7 @@ class Pista:
     Pista.cantidad += 1
     self.uid = str( self.orden ) + self.nombre 
     self.base = base
-    self.paleta = paleta # paleta de unidades, no objetos todavia
+    self.paleta = paleta # paleta de unidades
     self.macroforma = macroforma
     self.registros = {}
     self.secuencia  = [] 
@@ -129,55 +129,36 @@ class Pista:
     herencia.pop( 'unidades', None )
 
     for i, u in enumerate( unidades ):  
-      verboseprint( '-' * ( nivel - 1 ) +  u  )
+      #verboseprint( '-' * ( nivel - 1 ) +  u  )
       if u in self.paleta:
         uo = self.paleta[ u ]
-        if 'unidades' not in uo:
-           #nivel = 'copa'
-          
-          recurrencia = sum( 
-            [ 1 for o in self.registros[ 'copa' ] if o['nombre'] == u ]
-          ) if 'copa' in self.registros else 0 
-
-          registro = { 
-            'nombre'      : u,
-            'recurrencia' : recurrencia,
-            'nivel'       : nivel,
-            'referente'   : herencia['referente'] if 'referente' in herencia else None
-          }
-          resultado = {
-            **Pista.defactos,
-            **uo,
-            **herencia,
-            **registro
-          } 
-          self.registros.setdefault( 'copa', [] ).append( resultado )
-          self.secuenciar( resultado ) 
-        else: 
-          sucesion = { 
-            **uo,
-            **herencia
-          }
-          recurrencia = sum( 
-            [ 1 for o in self.registros[ nivel ] if o['nombre'] == u ]
-          ) if nivel in self.registros else 0 
-          registro = { 
-            'nombre'      : u,
-            'recurrencia' : recurrencia,
-            'nivel'       : nivel,
-            'referente'   : sucesion[ 'referente' ] if 'referente' in  sucesion else None
-          }
-          # TODO cambiar que returneee en vez de acutalizar class prop
-          self.registros.setdefault( nivel , [] ).append( registro )
-
-          sucesion[ 'referente' ] = registro 
-
-          # TODO cambiar que returneee en vez de acutalizar class prop
+        recurrencia = sum( 
+          [ 1 for o in self.registros[ nivel ] if o['nombre'] == u ]
+        ) if nivel in self.registros else 0 
+        registro = { 
+          'nombre'      : u,
+          'recurrencia' : recurrencia,
+          'nivel'       : nivel,
+          'referente'   : herencia['referente'] if 'referente' in herencia else None
+        }
+        resultado = {
+          **Pista.defactos,
+          **uo,
+          **herencia,
+          **registro
+        } 
+        self.registros.setdefault( nivel , [] ).append( registro )
+        if 'unidades' in uo:
+          resultado[ 'referente' ] = registro 
           self.ordenar( 
             uo[ 'unidades' ],
             nivel,
-            sucesion,
+            resultado,
           ) 
+        else:
+          #nivel = 'copa'
+          #self.registros.setdefault( nivel, [] ).append( resultado )
+          self.secuenciar( resultado ) 
 
   def secuenciar( 
     self,
@@ -373,9 +354,9 @@ for pista in pistas:
         #opus.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
     if ( evento['orden'] == 0 ):
       uo = pista.paleta[ unidad ] 
-      #print( nx.ancestors( pista.arbol, unidad + str( uo.orden ) ) )
-
-      st = unidad
+      st = 'u: ' +  unidad 
+      verboseprint( st )
+      print( st )
       if (
          'referente' in evento
       ) and(
@@ -384,9 +365,6 @@ for pista in pistas:
         rs = referir( evento[ 'referente' ] )  
         verboseprint( rs )
         pprint.pprint( rs )
-        st = 'u: ' +  unidad 
-        verboseprint( st )
-
       opus.addText(
         track,
         momento,
