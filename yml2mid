@@ -40,7 +40,7 @@ for archivo in args.archivos:
   data = open( archivo.name, 'r' )
   definiciones.append( yaml.load( data ) )
 
-verboseprint = print if args.verbosity else lambda *a, **k: None
+verboseprint = pprint.pprint if args.verbosity else lambda *a, **k: None
 salida = args.output
 
 if args.plot:
@@ -68,7 +68,6 @@ class Pista:
     'duraciones'    : [ 1 ],
     'dinamicas'     : [ 1 ],
     'transportar'   : 0,
-    #'octava'        : 0,
     'controladores' : [ None ],
     'reiterar'      : 0,
     'referente'     : None,
@@ -89,9 +88,11 @@ class Pista:
     self.paleta = paleta # paleta de unidades
     self.macroforma = macroforma
     self.registros = {}
-    self.secuencia  = [] 
-    self.ordenar()
 
+    # self.secuencia  = [] 
+    self.secuencia = self.ordenar( macroforma )
+    #print(self.secuencia)
+    #self.ordenar()
 
     pprint.pprint( self.registros )
 
@@ -108,7 +109,7 @@ class Pista:
 #      #self.arbol.add_nodes_from( NODOS )
       #pprint.pprint( self.arbol )
 
-    verboseprint( '\n#### ', self.nombre, ' ####' )
+     #verboseprint( '\n#### ', self.nombre, ' ####' )
 
   def __str__( self ):
     o = '' 
@@ -119,16 +120,17 @@ class Pista:
 
   def ordenar( 
     self,
-    unidades = None,
+    forma,
     nivel = 0,
     herencia = {},
+    sec = []
   ):
     # Organiza unidades según relaciones de referencia
-    unidades = unidades if unidades is not None else self.macroforma
+    #forma = unidades if unidades is not None else self.macroforma
     nivel += 1
     herencia.pop( 'unidades', None )
 
-    for i, u in enumerate( unidades ):  
+    for i, u in enumerate( forma ):  
       #verboseprint( '-' * ( nivel - 1 ) +  u  )
       if u in self.paleta:
         uo = self.paleta[ u ]
@@ -141,24 +143,30 @@ class Pista:
           'nivel'       : nivel,
           'referente'   : herencia['referente'] if 'referente' in herencia else None
         }
-        resultado = {
-          **Pista.defactos,
+        sucesion = {
           **uo,
           **herencia,
           **registro
         } 
         self.registros.setdefault( nivel , [] ).append( registro )
         if 'unidades' in uo:
-          resultado[ 'referente' ] = registro 
+          sucesion[ 'referente' ] = registro 
           self.ordenar( 
             uo[ 'unidades' ],
             nivel,
-            resultado,
+            sucesion,
+            sec,
           ) 
         else:
           #nivel = 'copa'
-          #self.registros.setdefault( nivel, [] ).append( resultado )
-          self.secuenciar( resultado ) 
+          #self.registros.setdefault( nivel, [] ).append( registro )
+          factura = {
+            **Pista.defactos,
+            **sucesion,
+          } 
+          #self.secuencia += self.secuenciar( factura ) 
+          sec += self.secuenciar( factura ) 
+    return sec 
 
   def secuenciar( 
     self,
@@ -179,6 +187,7 @@ class Pista:
     ]
     ganador = max( candidatos, key=len )
     pasos = len( ganador )
+    seq = []
  
     for paso in range( pasos ):
       # Combinar parametros: altura, duracion, dinamica, etc
@@ -214,7 +223,8 @@ class Pista:
         'controlador' : controlador,
       }
       # TODO cambiar que returneee en vez de acutalizar class prop
-      self.secuencia.append( evento )
+      seq.append( evento )
+    return seq 
 
 
 
@@ -251,6 +261,9 @@ Loop principal:
 Recorre cada pista y partir de su secuencia genera Notas o Silencios que agrupa
 en una Parte para finalmente agregarlas a una Partirtura de Musescore
 """
+# TODO revisar esto, agrega muchos tracks
+
+print(Pista.cantidad)
 opus = MIDIFile( Pista.cantidad ) 
 for pista in pistas:
   if args.plot:
@@ -276,6 +289,7 @@ for pista in pistas:
         pista.nombre.lower() + '.dot'
       )
 
+
   momento = 0
   track = pista.orden
   opus.addTrackName(
@@ -294,14 +308,15 @@ for pista in pistas:
   The denominator is a negative power of two: log10( X ) / log10( 2 ) 
   2 represents a quarter-note, 3 represents an eighth-note, etc.
   """
-  numerador, denominador = pista.base['metro'].split( '/' )
-  denominador = int( math.log10( int( denominador ) ) / math.log10( 2 ) )
+  metro            = pista.base['metro'].split( '/' )
+  numerador        = int( metro[0] ) 
+  denominador      = int( math.log10( int( metro[1] ) ) / math.log10( 2 ) )
   relojes_por_tick = 12 * denominador
-  notas_por_negra = 8
+  notas_por_negra  = 8
   opus.addTimeSignature( 
     track,
     momento,
-    int( numerador ),
+    numerador,
     denominador,
     relojes_por_tick, 
     notas_por_negra
@@ -330,10 +345,11 @@ for pista in pistas:
       )
     metro = evento['metro']
     if ( previo['metro'] != metro ):
-      numerador, denominador = metro.split( '/' )
-      denominador = int( math.log10( int( denominador ) ) / math.log10( 2 ) )
+      metro            = pista.base['metro'].split( '/' )
+      numerador        = int( metro[0] ) 
+      denominador      = int( math.log10( int( metro[1] ) ) / math.log10( 2 ) )
       relojes_por_tick = 12 * denominador
-      notas_por_negra = 8
+      notas_por_negra  = 8
       opus.addTimeSignature( 
         track,
         momento,
@@ -353,10 +369,9 @@ for pista in pistas:
         )
         #opus.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
     if ( evento['orden'] == 0 ):
-      uo = pista.paleta[ unidad ] 
+      #uo = pista.paleta[ unidad ] 
       st = 'u: ' +  unidad 
       verboseprint( st )
-      print( st )
       if (
          'referente' in evento
       ) and(
@@ -364,7 +379,6 @@ for pista in pistas:
       ):
         rs = referir( evento[ 'referente' ] )  
         verboseprint( rs )
-        pprint.pprint( rs )
       opus.addText(
         track,
         momento,

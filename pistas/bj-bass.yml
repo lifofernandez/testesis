@@ -7,7 +7,7 @@ base: &base
      24
   ]
   alturas: [ 1 ] 
-  transportar: 35 #B
+  transportar: 47 #B
   duraciones: [ .5 ]
   bpm: 100  
   metro: 4/4
@@ -23,13 +23,13 @@ unidades:
     alturas: [ 7, 5, 4, 5 ] 
 macroforma: [
   'a',
+  'b',
   'a',
+  'b',
   'a',
+  'b',
   'a',
-  'a',
-  'a',
-  'a',
-  'a',
+  'b',
 ]
 
 
