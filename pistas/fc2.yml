@@ -1,4 +1,4 @@
-nombre: 'Feliz Cumple'
+nombre: 'Feliz Cumplei2'
 base: &base 
   clave: 0
   intervalos: [ 
@@ -8,13 +8,17 @@ base: &base
      24
   ]
   alturas: [ 1 ] 
+  voces:
+    - [1]
+    - [-4]
+    - [-2]
   transportar: 72 
   duraciones: [ 1.5 ]
   bpm: 100  
   metro: 3/4
   dinamicas: [ 1 ]
-  canal: 1 
-  programa: 1
+  canal: 2
+  programa: 3
 
 unidades: 
   espera:
