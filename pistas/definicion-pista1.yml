@@ -12,9 +12,10 @@ base: &base !!map
 
   clave: !!map
     # https://midiutil.readthedocs.io/en/1.2.1/class.html#midiutil.MidiFile.MIDIFile.addKeySignature
-    alteranciones: 3   # Catidad de alteraciones en la armadura de clave
-    tipo: 'SOSTENIDOS' # El tipo de alteraciones, 'SOSTENIDOS' o 'BEMOLES'
-    modo: 'MENOR'      # El modo de la escala, 'MAYOR' o 'MENOR'
+    # Catidad de alteraciones en la armadura de clave,  
+    # -2 = Bb, -1 = F, 0 = C, 1 = G, 2 = D,
+    alteraciones: -2
+    modo: 0 # Modo de la escala, 0 = Mayor o 1 = Menor
 
   intervalos: !!seq 
     # Sequiencia (lista ordenada) de intervalos a ser recorrida por 
@@ -22,9 +23,9 @@ base: &base !!map
     # considerar: http://web.mit.edu/music21/doc/moduleReference/moduleScale.html
     # http://web.mit.edu/music21/doc/moduleReference/moduleKey.html
     [ 
-      -12,-10,-9,-7,-5,-4,-2,
-        0,  2, 3, 5, 7, 8,10,
-       12, 14,15,17,19,20,22,
+      -12,-10, -9, -7, -5, -3, -2,
+        0,  2,  3,  5,  7,  9, 10,
+       12, 14, 15, 17, 19, 21, 22,
        24
     ]
 
@@ -48,7 +49,7 @@ base: &base !!map
 
   transportar: !!int 
     # Ajuste de alturas
-    60 
+    60 # C
 
   transponer: !!int
     # Ajuste de alturas pero dentro del set intervalos
@@ -61,6 +62,7 @@ base: &base !!map
     [ 1 ]
 
   swing: !!float
+    # No aplicado  
     # separar corcheas, aternizarlas ;)
     60
 
@@ -131,6 +133,9 @@ unidades: !!map
     metro: 6/8
     duraciones: [ .5 ]
     alturas: [ 6, 7, 8, 7, 0, 9 ]
+    clave: 
+      alteraciones: 1
+      modo: 1 
 
   b^: 
     <<: *b
@@ -170,6 +175,3 @@ macroforma: !!seq
   ]
 
 
-# Cosiderar:
-  # sentido de lectura de los sets
-  # Cantidad Repeticiones

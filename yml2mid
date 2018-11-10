@@ -301,32 +301,41 @@ for pista in pistas:
     momento,
     pista.nombre
   )
-  opus.addTempo(
-    track,
-    momento,
-    pista.base['bpm']
-  )
-  """
-  Time Signature event
-  https://midiutil.readthedocs.io/en/1.2.1/class.html#midiutil.MidiFile.MIDIFile.addTimeSignature
-  The denominator is a negative power of two: log10( X ) / log10( 2 ) 
-  2 represents a quarter-note, 3 represents an eighth-note, etc.
-  """
-  metro            = pista.base['metro'].split( '/' )
-  numerador        = int( metro[0] ) 
-  denominador      = int( math.log10( int( metro[1] ) ) / math.log10( 2 ) )
-  relojes_por_tick = 12 * denominador
-  notas_por_negra  = 8
-  opus.addTimeSignature( 
-    track,
-    momento,
-    numerador,
-    denominador,
-    relojes_por_tick, 
-    notas_por_negra
-  )
-  # TODO agregar 'clace' (armadura de clave)
-
+  if 'bpm' in pista.base:
+    opus.addTempo(
+      track,
+      momento,
+      pista.base['bpm']
+    )
+  if 'metro' in pista.base:
+    """
+    Time Signature event
+    https://midiutil.readthedocs.io/en/1.2.1/class.html#midiutil.MidiFile.MIDIFile.addTimeSignature
+    The denominator is a negative power of two: log10( X ) / log10( 2 ) 
+    2 represents a quarter-note, 3 represents an eighth-note, etc.
+    """
+    metro            = pista.base['metro'].split( '/' )
+    numerador        = int( metro[0] ) 
+    denominador      = int( math.log10( int( metro[1] ) ) / math.log10( 2 ) )
+    relojes_por_tick = 12 * denominador
+    notas_por_negra  = 8
+    opus.addTimeSignature( 
+      track,
+      momento,
+      numerador,
+      denominador,
+      relojes_por_tick, 
+      notas_por_negra
+    )
+  # TODO agregar 'clave' (armadura de clave)
+  if 'clave' in pista.base:
+    opus.addKeySignature(
+      track,
+      momento,
+      pista.base['clave']['alteraciones'],
+      1, # multiplica por el n de alteraciones
+      pista.base['clave']['modo']
+    )
   if 'programa' in pista.base:
     opus.addProgramChange(
       track,
@@ -362,6 +371,15 @@ for pista in pistas:
         relojes_por_tick, 
         notas_por_negra
       )
+    clave = evento['clave']
+    if ( previo['clave'] != clave ):
+     opus.addKeySignature(
+       track,
+       momento,
+       clave['alteraciones'],
+       1, # multiplica por el n de alteraciones
+       clave['modo']
+     )
     programa = evento['programa']
     if programa:
       if ( previo['programa'] != programa ):
@@ -422,4 +440,6 @@ Salida
 """
 with open( salida + ".mid", "wb" ) as output_file:
   opus.writeFile( output_file )
+
+
 
