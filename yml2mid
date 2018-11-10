@@ -5,7 +5,8 @@ import yaml
 #import weakref
 import pprint
 import math
-from midiutil import MIDIFile
+#from midiutil import MIDIFile
+from midiutil import *
 
 """
 Argumentos y parametros globales
@@ -69,7 +70,7 @@ class Pista:
     'dinamicas'     : [ 1 ],
     'transportar'   : 0,
     'controladores' : [ None ],
-    'reiterar'      : 0,
+    'reiterar'      : 1,
     'referente'     : None,
   }
  
@@ -88,14 +89,11 @@ class Pista:
     self.paleta = paleta # paleta de unidades
     self.macroforma = macroforma
     self.registros = {}
-
     self.secuencia = [] 
     self.ordenar()
     #self.secuencia = self.ordenar( macroforma )
     #print(self.secuencia)
-
     pprint.pprint( self.registros )
-
     # TODO agregar grafico 
     #self.arbol = nx.OrderedDiGraph()
     #for r in self.registros:
@@ -108,7 +106,6 @@ class Pista:
     #  #print(NODOS)
     #  #self.arbol.add_nodes_from( NODOS )
     #  #pprint.pprint( self.arbol )
-
     verboseprint( '\n#### ' + self.nombre + ' ####' )
 
   def __str__( self ):
@@ -123,7 +120,7 @@ class Pista:
     forma = None,
     nivel = 0,
     herencia = {},
-    sec = []
+    #sec = []
   ):
     # Organiza unidades según relaciones de referencia
     forma = forma if forma is not None else self.macroforma
@@ -132,6 +129,7 @@ class Pista:
 
     for i, u in enumerate( forma ):  
       verboseprint( '-' * ( nivel - 1 ) +  u  )
+
       if u in self.paleta:
         uo = self.paleta[ u ]
         recurrencia = sum( 
@@ -149,14 +147,16 @@ class Pista:
           **registro
         } 
         self.registros.setdefault( nivel , [] ).append( registro )
+
         if 'unidades' in uo:
           sucesion[ 'referente' ] = registro 
           self.ordenar( 
             uo[ 'unidades' ],
             nivel,
             sucesion,
-            sec,
+            #sec,
           ) 
+
         else:
           #nivel = 'copa'
           #self.registros.setdefault( nivel, [] ).append( registro )
@@ -166,15 +166,16 @@ class Pista:
           } 
           o = self.secuenciar( factura ) 
           self.secuencia += o  
-          #TODO cambiar que returnee en vez de actualizar variable
+          #TODO que returnee en vez de actualizar variable
           #sec += self.secuenciar( o ) 
-    return sec 
+    #return sec 
 
   def secuenciar( 
     self,
     unidad
   ):
     # Genera una secuencia a partir de unidades procesadas
+    # TODO agregar 'revertir'
     intervalos    = unidad[ 'intervalos' ]
     alturas       = unidad[ 'alturas' ]
     voces         = unidad[ 'voces' ]
@@ -191,9 +192,11 @@ class Pista:
     pasos = len( ganador )
     seq = []
  
+    # agregar 'reiterar' ¿'pasos' * 2 'reiterar'?
     for paso in range( pasos ):
       # Combinar parametros: altura, duracion, dinamica, etc
       duracion = duraciones[ paso % len( duraciones ) ]
+      # TODO agregar 'fluctuacion' ¿dinamica * flucutuacion?
       dinamica = dinamicas[ paso % len( dinamicas ) ]
       controlador = controladores[ paso % len( controladores ) ]
       alt  = alturas[ paso % len( alturas ) ]
@@ -234,12 +237,12 @@ def referir(
   oi = None,
   ):
   # Extrae referentes recursivamente
+  referente   = refs[ 'referente' ]   if 'referente'   in refs else None
   nombre      = refs[ 'nombre' ]      if 'nombre'      in refs else None
   recurrencia = refs[ 'recurrencia' ] if 'recurrencia' in refs else None
   nivel       = refs[ 'nivel' ]       if 'nivel'       in refs else None
   output      = oi                    if oi is not None        else [ None ] * nivel 
   output[ nivel - 1 ] = ( nombre, recurrencia )
-  referente   = refs[ 'referente' ]   if 'referente'   in refs else None
   if referente:
     referir( referente, output )
   return output
@@ -262,7 +265,6 @@ Loop principal:
 Recorre cada pista y partir de su secuencia genera Notas o Silencios que agrupa
 en una Parte para finalmente agregarlas a una Partirtura de Musescore
 """
-# TODO revisar esto, agrega muchos tracks
 
 opus = MIDIFile( Pista.cantidad ) 
 for pista in pistas:
@@ -291,6 +293,7 @@ for pista in pistas:
         pista.nombre.lower() + '.dot'
       )
 
+  # Agregar 'Desplazar' 
   momento = 0
   track = pista.orden
   opus.addTrackName(
@@ -322,6 +325,7 @@ for pista in pistas:
     relojes_por_tick, 
     notas_por_negra
   )
+  # TODO agregar 'clace' (armadura de clave)
 
   if 'programa' in pista.base:
     opus.addProgramChange(
@@ -353,7 +357,7 @@ for pista in pistas:
       opus.addTimeSignature( 
         track,
         momento,
-        int( numerador ),
+        numerador,
         denominador,
         relojes_por_tick, 
         notas_por_negra

@@ -15,9 +15,9 @@ base: &base
   canal: 1 
   programa: 2 
   voces:
-    - [1]
-    - [-4]
-    - [-2]
+    - [ 1 ]
+    - [ -4 ]
+    - [ -2 ]
 unidades: 
   a:
     <<: *base
@@ -25,11 +25,13 @@ unidades:
   b:
     <<: *base
     alturas: [ 10, 9 ] 
+  vuelta:
+    unidades: [
+      'a', 'b',
+    ]
 macroforma: [
-  'a', 'b',
-  'a', 'b',
-  'a', 'b',
-  'a', 'b',
+   'vuelta',
+   'vuelta',
+   'vuelta',
 ]
-
 

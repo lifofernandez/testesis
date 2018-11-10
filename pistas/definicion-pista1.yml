@@ -10,11 +10,11 @@ base: &base !!map
   # Parametros por defecto para todas las unidades, pueden ser sobrescritos
   # <<: *base (Para que otra pista herede estas propiedades)
 
-  clave: !!int
-    # http://web.mit.edu/music21/doc/moduleReference/moduleKey.html#music21.key.KeySignature
-    # 3 = 3 sontenidos
-    # -3 = 3 bemoles
-    3
+  clave: !!map
+    # https://midiutil.readthedocs.io/en/1.2.1/class.html#midiutil.MidiFile.MIDIFile.addKeySignature
+    alteranciones: 3   # Catidad de alteraciones en la armadura de clave
+    tipo: 'SOSTENIDOS' # El tipo de alteraciones, 'SOSTENIDOS' o 'BEMOLES'
+    modo: 'MENOR'      # El modo de la escala, 'MAYOR' o 'MENOR'
 
   intervalos: !!seq 
     # Sequiencia (lista ordenada) de intervalos a ser recorrida por 
@@ -33,10 +33,10 @@ base: &base !!map
     # cada elemento equivale a el n de intervalo
     [ 1, 3, 5, 8 ] 
 
-  revertir:
-    # reorganizar un parametro del tipo !!seq
-    # no AplicadoO
-    parametro: 'alturas'
+  revertir: !!seq
+    # un parametro del tipo !!seq
+    # no Aplicado
+    [ 'alturas', 'dinamicas' ]
 
   voces: !!seq
     # Apilamiento de alturas 
@@ -60,6 +60,10 @@ base: &base !!map
     # Lista ordenada de duraciones
     [ 1 ]
 
+  swing: !!float
+    # separar corcheas, aternizarlas ;)
+    60
+
   bpm: !!int 
    # Tempo, Pulsos Por Minuto
    62
@@ -73,29 +77,24 @@ base: &base !!map
     # momento, cuando ocurre o acontence
     # offset : + / - offset con la "posicion" original 
     # 0 es que donde debe acontecer originalmente
-    # OPCION 1 Relativa al beat:
-      # Ejemplo: "-2" anticipar 2 pulsos o ".5" demorar medio pulso
-    # OPCION 2: Relativa a la duracion total de la unidad
-      # -1 es que empieza una unidad (duracion de la unidad) antes
-      # 1 es que piza una unidad (duracion de la unidad) a la unidad despues 
-      # quedando .5 mitad de la unidad
+    # Ejemplo: "-2" anticipar 2 pulsos o ".5" demorar medio pulso
     # No aplicado
     0
 
   reiterar: !!int
     # No aplicado
     # Catidad de veces q se toca esta unidad 
-    1
+    2
 
   dinamicas: !!seq 
    # Lista ordenada de dinámicas
    [ 1, .5, .4 ]
 
-  fluctuaciones: !!seq
+  fluctuacion: !!float
     # Seq. de factores de azar en alteracion de la dinamica
     # 0 a 1
     # No aplicado
-    [ .1, 0, .9 ]
+    .5
 
   canal: !!int
    # Canal MIDI 
@@ -103,13 +102,12 @@ base: &base !!map
 
   banco: !!str
    # Banco MIDI
-    # No aplicado
+   # No aplicado
    'GM'
 
   programa: !!int
     # Instrumento MIDI
     103
-
    
   controladores: !!seq
     # Secuencia de pares nº controlador : parametro
