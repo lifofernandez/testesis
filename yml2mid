@@ -59,19 +59,20 @@ class Pista:
   """
   cantidad = 0 
   defactos = {
-    'bpm'           : 60,
-    'canal'         : 1,
-    'programa'      : None,
-    'metro'         : '4/4',
-    'alturas'       : [ 1 ],
-    'intervalos'    : [ 1 ],
-    'voces'         : None,
-    'duraciones'    : [ 1 ],
-    'dinamicas'     : [ 1 ],
-    'transportar'   : 0,
-    'controladores' : [ None ],
-    'reiterar'      : 1,
-    'referente'     : None,
+    'bpm'            : 60,
+    'canal'          : 1,
+    'programa'       : None,
+    'metro'          : '4/4',
+    'alturas'        : [ 1 ],
+    'intervalos'     : [ 1 ],
+    'voces'          : None,
+    'duraciones'     : [ 1 ],
+    'dinamicas'      : [ 1 ],
+    'transportar'    : 0,
+    'transpoponer'   : 0,
+    'controladores'  : [ None ],
+    'reiterar'       : 1,
+    'referente'      : None,
   }
  
   def __init__( 
@@ -93,7 +94,7 @@ class Pista:
     self.ordenar()
     #self.secuencia = self.ordenar( macroforma )
     #print(self.secuencia)
-    pprint.pprint( self.registros )
+    #pprint.pprint( self.registros )
     # TODO agregar grafico 
     #self.arbol = nx.OrderedDiGraph()
     #for r in self.registros:
@@ -175,7 +176,13 @@ class Pista:
     unidad
   ):
     # Genera una secuencia a partir de unidades procesadas
-    # TODO agregar 'revertir'
+
+    revertir = unidad['revertir'] if 'revertir' in unidad else None 
+    if isinstance( revertir , list ):
+      for r in revertir:
+        if r in unidad:
+          unidad[ r ].reverse() 
+
     intervalos    = unidad[ 'intervalos' ]
     alturas       = unidad[ 'alturas' ]
     voces         = unidad[ 'voces' ]
@@ -204,15 +211,16 @@ class Pista:
  
       if alt != 0:
         # Ajuste relacion altura / puntero intervalo
+        # TODO transponer
         alt = alt - 1
-        nota = intervalos[ alt % len( intervalos ) ] + unidad[ 'transportar' ]
+        nota = intervalos[ alt + unidad[ 'transponer' ] % len( intervalos ) ] + unidad[ 'transportar' ]
  
         if voces:
           for voz in voces:
             if voz[ paso % len( voz ) ] != 0:
               # TODO revisar relacion: voz / puntero intervalo
               fund = alt + ( voz[ paso % len( voz ) ] - 1 )
-              acorde += [ intervalos[ fund % len( intervalos ) ]  + unidad[ 'transportar' ] ]
+              acorde += [ intervalos[ fund + unidad[ 'transponer' ] % len( intervalos ) ]  + unidad[ 'transportar' ] ]
             else:
               acorde += [ 'S' ]
       else:
@@ -269,29 +277,29 @@ en una Parte para finalmente agregarlas a una Partirtura de Musescore
 opus = MIDIFile( Pista.cantidad ) 
 for pista in pistas:
 
-  if args.plot:
-    print( '#### PLOTEANDO ####' )
+  #if args.plot:
+  #  print( '#### PLOTEANDO ####' )
 
-    if args.plot == 'png':
-      plt.title(  pista.nombre )
-      pos = graphviz_layout( 
-        pista.arbol,
-        prog = 'dot',
-        args = '',
-      )
-      nx.draw(
-        pista.arbol,
-        pos,
-        with_labels = True,
-        arrows = True,
-      )
-      plt.savefig( pista.nombre.lower() + '.png' )
+  #  if args.plot == 'png':
+  #    plt.title(  pista.nombre )
+  #    pos = graphviz_layout( 
+  #      pista.arbol,
+  #      prog = 'dot',
+  #      args = '',
+  #    )
+  #    nx.draw(
+  #      pista.arbol,
+  #      pos,
+  #      with_labels = True,
+  #      arrows = True,
+  #    )
+  #    plt.savefig( pista.nombre.lower() + '.png' )
 
-    if args.plot == 'dot':
-      write_dot(
-        pista.arbol,
-        pista.nombre.lower() + '.dot'
-      )
+  #  if args.plot == 'dot':
+  #    write_dot(
+  #      pista.arbol,
+  #      pista.nombre.lower() + '.dot'
+  #    )
 
   # Agregar 'Desplazar' 
   momento = 0
