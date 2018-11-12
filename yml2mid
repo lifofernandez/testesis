@@ -59,20 +59,22 @@ class Pista:
   """
   cantidad = 0 
   defactos = {
-    'bpm'            : 60,
-    'canal'          : 1,
-    'programa'       : None,
-    'metro'          : '4/4',
-    'alturas'        : [ 1 ],
-    'intervalos'     : [ 1 ],
-    'voces'          : None,
-    'duraciones'     : [ 1 ],
-    'dinamicas'      : [ 1 ],
-    'transportar'    : 0,
-    'transpoponer'   : 0,
-    'controladores'  : [ None ],
-    'reiterar'       : 1,
-    'referente'      : None,
+    'bpm'           : 60,
+    'canal'         : 1,
+    'programa'      : None,
+    'metro'         : '4/4',
+    'alturas'       : [ 1 ],
+    'clave'         : { 'alteraciones' : 0, 'modo' : 0 },
+    'intervalos'    : [ 1 ],
+    'voces'         : None,
+    'duraciones'    : [ 1 ],
+    'dinamicas'     : [ 1 ],
+    'transportar'   : 0,
+    'transponer'    : 0,
+    'controladores' : [ None ],
+    'reiterar'      : 1,
+    #'desplazar'     : 0,
+    'referente'     : None,
   }
  
   def __init__( 
@@ -93,6 +95,7 @@ class Pista:
     self.secuencia = [] 
     self.ordenar()
     #self.secuencia = self.ordenar( macroforma )
+
     #print(self.secuencia)
     #pprint.pprint( self.registros )
     # TODO agregar grafico 
@@ -127,6 +130,7 @@ class Pista:
     forma = forma if forma is not None else self.macroforma
     nivel += 1
     herencia.pop( 'unidades', None )
+    herencia.pop( 'reiterar', None )
 
     for i, u in enumerate( forma ):  
       verboseprint( '-' * ( nivel - 1 ) +  u  )
@@ -147,26 +151,30 @@ class Pista:
           **herencia,
           **registro
         } 
-        self.registros.setdefault( nivel , [] ).append( registro )
+        #reiterar = uo['reiterar'] if 'reiterar' in uo and uo ['reiterar'] != 0 else 1
+        reiterar = uo['reiterar'] if 'reiterar' in uo else 0
 
-        if 'unidades' in uo:
-          sucesion[ 'referente' ] = registro 
-          self.ordenar( 
-            uo[ 'unidades' ],
-            nivel,
-            sucesion,
-            #sec,
-          ) 
+        for r in range( reiterar + 1):
+          self.registros.setdefault( nivel , [] ).append( registro )
 
-        else:
-          #nivel = 'copa'
-          #self.registros.setdefault( nivel, [] ).append( registro )
-          factura = {
-            **Pista.defactos,
-            **sucesion,
-          } 
-          o = self.secuenciar( factura ) 
-          self.secuencia += o  
+          if 'unidades' in uo:
+            sucesion[ 'referente' ] = registro 
+            self.ordenar( 
+              uo[ 'unidades' ],
+              nivel,
+              sucesion,
+              #sec,
+            ) 
+
+          else:
+            #nivel = 'copa'
+            #self.registros.setdefault( nivel, [] ).append( registro )
+            factura = {
+              **Pista.defactos,
+              **sucesion,
+            } 
+            o = self.secuenciar( factura ) 
+            self.secuencia += o  
           #TODO que returnee en vez de actualizar variable
           #sec += self.secuenciar( o ) 
     #return sec 
@@ -219,8 +227,8 @@ class Pista:
           for voz in voces:
             if voz[ paso % len( voz ) ] != 0:
               # TODO revisar relacion: voz / puntero intervalo
-              fund = alt + ( voz[ paso % len( voz ) ] - 1 )
-              acorde += [ intervalos[ fund + unidad[ 'transponer' ] % len( intervalos ) ]  + unidad[ 'transportar' ] ]
+              tonica = alt + ( voz[ paso % len( voz ) ] - 1 )
+              acorde += [ intervalos[ tonica + unidad[ 'transponer' ] % len( intervalos ) ]  + unidad[ 'transportar' ] ]
             else:
               acorde += [ 'S' ]
       else:
@@ -309,12 +317,14 @@ for pista in pistas:
     momento,
     pista.nombre
   )
+
   if 'bpm' in pista.base:
     opus.addTempo(
       track,
       momento,
       pista.base['bpm']
     )
+
   if 'metro' in pista.base:
     """
     Time Signature event
@@ -335,15 +345,18 @@ for pista in pistas:
       relojes_por_tick, 
       notas_por_negra
     )
+
   # TODO agregar 'clave' (armadura de clave)
   if 'clave' in pista.base:
+    #print(pista.base[ 'clave' ])
     opus.addKeySignature(
       track,
       momento,
-      pista.base['clave']['alteraciones'],
+      pista.base[ 'clave' ][ 'alteraciones' ] ,
       1, # multiplica por el n de alteraciones
-      pista.base['clave']['modo']
+      pista.base[ 'clave' ][ 'modo' ]
     )
+
   if 'programa' in pista.base:
     opus.addProgramChange(
       track,
@@ -358,12 +371,14 @@ for pista in pistas:
     unidad = evento['unidad']
     canal = evento['canal']
     bpm = evento['bpm']
+
     if ( previo['bpm'] != bpm ):
       opus.addTempo(
         track,
         momento,
         bpm,
       )
+
     metro = evento['metro']
     if ( previo['metro'] != metro ):
       metro            = evento['metro'].split( '/' )
@@ -379,6 +394,7 @@ for pista in pistas:
         relojes_por_tick, 
         notas_por_negra
       )
+
     clave = evento['clave']
     if ( previo['clave'] != clave ):
      opus.addKeySignature(
@@ -388,6 +404,7 @@ for pista in pistas:
        1, # multiplica por el n de alteraciones
        clave['modo']
      )
+
     programa = evento['programa']
     if programa:
       if ( previo['programa'] != programa ):
@@ -398,6 +415,7 @@ for pista in pistas:
           programa
         )
         #opus.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
+
     if ( evento['orden'] == 0 ):
       st = 'u: ' +  unidad 
       verboseprint( st )
@@ -414,10 +432,21 @@ for pista in pistas:
         st
       )
 
-    duracion = evento['duracion'] 
-    dinamica = int( evento['dinamica'] * 126 )
-    voces = evento['acorde'] if evento['acorde'] else [ evento['altura'] ]
+      # Agregar desplazamiento antes de la primer nota
+      #desplazar = evento[ 'desplazar' ]
+      #opus.addNote( 
+      #  track, 
+      #  canal, 
+      #  0, 
+      #  momento, 
+      #  desplazar,
+      #  0,
+      #)
+      #momento += desplazar
 
+    voces = evento['acorde'] if evento['acorde'] else [ evento['altura'] ]
+    dinamica = int( evento['dinamica'] * 126 )
+    duracion = evento['duracion'] 
     for voz in voces:
       altura = voz 
       if voz == 'S':
@@ -441,7 +470,7 @@ for pista in pistas:
           controlador, 
           parametro, 
         )
-    momento = momento + duracion
+    momento += duracion
 
 """
 Salida

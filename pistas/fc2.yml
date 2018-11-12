@@ -1,6 +1,5 @@
 nombre: 'Feliz Cumplei2'
 base: &base 
-  clave: 0
   intervalos: [ 
     -12, -10, -8, -7, -5, -3, -1,
       0,   2,  4,  5,  7,  9, 11,
