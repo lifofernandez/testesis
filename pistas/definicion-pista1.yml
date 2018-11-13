@@ -73,10 +73,9 @@ base: &base !!map
   #  0
 
   reiterar: !!int
-    # No aplicado
     # Catidad de veces q se toca esta unidad 
     # Esta propiedad no se hereda, sino repetiria hijos
-    1
+    0
 
   dinamicas: !!seq 
    # Lista ordenada de dinámicas
@@ -138,7 +137,6 @@ unidades: !!map
   b^: 
     <<: *b
     dinamicas: [ .5, .1 ]
-    desplazar: 1
     revertir: [ 'alturas' ]
   
   # Unidad de unidades ( UoUs )

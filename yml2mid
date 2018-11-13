@@ -213,13 +213,12 @@ class Pista:
       duracion = duraciones[ paso % len( duraciones ) ]
       # TODO Reconciderar implementacionde fluctuacion con tuples
       bot = unidad[ 'fluctuacion' ][0] if ( 
-        'fluctuacion' in unidad and isinstance( unidad[ 'fluctuacion' ] , list )
+        'fluctuacion' in unidad and isinstance( unidad[ 'fluctuacion' ], list )
       ) else 1
       top = unidad[ 'fluctuacion' ][1] if (
-        'fluctuacion' in unidad and isinstance( unidad[ 'fluctuacion' ] , list )
+        'fluctuacion' in unidad and isinstance( unidad[ 'fluctuacion' ], list )
       ) else 1
       fluctuacion = random.uniform( bot , top ) 
-      print(fluctuacion)
       dinamica = dinamicas[ paso % len( dinamicas ) ] * fluctuacion
       controlador = controladores[ paso % len( controladores ) ]
       alt  = alturas[ paso % len( alturas ) ]
