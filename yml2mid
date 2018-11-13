@@ -7,7 +7,7 @@ import pprint
 import math
 #from midiutil import MIDIFile
 from midiutil import *
-
+import random
 """
 Argumentos y parametros globales
 """
@@ -69,6 +69,7 @@ class Pista:
     'voces'         : None,
     'duraciones'    : [ 1 ],
     'dinamicas'     : [ 1 ],
+    'fluctuacion'   : 0, 
     'transportar'   : 0,
     'transponer'    : 0,
     'controladores' : [ None ],
@@ -95,9 +96,9 @@ class Pista:
     self.secuencia = [] 
     self.ordenar()
     #self.secuencia = self.ordenar( macroforma )
-
     #print(self.secuencia)
     #pprint.pprint( self.registros )
+
     # TODO agregar grafico 
     #self.arbol = nx.OrderedDiGraph()
     #for r in self.registros:
@@ -151,9 +152,8 @@ class Pista:
           **herencia,
           **registro
         } 
-        #reiterar = uo['reiterar'] if 'reiterar' in uo and uo ['reiterar'] != 0 else 1
-        reiterar = uo['reiterar'] if 'reiterar' in uo else 0
 
+        reiterar = uo['reiterar'] if 'reiterar' in uo else 0
         for r in range( reiterar + 1):
           self.registros.setdefault( nivel , [] ).append( registro )
 
@@ -211,8 +211,16 @@ class Pista:
     for paso in range( pasos ):
       # Combinar parametros: altura, duracion, dinamica, etc
       duracion = duraciones[ paso % len( duraciones ) ]
-      # TODO agregar 'fluctuacion' ¿dinamica * flucutuacion?
-      dinamica = dinamicas[ paso % len( dinamicas ) ]
+      # TODO Reconciderar implementacionde fluctuacion con tuples
+      bot = unidad[ 'fluctuacion' ][0] if ( 
+        'fluctuacion' in unidad and isinstance( unidad[ 'fluctuacion' ] , list )
+      ) else 1
+      top = unidad[ 'fluctuacion' ][1] if (
+        'fluctuacion' in unidad and isinstance( unidad[ 'fluctuacion' ] , list )
+      ) else 1
+      fluctuacion = random.uniform( bot , top ) 
+      print(fluctuacion)
+      dinamica = dinamicas[ paso % len( dinamicas ) ] * fluctuacion
       controlador = controladores[ paso % len( controladores ) ]
       alt  = alturas[ paso % len( alturas ) ]
       acorde = []

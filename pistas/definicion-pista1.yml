@@ -82,11 +82,12 @@ base: &base !!map
    # Lista ordenada de dinámicas
    [ 1, .5, .4 ]
 
-  fluctuacion: !!float
+  
+  fluctuacion: !!seq
     # Factor de azar en dinamica
+    # lista de dos valores: [inf, sup]
     # 0 a 1
-    # No aplicado
-    .5
+    [ 0.9, 1 ]
 
   revertir: !!seq
     # Revierte parametros del tipo !!seq
@@ -130,8 +131,9 @@ unidades: !!map
     voces: 0
     transponer: 3
     clave: 
-      alteraciones: 1
+      alteraciones: 2
       modo: 1 
+    fluctuacion: [ .1, .4 ]
 
   b^: 
     <<: *b
@@ -155,6 +157,7 @@ unidades: !!map
     bmp: 89
     unidades: [ 'b', 'a' ] 
     dinamicas: [ 1 ]
+    fluctuacion: 0
 
   estrofa: 
     unidades: [ 'A', 'B', 'B^' ]
