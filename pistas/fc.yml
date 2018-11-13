@@ -31,11 +31,11 @@ unidades:
     programa: 4
     alturas: [ 8, 7 ] 
     duraciones: [ 1, 2 ]
-    reiterar: 1
+    #reiterar: 1
   b`: 
     <<: *b
-    alturas: [ 9, 8 ] 
-    reiterar: 0
+    transponer: 1
+    #reiterar: 0
   a`: 
     <<: *a
     alturas: [ 5, 5, 12, 10 ] 
@@ -58,7 +58,7 @@ unidades:
     'A',
     'A`',
   ]
-    reiterar: 4
+    #reiterar: 4
   estribillo: 
     unidades: [
     'B',

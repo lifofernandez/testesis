@@ -69,7 +69,7 @@ class Pista:
     'voces'         : None,
     'duraciones'    : [ 1 ],
     'dinamicas'     : [ 1 ],
-    'fluctuacion'   : 0, 
+    'fluctuacion'   : [ 1, 1 ], 
     'transportar'   : 0,
     'transponer'    : 0,
     'controladores' : [ None ],
@@ -190,6 +190,9 @@ class Pista:
       for r in revertir:
         if r in unidad:
           unidad[ r ].reverse() 
+    if isinstance( revertir , str ):
+      if revertir in unidad:
+        unidad[ revertir ].reverse() 
 
     intervalos    = unidad[ 'intervalos' ]
     alturas       = unidad[ 'alturas' ]
@@ -213,29 +216,30 @@ class Pista:
       duracion = duraciones[ paso % len( duraciones ) ]
       # TODO Reconciderar implementacionde fluctuacion con tuples
       bot = unidad[ 'fluctuacion' ][0] if ( 
-        'fluctuacion' in unidad and isinstance( unidad[ 'fluctuacion' ], list )
+        isinstance( unidad[ 'fluctuacion' ], list )
       ) else 1
       top = unidad[ 'fluctuacion' ][1] if (
-        'fluctuacion' in unidad and isinstance( unidad[ 'fluctuacion' ], list )
+        isinstance( unidad[ 'fluctuacion' ], list )
       ) else 1
       fluctuacion = random.uniform( bot , top ) 
       dinamica = dinamicas[ paso % len( dinamicas ) ] * fluctuacion
       controlador = controladores[ paso % len( controladores ) ]
-      alt  = alturas[ paso % len( alturas ) ]
+      altura = alturas[ paso % len( alturas ) ]
       acorde = []
  
-      if alt != 0:
+      if altura != 0:
         # Ajuste relacion altura / puntero intervalo
-        # TODO transponer
-        alt = alt - 1
-        nota = intervalos[ alt + unidad[ 'transponer' ] % len( intervalos ) ] + unidad[ 'transportar' ]
+        altura = altura - 1
+        transponer  = unidad[ 'transponer' ] 
+        transportar = unidad[ 'transportar' ]
+        nota = intervalos[ altura + transponer % len( intervalos ) ] + transportar
  
         if voces:
           for voz in voces:
             if voz[ paso % len( voz ) ] != 0:
               # TODO revisar relacion: voz / puntero intervalo
-              tonica = alt + ( voz[ paso % len( voz ) ] - 1 )
-              acorde += [ intervalos[ tonica + unidad[ 'transponer' ] % len( intervalos ) ]  + unidad[ 'transportar' ] ]
+              tonica = altura + ( voz[ paso % len( voz ) ] - 1 )
+              acorde += [ intervalos[ tonica + transponer % len( intervalos ) ]  + transportar ]
             else:
               acorde += [ 'S' ]
       else:
