@@ -94,7 +94,7 @@ class Pista:
     self.ordenar()
     #self.secuencia = self.ordenar( macroforma )
     #print(self.secuencia)
-    #pprint.pprint( self.registros )
+    pprint.pprint( self.registros )
 
     # TODO agregar grafico 
     #self.arbol = nx.OrderedDiGraph()
@@ -132,7 +132,7 @@ class Pista:
     herencia.pop( 'unidades', None )
     herencia.pop( 'reiterar', None )
 
-    for i, u in enumerate( forma ):  
+    for u in forma:  
       verboseprint( '-' * ( nivel - 1 ) +  u  )
 
       if u in self.paleta:
@@ -167,6 +167,7 @@ class Pista:
             ) 
 
           else:
+            self.registros.setdefault( 'copa' , [] ).append( registro )
             factura = {
               **Pista.defactos,
               **sucesion,
@@ -253,7 +254,6 @@ class Pista:
         'dinamica'    : dinamica,
         'controlador' : controlador,
       }
-
       seq.append( evento )
 
     return seq 
@@ -299,7 +299,6 @@ for pista in pistas:
 
   #if args.plot:
   #  print( '#### PLOTEANDO ####' )
-
   #  if args.plot == 'png':
   #    plt.title(  pista.nombre )
   #    pos = graphviz_layout( 
@@ -314,7 +313,6 @@ for pista in pistas:
   #      arrows = True,
   #    )
   #    plt.savefig( pista.nombre.lower() + '.png' )
-
   #  if args.plot == 'dot':
   #    write_dot(
   #      pista.arbol,
@@ -361,7 +359,7 @@ for pista in pistas:
     opus.addKeySignature(
       track,
       momento,
-      pista.base[ 'clave' ][ 'alteraciones' ] ,
+      pista.base[ 'clave' ][ 'alteraciones' ],
       1, # multiplica por el n de alteraciones
       pista.base[ 'clave' ][ 'modo' ]
     )
@@ -434,7 +432,9 @@ for pista in pistas:
          evento[ 'referente' ] is not None  
       ):
         rs = referir( evento[ 'referente' ] )  
-        verboseprint( rs )
+        rs.reverse()
+        pprint.pprint( rs )
+
       opus.addText(
         track,
         momento,
