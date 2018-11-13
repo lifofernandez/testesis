@@ -2,11 +2,10 @@
 
 import argparse
 import yaml
-#import weakref
 import pprint
 import math
-#from midiutil import MIDIFile
-from midiutil import *
+from midiutil import MIDIFile
+#from midiutil import *
 import random
 """
 Argumentos y parametros globales
@@ -52,10 +51,9 @@ if args.plot:
   if args.plot == 'dot':
     from networkx.drawing.nx_agraph import write_dot
 
-
 class Pista:
   """
-  Clase para cada track a partir de archivos.yml
+  Clase para cada 'track' a partir de archivos.yml
   """
   cantidad = 0 
   defactos = {
@@ -74,7 +72,6 @@ class Pista:
     'transponer'    : 0,
     'controladores' : [ None ],
     'reiterar'      : 1,
-    #'desplazar'     : 0,
     'referente'     : None,
   }
  
@@ -127,7 +124,9 @@ class Pista:
     herencia = {},
     #sec = []
   ):
-    # Organiza unidades según relaciones de referencia
+    """
+    Organiza unidades según relaciones de referencia
+    """
     forma = forma if forma is not None else self.macroforma
     nivel += 1
     herencia.pop( 'unidades', None )
@@ -138,6 +137,7 @@ class Pista:
 
       if u in self.paleta:
         uo = self.paleta[ u ]
+        # No cuenta recurrencias en todos ls niveles
         recurrencia = sum( 
           [ 1 for o in self.registros[ nivel ] if o['nombre'] == u ]
         ) if nivel in self.registros else 0 
@@ -167,8 +167,6 @@ class Pista:
             ) 
 
           else:
-            #nivel = 'copa'
-            #self.registros.setdefault( nivel, [] ).append( registro )
             factura = {
               **Pista.defactos,
               **sucesion,
@@ -183,14 +181,16 @@ class Pista:
     self,
     unidad
   ):
-    # Genera una secuencia a partir de unidades procesadas
+    """
+    Genera una secuencia de eventos a partir de unidades preprocesadas
+    """
 
     revertir = unidad['revertir'] if 'revertir' in unidad else None 
     if isinstance( revertir , list ):
       for r in revertir:
         if r in unidad:
           unidad[ r ].reverse() 
-    if isinstance( revertir , str ):
+    elif isinstance( revertir , str ):
       if revertir in unidad:
         unidad[ revertir ].reverse() 
 
@@ -210,18 +210,17 @@ class Pista:
     pasos = len( ganador )
     seq = []
  
-    # agregar 'reiterar' ¿'pasos' * 2 'reiterar'?
     for paso in range( pasos ):
       # Combinar parametros: altura, duracion, dinamica, etc
       duracion = duraciones[ paso % len( duraciones ) ]
-      # TODO Reconciderar implementacionde fluctuacion con tuples
-      bot = unidad[ 'fluctuacion' ][0] if ( 
-        isinstance( unidad[ 'fluctuacion' ], list )
-      ) else 1
-      top = unidad[ 'fluctuacion' ][1] if (
-        isinstance( unidad[ 'fluctuacion' ], list )
-      ) else 1
-      fluctuacion = random.uniform( bot , top ) 
+
+      fluctuacion = 1
+      if isinstance( unidad[ 'fluctuacion' ], list ):
+        fluctuacion = random.uniform( 
+          unidad[ 'fluctuacion' ][0],
+          unidad[ 'fluctuacion' ][1] 
+        )
+
       dinamica = dinamicas[ paso % len( dinamicas ) ] * fluctuacion
       controlador = controladores[ paso % len( controladores ) ]
       altura = alturas[ paso % len( alturas ) ]
@@ -254,16 +253,18 @@ class Pista:
         'dinamica'    : dinamica,
         'controlador' : controlador,
       }
+
       seq.append( evento )
+
     return seq 
-
-
 
 def referir(
   refs,
   oi = None,
   ):
-  # Extrae referentes recursivamente
+  """
+  Extrae referentes recursivamente
+  """
   referente   = refs[ 'referente' ]   if 'referente'   in refs else None
   nombre      = refs[ 'nombre' ]      if 'nombre'      in refs else None
   recurrencia = refs[ 'recurrencia' ] if 'recurrencia' in refs else None
@@ -274,11 +275,11 @@ def referir(
     referir( referente, output )
   return output
 
-"""
-Carga de pistas a partir de las definiciones
-"""
 pistas = []
 for d in definiciones:
+  """
+  Carga de pistas a partir de las definiciones
+  """
   pista = Pista(
     d[ 'nombre' ],
     d[ 'base' ],
@@ -287,14 +288,14 @@ for d in definiciones:
   )
   pistas.append( pista )
 
-"""
-Loop principal:
-Recorre cada pista y partir de su secuencia genera Notas o Silencios que agrupa
-en una Parte para finalmente agregarlas a una Partirtura de Musescore
-"""
 
 opus = MIDIFile( Pista.cantidad ) 
 for pista in pistas:
+  """
+  Loop principal:
+  Recorre cada pista y partir de su secuencia genera Notas o Silencios que agrupa
+  en una Parte para finalmente agregarlas a una Partirtura de Musescore
+  """
 
   #if args.plot:
   #  print( '#### PLOTEANDO ####' )
@@ -320,7 +321,6 @@ for pista in pistas:
   #      pista.nombre.lower() + '.dot'
   #    )
 
-  # Agregar 'Desplazar' 
   momento = 0
   track = pista.orden
   opus.addTrackName(
@@ -357,9 +357,7 @@ for pista in pistas:
       notas_por_negra
     )
 
-  # TODO agregar 'clave' (armadura de clave)
   if 'clave' in pista.base:
-    #print(pista.base[ 'clave' ])
     opus.addKeySignature(
       track,
       momento,
@@ -442,18 +440,6 @@ for pista in pistas:
         momento,
         st
       )
-
-      # Agregar desplazamiento antes de la primer nota
-      #desplazar = evento[ 'desplazar' ]
-      #opus.addNote( 
-      #  track, 
-      #  canal, 
-      #  0, 
-      #  momento, 
-      #  desplazar,
-      #  0,
-      #)
-      #momento += desplazar
 
     voces = evento['acorde'] if evento['acorde'] else [ evento['altura'] ]
     dinamica = int( evento['dinamica'] * 126 )
