@@ -186,7 +186,6 @@ class Pista:
     """
     Genera una secuencia de eventos a partir de unidades preprocesadas
     """
-
     revertir = unidad['revertir'] if 'revertir' in unidad else None 
     if isinstance( revertir , list ):
       for r in revertir:
@@ -224,8 +223,8 @@ class Pista:
           unidad[ 'fluctuacion' ][0],
           unidad[ 'fluctuacion' ][1] 
         )
-
       dinamica = dinamicas[ paso % len( dinamicas ) ] * fluctuacion
+
       controlador = controladores[ paso % len( controladores ) ]
       altura = alturas[ paso % len( alturas ) ]
       acorde = []
@@ -243,7 +242,7 @@ class Pista:
           for voz in voces:
             if voz[ paso % len( voz ) ] != 0:
               # TODO revisar relacion: voz / puntero intervalo
-              tonica = altura + ( voz[ paso % len( voz ) ] - 1 )
+              tonica = altura + ( voz[ paso % len( voz ) ] )
               acorde += [ intervalos[ tonica + transponer % len( intervalos ) ]  + transportar ]
             else:
               acorde += [ 'S' ]
@@ -428,9 +427,7 @@ for pista in pistas:
         #opus.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
 
     if ( evento[ 'orden' ] == 0 ):
-
       #verboseprint( st )
-      print('---------------------- ')
       st = ''
       if (
          'referente' in evento
@@ -439,19 +436,13 @@ for pista in pistas:
       ):
         ers = referir( evento[ 'referente' ] )  
         if ( 'referente' in previo ) and ( previo[ 'referente' ] != None ):
-          #print( previo[ 'referente' ])
           prs = referir( previo[ 'referente' ] ) 
-          #ers.reverse()
-          #prs.reverse()
           if ers != prs:
             for i, er in enumerate( ers ) :
-              pr = prs[ i % len(prs) ]
+              pr = prs[ i % len( prs ) ] # TODO buscar mejor manera de limitar 
               if er != pr: 
-                print( er[ 0 ] + str( er[ 1 ] ) )
                 st += er[ 0 ] + ' #' + str( er[ 1 ] ) + '\n' 
       st += unidad 
-      #if unidad != previa:
-      print( st )
 
       opus.addText(
         track,
