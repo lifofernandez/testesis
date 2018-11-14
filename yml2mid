@@ -93,7 +93,7 @@ class Pista:
     self.secuencia = [] 
     self.ordenar()
     #self.secuencia = self.ordenar( macroforma )
-    #print(self.secuencia)
+    #print( self.secuencia )
     pprint.pprint( self.registros )
 
     # TODO agregar grafico 
@@ -125,7 +125,7 @@ class Pista:
     #sec = []
   ):
     """
-    Organiza unidades según relaciones de referencia
+    Organiza unidades según relacion de referencia
     """
     forma = forma if forma is not None else self.macroforma
     nivel += 1
@@ -137,15 +137,15 @@ class Pista:
 
       if u in self.paleta:
         uo = self.paleta[ u ]
-        # No cuenta recurrencias en todos ls niveles
+        # TODO q cuente recurrencias en todos ls niveles
         recurrencia = sum( 
-          [ 1 for o in self.registros[ nivel ] if o['nombre'] == u ]
+          [ 1 for o in self.registros[ nivel ] if o[ 'nombre' ] == u ]
         ) if nivel in self.registros else 0 
         registro = { 
           'nombre'      : u,
           'recurrencia' : recurrencia,
           'nivel'       : nivel,
-          'referente'   : herencia['referente'] if 'referente' in herencia else None
+          'referente'   : herencia[ 'referente' ] if 'referente' in herencia else None
         }
         sucesion = {
           **uo,
@@ -153,7 +153,7 @@ class Pista:
           **registro
         } 
 
-        reiterar = uo['reiterar'] if 'reiterar' in uo else 0
+        reiterar = uo[ 'reiterar' ] if 'reiterar' in uo else 0
         for r in range( reiterar + 1):
           self.registros.setdefault( nivel , [] ).append( registro )
 
@@ -166,7 +166,8 @@ class Pista:
               #sec,
             ) 
 
-          else:
+          else: 
+            # TODO Contar 'recurrencias' que suenan (en el nivel superior)
             self.registros.setdefault( 'copa' , [] ).append( registro )
             factura = {
               **Pista.defactos,
@@ -212,7 +213,9 @@ class Pista:
     seq = []
  
     for paso in range( pasos ):
-      # Combinar parametros: altura, duracion, dinamica, etc
+      """
+      Combinar parametros: altura, duracion, dinamica, etc
+      """
       duracion = duraciones[ paso % len( duraciones ) ]
 
       fluctuacion = 1
@@ -228,7 +231,9 @@ class Pista:
       acorde = []
  
       if altura != 0:
-        # Ajuste relacion altura / puntero intervalo
+        """
+        Ajuste relacion altura / puntero intervalo
+        """
         altura = altura - 1
         transponer  = unidad[ 'transponer' ] 
         transportar = unidad[ 'transportar' ]
@@ -293,8 +298,6 @@ opus = MIDIFile( Pista.cantidad )
 for pista in pistas:
   """
   Loop principal:
-  Recorre cada pista y partir de su secuencia genera Notas o Silencios que agrupa
-  en una Parte para finalmente agregarlas a una Partirtura de Musescore
   """
 
   #if args.plot:
@@ -338,8 +341,8 @@ for pista in pistas:
     """
     Time Signature event
     https://midiutil.readthedocs.io/en/1.2.1/class.html#midiutil.MidiFile.MIDIFile.addTimeSignature
-    The denominator is a negative power of two: log10( X ) / log10( 2 ) 
-    2 represents a quarter-note, 3 represents an eighth-note, etc.
+    denominator  = negative power of two: log10( X ) / log10( 2 ) 
+    2 represents a quarter-note, 3 an eighth-note, etc.
     """
     metro            = pista.base['metro'].split( '/' )
     numerador        = int( metro[0] ) 
@@ -367,17 +370,18 @@ for pista in pistas:
   if 'programa' in pista.base:
     opus.addProgramChange(
       track,
-      pista.base['canal'],
-      momento, 
-      pista.base['programa']
+      pista.base[ 'canal' ],
+      momento,  
+      pista.base[ 'programa' ]
     )
 
   for index, evento in enumerate( pista.secuencia ):
     verboseprint( evento )
     previo = pista.secuencia[ index - 1 ]
-    unidad = evento['unidad']
-    canal = evento['canal']
-    bpm = evento['bpm']
+    unidad = evento[ 'unidad' ]
+    previa = previo[ 'unidad' ]
+    canal = evento[ 'canal' ]
+    bpm = evento[ 'bpm' ]
 
     if ( previo['bpm'] != bpm ):
       opus.addTempo(
@@ -386,11 +390,11 @@ for pista in pistas:
         bpm,
       )
 
-    metro = evento['metro']
-    if ( previo['metro'] != metro ):
-      metro            = evento['metro'].split( '/' )
-      numerador        = int( metro[0] ) 
-      denominador      = int( math.log10( int( metro[1] ) ) / math.log10( 2 ) )
+    metro = evento[ 'metro' ]
+    if ( previo[ 'metro' ] != metro ):
+      metro            = evento[ 'metro' ].split( '/' )
+      numerador        = int( metro[ 0 ] ) 
+      denominador      = int( math.log10( int( metro[ 1 ] ) ) / math.log10( 2 ) )
       relojes_por_tick = 12 * denominador
       notas_por_negra  = 8
       opus.addTimeSignature( 
@@ -402,19 +406,19 @@ for pista in pistas:
         notas_por_negra
       )
 
-    clave = evento['clave']
-    if ( previo['clave'] != clave ):
+    clave = evento[ 'clave' ]
+    if ( previo[ 'clave' ] != clave ):
      opus.addKeySignature(
        track,
        momento,
-       clave['alteraciones'],
+       clave[ 'alteraciones' ],
        1, # multiplica por el n de alteraciones
-       clave['modo']
+       clave[ 'modo' ]
      )
 
-    programa = evento['programa']
+    programa = evento[ 'programa' ]
     if programa:
-      if ( previo['programa'] != programa ):
+      if ( previo[ 'programa' ] != programa ):
         opus.addProgramChange(
           track,
           canal, 
@@ -423,17 +427,30 @@ for pista in pistas:
         )
         #opus.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
 
-    if ( evento['orden'] == 0 ):
-      st = 'u: ' +  unidad 
-      verboseprint( st )
+    if ( evento[ 'orden' ] == 0 ):
+
+      #verboseprint( st )
+      print('---------------------- ')
+
       if (
          'referente' in evento
       ) and(
          evento[ 'referente' ] is not None  
       ):
-        rs = referir( evento[ 'referente' ] )  
-        rs.reverse()
-        pprint.pprint( rs )
+        ers = referir( evento[ 'referente' ] )  
+        if ( 'referente' in previo ) and ( previo[ 'referente' ] != None ):
+          #print( previo[ 'referente' ])
+          prs = referir( previo[ 'referente' ] ) 
+          #ers.reverse()
+          #prs.reverse()
+          if ers != prs:
+            for i, er in enumerate( ers ) :
+              pr = prs[ i % len(prs) ]
+              if er != pr: 
+                print( er[ 0 ] + str( er[ 1 ] ) )
+      st = unidad 
+      if unidad != previa:
+        print( st )
 
       opus.addText(
         track,
@@ -441,9 +458,9 @@ for pista in pistas:
         st
       )
 
-    voces = evento['acorde'] if evento['acorde'] else [ evento['altura'] ]
-    dinamica = int( evento['dinamica'] * 126 )
-    duracion = evento['duracion'] 
+    voces = evento[ 'acorde' ] if evento[ 'acorde' ] else [ evento[ 'altura' ] ]
+    dinamica = int( evento[ 'dinamica' ] * 126 )
+    duracion = evento[ 'duracion' ] 
     for voz in voces:
       altura = voz 
       if voz == 'S':
@@ -458,8 +475,8 @@ for pista in pistas:
         dinamica,
       )
 
-    if evento['controlador']:
-      for controlador, parametro in evento['controlador'].items():
+    if evento[ 'controlador' ]:
+      for controlador, parametro in evento[ 'controlador' ].items():
         opus.addControllerEvent( 
           track, 
           canal, 
@@ -469,10 +486,10 @@ for pista in pistas:
         )
     momento += duracion
 
-"""
-Salida
-"""
 with open( salida + ".mid", "wb" ) as output_file:
+  """
+  Salida
+  """
   opus.writeFile( output_file )
 
 
