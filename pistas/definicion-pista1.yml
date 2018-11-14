@@ -170,6 +170,9 @@ macroforma: !!seq
     'intro',
     'estrofa',
     'estribo',
+    'estrofa',
+    'estribo',
+    'estribo',
     'inter',
   ]
 

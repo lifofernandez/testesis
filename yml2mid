@@ -431,7 +431,7 @@ for pista in pistas:
 
       #verboseprint( st )
       print('---------------------- ')
-
+      st = ''
       if (
          'referente' in evento
       ) and(
@@ -448,9 +448,10 @@ for pista in pistas:
               pr = prs[ i % len(prs) ]
               if er != pr: 
                 print( er[ 0 ] + str( er[ 1 ] ) )
-      st = unidad 
-      if unidad != previa:
-        print( st )
+                st += er[ 0 ] + ' #' + str( er[ 1 ] ) + '\n' 
+      st += unidad 
+      #if unidad != previa:
+      print( st )
 
       opus.addText(
         track,
