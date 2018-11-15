@@ -1,19 +1,18 @@
 nombre: 'Feliz Cumplei2'
 base: &base 
   intervalos: [ 
-    -12, -10, -8, -7, -5, -3, -1,
-      0,   2,  4,  5,  7,  9, 11,
-     12,  14, 16, 17, 19, 21, 23,
-     24
+    -24, -22,-20,-19,-17, -15, -13,
+    -12, -10, -8, -7, -5,  -3,  -1,
+      0,   2,  4,  5,  7,   9,  11,
+     12,  14, 16, 17, 19,  21,  23,
   ]
   alturas: [ 1 ] 
   voces:
-          #- [5]
-          #- [3]
-    - [1]
-    - [-3]
-      #- [-5]
+   - [ 0 ]
+   - [ -3 ]
+   - [ -5 ]
   transportar: 60 
+  transponer: 7 
   duraciones: [ 1.5 ]
   bpm: 100  
   metro: 3/4
@@ -31,7 +30,7 @@ unidades:
     duraciones: [ .75, .25, 1, 1 ]
   b: &b 
     <<: *base
-    programa: 4
+    programa: 1
     alturas: [ 8, 7 ] 
     duraciones: [ 1, 2 ]
   b`: 
@@ -55,10 +54,10 @@ unidades:
   A``: 
     unidades: [ 'a```', 'b`' ] 
   estrofa: 
-    unidades: [
+   unidades: [
     'A',
     'A`',
-  ]
+   ]
   estribillo: 
     unidades: [
     'B',

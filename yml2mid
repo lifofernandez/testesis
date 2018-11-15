@@ -229,25 +229,19 @@ class Pista:
       altura = alturas[ paso % len( alturas ) ]
       acorde = []
  
+      nota = 'S' # Silencio
       if altura != 0:
         """
-        Ajuste relacion altura / puntero intervalo
+        altura / puntero intervalo
         """
-        altura = altura - 1
         transponer  = unidad[ 'transponer' ] 
         transportar = unidad[ 'transportar' ]
-        nota = intervalos[ altura + transponer % len( intervalos ) ] + transportar
+        nota = transportar + intervalos[ ( altura - 1 ) + transponer % len( intervalos ) ] 
  
         if voces:
           for voz in voces:
-            if voz[ paso % len( voz ) ] != 0:
-              # TODO revisar relacion: voz / puntero intervalo
-              tonica = altura + ( voz[ paso % len( voz ) ] )
-              acorde += [ intervalos[ tonica + transponer % len( intervalos ) ]  + transportar ]
-            else:
-              acorde += [ 'S' ]
-      else:
-        nota = 'S' # Silencio
+            tonica = altura + ( voz[ paso % len( voz ) ] ) - 1 
+            acorde += [ transportar +  intervalos[ tonica + transponer % len( intervalos ) ]  ]
       evento = {
         **unidad,
         'unidad'      : unidad[ 'nombre' ],
