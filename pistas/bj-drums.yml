@@ -7,19 +7,25 @@ base: &base
   ]
   alturas: [ 1 ] 
   transportar: 35 
-  duraciones: [ 1 ]
+  duraciones: [ .5 ]
   bpm: 100  
   metro: 4/4
   dinamicas: [ 1 ]
   canal: 9 
+  prgorama: 12
 unidades: 
   a:
     <<: *base
-    alturas: [ 8, 8, 8, 8 ] 
+    alturas: [ 8, 8 ]
     voces:
-      - [ 1 ]
-      - [ -6, 0, -1, 0 ]
-    duraciones: [ .5 ]
+      - [ 0 ]
+      - [ -6, 0 ]
+  b:
+    <<: *base
+    alturas: [ 8, 8 ]
+    voces:
+      - [ 0 ]
+      - [ -1, 0 ]
   test:
     # Tocar todo el drum-set
     <<: *base
@@ -31,6 +37,7 @@ unidades:
   vuelta:
     unidades: [
       'a', 
+      'b', 
     ]
 macroforma: [
    'vuelta',

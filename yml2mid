@@ -286,7 +286,6 @@ for d in definiciones:
   )
   pistas.append( pista )
 
-
 opus = MIDIFile( Pista.cantidad ) 
 for pista in pistas:
   """
