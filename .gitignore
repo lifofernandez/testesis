@@ -1,3 +1,5 @@
+*.gv
+*.dot
 *.mid
 *.png
 *.dot
