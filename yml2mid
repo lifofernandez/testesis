@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 import argparse
 import yaml
 import pprint
@@ -39,11 +38,14 @@ definiciones = []
 for archivo in args.archivos:
   data = open( archivo.name, 'r' )
   definiciones.append( yaml.load( data ) )
-
 verboseprint = pprint.pprint if args.verbosity else lambda *a, **k: None
 salida = args.output
-
 if args.plot:
+  from pygraphviz import *
+  #G.add_node('a')
+  #G.add_edge('b','c')
+  #print( G )  
+
   import networkx as nx
   import matplotlib.pyplot as plt
   if args.plot == 'png':
@@ -85,7 +87,7 @@ class Pista:
     self.nombre = nombre
     self.orden = Pista.cantidad 
     Pista.cantidad += 1
-    self.uid = str( self.orden ) + self.nombre 
+    self.oid = str( self.orden ) + self.nombre 
     self.base = base
     self.paleta = paleta # paleta de unidades
     self.macroforma = macroforma
@@ -93,21 +95,28 @@ class Pista:
     self.secuencia = [] 
     self.ordenar()
     #self.secuencia = self.ordenar( macroforma )
-    #print( self.secuencia )
-    pprint.pprint( self.registros )
-
+    #pprint.pprint( self.registros )
     # TODO agregar grafico 
-    #self.arbol = nx.OrderedDiGraph()
-    #for r in self.registros:
-    #  registro = self.registros[ r ]
-    #  NODOS = [] 
-    #  RELACIONES = [] 
-    #  for u in registro:
-    #    #uo = self.unidades[ u ]
-    #    NODOS.append( u ) 
-    #  #print(NODOS)
-    #  #self.arbol.add_nodes_from( NODOS )
-    #  #pprint.pprint( self.arbol )
+    if args.plot:
+      self.grafico = AGraph( )
+ 
+      self.grafico.graph_attr.update(
+        #landscape = 'true',
+        ranksep   = '0.1',
+        #len       = '2.0',
+        #color     = 'blue',
+        directed  = True,
+      )
+      #self.grafico.add_node(1)
+      #for capa in self.registros:
+      #TODO crear un grafico de graficos por cada capa
+      c = [] 
+      ## self.grafico.add_nodes_from( NODOS )
+      for entrada in self.registros[ 'copa' ]:
+        n =  str( entrada[ 'nivel' ] ) + entrada[ 'nombre' ] + str( entrada[ 'recurrencia' ] ) 
+        c.append( n )
+        #print(n)
+      self.grafico.add_nodes_from( c )
     verboseprint( '\n#### ' + self.nombre + ' ####' )
 
   def __str__( self ):
@@ -134,7 +143,6 @@ class Pista:
 
     for u in forma:  
       verboseprint( '-' * ( nivel - 1 ) +  u  )
-
       if u in self.paleta:
         uo = self.paleta[ u ]
         # TODO q cuente recurrencias en todos ls niveles
@@ -152,11 +160,10 @@ class Pista:
           **herencia,
           **registro
         } 
-
         reiterar = uo[ 'reiterar' ] if 'reiterar' in uo else 0
+
         for r in range( reiterar + 1):
           self.registros.setdefault( nivel , [] ).append( registro )
-
           if 'unidades' in uo:
             sucesion[ 'referente' ] = registro 
             self.ordenar( 
@@ -165,7 +172,6 @@ class Pista:
               sucesion,
               #sec,
             ) 
-
           else: 
             # TODO Contar 'recurrencias' que suenan (en el nivel superior)
             self.registros.setdefault( 'copa' , [] ).append( registro )
@@ -194,7 +200,6 @@ class Pista:
     elif isinstance( revertir , str ):
       if revertir in unidad:
         unidad[ revertir ].reverse() 
-
     intervalos    = unidad[ 'intervalos' ]
     alturas       = unidad[ 'alturas' ]
     voces         = unidad[ 'voces' ]
@@ -216,7 +221,6 @@ class Pista:
       Combinar parametros: altura, duracion, dinamica, etc
       """
       duracion = duraciones[ paso % len( duraciones ) ]
-
       fluctuacion = 1
       if isinstance( unidad[ 'fluctuacion' ], list ):
         fluctuacion = random.uniform( 
@@ -224,7 +228,6 @@ class Pista:
           unidad[ 'fluctuacion' ][1] 
         )
       dinamica = dinamicas[ paso % len( dinamicas ) ] * fluctuacion
-
       controlador = controladores[ paso % len( controladores ) ]
       altura = alturas[ paso % len( alturas ) ]
       acorde = []
@@ -253,7 +256,6 @@ class Pista:
         'controlador' : controlador,
       }
       seq.append( evento )
-
     return seq 
 
 def referir(
@@ -291,29 +293,32 @@ for pista in pistas:
   """
   Loop principal:
   """
-
-  #if args.plot:
-  #  print( '#### PLOTEANDO ####' )
-  #  if args.plot == 'png':
-  #    plt.title(  pista.nombre )
-  #    pos = graphviz_layout( 
-  #      pista.arbol,
-  #      prog = 'dot',
-  #      args = '',
-  #    )
-  #    nx.draw(
-  #      pista.arbol,
-  #      pos,
-  #      with_labels = True,
-  #      arrows = True,
-  #    )
-  #    plt.savefig( pista.nombre.lower() + '.png' )
-  #  if args.plot == 'dot':
-  #    write_dot(
-  #      pista.arbol,
-  #      pista.nombre.lower() + '.dot'
-  #    )
-
+  if args.plot:
+    print( '#### PLOTEANDO ####' )
+    pista.grafico.draw(
+      'file.png',
+      format = 'png',
+      prog   = 'dot'
+    )
+#    if args.plot == 'png':
+#      plt.title(  pista.nombre )
+#      pos = graphviz_layout( 
+#        pista.grafico,
+#        prog = 'dot',
+#        #args = '',
+#      )
+#      nx.draw(
+#        pista.grafico,
+#        pos,
+#        with_labels = True,
+#        arrows = True,
+#      )
+#      plt.savefig( pista.nombre.lower() + '.png' )
+    if args.plot == 'dot':
+      write_dot(
+        pista.grafico,
+        pista.nombre.lower() + '.dot'
+      )
   momento = 0
   track = pista.orden
   opus.addTrackName(
@@ -321,14 +326,12 @@ for pista in pistas:
     momento,
     pista.nombre
   )
-
   if 'bpm' in pista.base:
     opus.addTempo(
       track,
       momento,
       pista.base['bpm']
     )
-
   if 'metro' in pista.base:
     """
     Time Signature event
@@ -349,7 +352,6 @@ for pista in pistas:
       relojes_por_tick, 
       notas_por_negra
     )
-
   if 'clave' in pista.base:
     opus.addKeySignature(
       track,
@@ -358,7 +360,6 @@ for pista in pistas:
       1, # multiplica por el n de alteraciones
       pista.base[ 'clave' ][ 'modo' ]
     )
-
   if 'programa' in pista.base:
     opus.addProgramChange(
       track,
@@ -374,14 +375,12 @@ for pista in pistas:
     previa = previo[ 'unidad' ]
     canal = evento[ 'canal' ]
     bpm = evento[ 'bpm' ]
-
     if ( previo['bpm'] != bpm ):
       opus.addTempo(
         track,
         momento,
         bpm,
       )
-
     metro = evento[ 'metro' ]
     if ( previo[ 'metro' ] != metro ):
       metro            = evento[ 'metro' ].split( '/' )
@@ -397,7 +396,6 @@ for pista in pistas:
         relojes_por_tick, 
         notas_por_negra
       )
-
     clave = evento[ 'clave' ]
     if ( previo[ 'clave' ] != clave ):
      opus.addKeySignature(
@@ -407,7 +405,6 @@ for pista in pistas:
        1, # multiplica por el n de alteraciones
        clave[ 'modo' ]
      )
-
     programa = evento[ 'programa' ]
     if programa:
       if ( previo[ 'programa' ] != programa ):
@@ -418,7 +415,6 @@ for pista in pistas:
           programa
         )
         #opus.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
-
     if ( evento[ 'orden' ] == 0 ):
       #verboseprint( st )
       st = ''
@@ -436,16 +432,15 @@ for pista in pistas:
               if er != pr: 
                 st += er[ 0 ] + ' #' + str( er[ 1 ] ) + '\n' 
       st += unidad 
-
       opus.addText(
         track,
         momento,
         st
       )
-
     voces = evento[ 'acorde' ] if evento[ 'acorde' ] else [ evento[ 'altura' ] ]
     dinamica = int( evento[ 'dinamica' ] * 126 )
     duracion = evento[ 'duracion' ] 
+
     for voz in voces:
       altura = voz 
       if voz == 'S':
@@ -459,7 +454,6 @@ for pista in pistas:
         duracion, 
         dinamica,
       )
-
     if evento[ 'controlador' ]:
       for controlador, parametro in evento[ 'controlador' ].items():
         opus.addControllerEvent( 
@@ -476,6 +470,7 @@ with open( salida + ".mid", "wb" ) as output_file:
   Salida
   """
   opus.writeFile( output_file )
+
 
 
 
