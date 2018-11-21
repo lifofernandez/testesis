@@ -41,7 +41,7 @@ for archivo in args.archivos:
 verboseprint = pprint.pprint if args.verbosity else lambda *a, **k: None
 salida = args.output
 if args.plot:
-  from graphviz import Digraph
+  print( '#### cargar lib####' )
 class Pista:
   """
   Clase para cada 'track' a partir de archivos.yml
@@ -80,6 +80,7 @@ class Pista:
     self.base = base
     self.paleta = paleta # paleta de unidades
     self.macroforma = macroforma
+
     self.grafico = Digraph(
       'G',
       filename = 'cluster.gv'
@@ -87,106 +88,15 @@ class Pista:
     self.grafico.graph_attr[ 'rankdir' ] = 'LR'
     self.grafico.graph_attr[ 'constraint' ] = 'false'
     self.grafico.graph_attr[ 'rank' ] = 'same'
+
     self.registros = {}
     self.secuencia = [] 
     self.ordenar()
     #self.secuencia = self.ordenar( macroforma )
     #pprint.pprint( self.registros )
-    #if args.plot:
+    if args.plot:
+      print( '#### cargar lib ####' )
     
-    # NOTE: the subgraph name needs to begin with 'cluster' (all lowercase)
-    #       so that Graphviz recognizes it as a special cluster subgraph
-    
-    with self.grafico.subgraph( name = 'cluster_0' ) as uno:
-      uno.attr( 
-        style = 'filled',
-        rank = 'same',
-        rankdir = 'LR',
-        color = 'red',
-        constraint = 'false',
-        label = 'process #1'
-      )
-      uno.edges( [
-        ( 'a0', 'a1' ),
-        ( 'a1', 'a2' ),
-        ( 'a2', 'a3' )
-      ] )
-    
-      with uno.subgraph( name = 'cluster_2' ) as dos:
-        dos.attr(
-          style = 'filled',
-          label = 'process #2',
-          color = 'blue' ,
-          rank = 'same',
-          constraint = 'false',
-          rankdir = 'LR',
-        )
-
-        with dos.subgraph( name = 'cluster_3' ) as tres:
-          tres.attr(
-            style = 'filled',
-            label = 'process #3',
-            color = 'green',
-            rank = 'same',
-            constraint = 'false',
-            rankdir = 'LR',
-          )
-          tres.edges( [
-            ( 'd0', 'd1' ),
-            ( 'd1', 'd2' ),
-          ] )
-
-        dos.node( 
-          'z1',
-        )
-
-        with dos.subgraph( name = 'cluster_4' ) as cuatro:
-          cuatro.attr(
-            style = 'filled',
-            label = 'process #4',
-            rank = 'same',
-            rankdir = 'LR',
-            constraint = 'false',
-            color = 'pink' 
-          )
-          cuatro.node( 
-            'g1',
-          )
-        dos.node( 
-          'b0',
-        )
-        with dos.subgraph( name = 'cluster_5' ) as cinco:
-          cinco.attr(
-            style = 'filled',
-            label = 'process #5',
-            rank = 'same',
-            constraint = 'false',
-            color = 'yellow' 
-          )
-          cinco.edges( [
-            ( 'f0', 'f1' ),
-            ( 'f1', 'f2' ),
-          ] )
-
-      uno.edges( [ 
-         ( 'a3', 'd0' ),
-         ( 'd2', 'z1' ),
-         ( 'z1', 'g1' ),
-         ( 'g1', 'b0' ),
-         ( 'b0', 'f0' ),
-      ])
-
-    #self.grafico.edge( 'start', 'a0' )
-    #self.grafico.edge( 'start', 'b0' )
-    #self.grafico.edge( 'a1', 'b3' )
-    #self.grafico.edge( 'b2', 'a3' )
-    #self.grafico.edge( 'a3', 'a0' )
-    #self.grafico.edge( 'a3', 'end' )
-    #self.grafico.edge( 'b3', 'end' )
-
-    #self.grafico.node( 'start', shape = 'Mdiamond' )
-    #self.grafico.node( 'end', shape = 'Msquare' )
-
 
     verboseprint( '\n#### ' + self.nombre + ' ####' )
 
@@ -236,15 +146,27 @@ class Pista:
         for r in range( reiterar + 1):
           self.registros.setdefault( nivel , [] ).append( registro )
           if 'unidades' in uo:
+            # 3 posibles casos,
+            # que no tenga cluster, 
+            #   osea que sea un referente (que no tenga referente)
+            #   cluster de clusters
+            # que ya tenga cluster
+            #   osea que sea un referido (que tenga referente)
+            #   cluster de cluster o cluster de unidades
+            # que no tenga unidades 
+            #   nodos conectados
+            # si no tiene cluster, crearlo y pasarlo despe 
+
+
+            #uno = Digraph( name = 'cluster_0' )
+            #uno.attr( 
+            #  style = 'filled',
+            #  color = 'blue',
+            #  label = 'process #0'
+            #)
+
             sucesion[ 'referente' ] = registro 
 
-            #with self.grafico.subgraph( name = 'cluster_' + str( u ) ) as c:
-            #    c.attr(
-            #      label = u,
-            #    )
-            #    #c.node( u + 'test' )
-            #    for uu in uo[ 'unidades'  ]:
-            #      c.node( uu )
 
             self.ordenar( 
               uo[ 'unidades' ],
@@ -253,8 +175,15 @@ class Pista:
             ) 
 
           else: 
-            # TODO Contar 'recurrencias' que suenan (en el nivel superior)
-            self.registros.setdefault( 'copa' , [] ).append( registro )
+
+            #Enchufar a cluster
+            #uno.edges( [
+            #  ( 'a0', 'a1' ),
+            #  ( 'a1', 'a2' ),
+            #  ( 'a2', 'a3' )
+            #] )
+
+            #self.registros.setdefault( 'copa' , [] ).append( registro )
             factura = {
               **Pista.defactos,
               **sucesion,
@@ -370,17 +299,7 @@ for pista in pistas:
   """
   if args.plot:
     print( '#### PLOTEANDO ####' )
-    pista.grafico.view( )
-    #pista.grafico.draw(
-    #  'file.png',
-    #  format = 'png',
-    #  prog   = 'dot'
-    #)
-    #if args.plot == 'dot':
-    #  write_dot(
-    #    pista.grafico,
-    #    pista.nombre.lower() + '.dot'
-    #  )
+    grafico.view( )
   momento = 0
   track = pista.orden
   opus.addTrackName(
