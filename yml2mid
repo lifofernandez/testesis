@@ -42,7 +42,7 @@ verboseprint = pprint.pprint if args.verbosity else lambda *a, **k: None
 salida = args.output
 if args.plot:
   print( '#### cargar lib####' )
-  from graphviz import Digraph
+
 class Pista:
   """
   Clase para cada 'track' a partir de archivos.yml
@@ -82,13 +82,6 @@ class Pista:
     self.paleta = paleta # paleta de unidades
     self.macroforma = macroforma
 
-    self.grafico = Digraph(
-      'G',
-      filename = 'cluster.gv'
-    )
-    #self.grafico.graph_attr[ 'rankdir' ] = 'LR'
-    #self.grafico.graph_attr[ 'constraint' ] = 'false'
-    #self.grafico.graph_attr[ 'rank' ] = 'same'
 
     self.registros = {}
     self.secuencia = [] 
@@ -96,7 +89,7 @@ class Pista:
     #self.secuencia = self.ordenar( macroforma )
     #pprint.pprint( self.registros )
     if args.plot:
-      print( '#### cargar lib ####' )
+      print( '#### crear grafico ####' )
     
 
     verboseprint( '\n#### ' + self.nombre + ' ####' )
@@ -113,7 +106,6 @@ class Pista:
     forma    = None,
     nivel    = 0,
     herencia = {},
-    previo = None,
   ):
     """
     Organiza unidades según relacion de referencia
@@ -148,49 +140,21 @@ class Pista:
         reiterar = uo[ 'reiterar' ] if 'reiterar' in uo else 0
 
         n = str( nivel ) + u + str( recurrencia )
-        previo = previo if previo is not None else Digraph( name = 'cluster_' + n  )
-        #previo = Digraph( name = 'cluster_' + n  )
-        previo.attr( 
-        #  style = 'filled',
-        #  color = 'red',
-          label = 'previo'+n 
-        )
 
-        for r in range( reiterar + 1):
+        for r in range( reiterar + 1 ):
           self.registros.setdefault( nivel , [] ).append( registro )
+
           if 'unidades' in uo:
-            r = str( random.uniform( .5, 1 ) )
-            g = str( random.uniform( .5, 1 ) )
-            b = str( random.uniform( .5, 1 ) )
-            rc = r + g + b 
-            actual = Digraph( name = 'cluster_local' + n )
-            actual.attr( 
-              style = 'filled',
-              color = rc,
-              label = n 
-            )
-            actual.node( u )
-            previo.subgraph( actual )
+
 
             sucesion[ 'referente' ] = registro 
-
             self.ordenar( 
               uo[ 'unidades' ],
               nivel,
               sucesion,
-#              previo
             ) 
 
           else: 
-            # nodos conectados
-            # si no tiene cluster, crearlo y pasarlo despe 
-            # agregar unidad a cluster del referente y conectarla con otros nodos
-            #uno.edges( [
-            #  ( 'a0', 'a1' ),
-            #  ( 'a1', 'a2' ),
-            #  ( 'a2', 'a3' )
-            #] )
-            previo.node( u )
 
             #self.registros.setdefault( 'copa' , [] ).append( registro )
             factura = {
@@ -199,7 +163,7 @@ class Pista:
             } 
             o = self.secuenciar( factura ) 
             self.secuencia += o  
-          self.grafico.subgraph( previo )
+
   def secuenciar( 
     self,
     unidad
@@ -308,7 +272,7 @@ for pista in pistas:
   """
   if args.plot:
     print( '#### PLOTEANDO ####' )
-    pista.grafico.view( )
+
   momento = 0
   track = pista.orden
   opus.addTrackName(
