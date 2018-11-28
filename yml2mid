@@ -120,7 +120,7 @@ class Pista:
       verboseprint( '-' * ( nivel - 1 ) +  u  )
       if u in self.paleta:
         uo = self.paleta[ u ]
-        # TODO q cuente recurrencias en todos ls niveles
+        # TODO q cuente recurrencias en diferentes niveles
         recurrencia = sum( 
           [ 1 for o in self.registros[ nivel ] if o[ 'nombre' ] == u ]
         ) if nivel in self.registros else 0 
@@ -146,7 +146,6 @@ class Pista:
 
           if 'unidades' in uo:
 
-
             sucesion[ 'referente' ] = registro 
             self.ordenar( 
               uo[ 'unidades' ],
@@ -160,7 +159,8 @@ class Pista:
             factura = {
               **Pista.defactos,
               **sucesion,
-            } 
+            }
+            factura[ 'dimension' ] = sum( factura[ 'duraciones' ] ) * ( 60 / factura[ 'bpm' ] )
             o = self.secuenciar( factura ) 
             self.secuencia += o  
 
@@ -171,8 +171,8 @@ class Pista:
     """
     Genera una secuencia de eventos a partir de unidades preprocesadas
     """
-    revertir = unidad['revertir'] if 'revertir' in unidad else None 
-    if isinstance( revertir , list ):
+    revertir = unidad[ 'revertir' ] if 'revertir' in unidad else None 
+    if isinstance( revertir , list ): 
       for r in revertir:
         if r in unidad:
           unidad[ r ].reverse() 
@@ -280,12 +280,14 @@ for pista in pistas:
     momento,
     pista.nombre
   )
+
   if 'bpm' in pista.base:
     opus.addTempo(
       track,
       momento,
       pista.base['bpm']
     )
+
   if 'metro' in pista.base:
     """
     Time Signature event
@@ -306,6 +308,7 @@ for pista in pistas:
       relojes_por_tick, 
       notas_por_negra
     )
+
   if 'clave' in pista.base:
     opus.addKeySignature(
       track,
@@ -314,6 +317,7 @@ for pista in pistas:
       1, # multiplica por el n de alteraciones
       pista.base[ 'clave' ][ 'modo' ]
     )
+
   if 'programa' in pista.base:
     opus.addProgramChange(
       track,
@@ -329,6 +333,7 @@ for pista in pistas:
     previa = previo[ 'unidad' ]
     canal = evento[ 'canal' ]
     bpm = evento[ 'bpm' ]
+
     if ( previo['bpm'] != bpm ):
       opus.addTempo(
         track,
@@ -336,6 +341,7 @@ for pista in pistas:
         bpm,
       )
     metro = evento[ 'metro' ]
+
     if ( previo[ 'metro' ] != metro ):
       metro            = evento[ 'metro' ].split( '/' )
       numerador        = int( metro[ 0 ] ) 
@@ -351,6 +357,7 @@ for pista in pistas:
         notas_por_negra
       )
     clave = evento[ 'clave' ]
+
     if ( previo[ 'clave' ] != clave ):
      opus.addKeySignature(
        track,
@@ -360,6 +367,7 @@ for pista in pistas:
        clave[ 'modo' ]
      )
     programa = evento[ 'programa' ]
+
     if programa:
       if ( previo[ 'programa' ] != programa ):
         opus.addProgramChange(
@@ -369,8 +377,10 @@ for pista in pistas:
           programa
         )
         #opus.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
+
     if ( evento[ 'orden' ] == 0 ):
       #verboseprint( st )
+      print( evento[ 'dimension' ] )
       st = ''
       if (
          'referente' in evento

@@ -12,7 +12,7 @@ base: &base
   alturas: [ 1 ] 
   transportar: 72 
   duraciones: [ 1.5 ]
-  bpm: 100  
+  bpm: 60  
   metro: 3/4
   dinamicas: [ 1 ]
   canal: 1 
@@ -20,6 +20,7 @@ base: &base
 
 unidades: 
   espera:
+    <<: *base
     alturas: [ 0 ] 
     duraciones: [ 2 ]
   a: &a 
