@@ -21,16 +21,17 @@ names = ['v2.2.2', 'v2.2.1', 'v2.2.0', 'v2.1.2', 'v2.1.1', 'v2.1.0', 'v2.0.2',
          'v2.0.1', 'v2.0.0', 'v1.5.3', 'v1.5.2', 'v1.5.1', 'v1.5.0', 'v1.4.3',
          'v1.4.2', 'v1.4.1', 'v1.4.0']
 
-dates = ['2018-01-01T01:01:07Z', '2018-01-01T01:01:39Z',
-         '2018-01-01T01:01:32Z', '2018-01-01T01:01:47Z',
-         '2018-01-01T01:01:38Z', '2018-01-01T01:01:12Z',
-         '2018-01-01T01:01:15Z', '2018-01-01T01:01:49Z',
-         '2018-01-01T01:01:36Z', '2018-01-01T01:01:52Z',
-         '2018-01-01T01:01:01Z', '2018-01-01T01:01:50Z',
-         '2018-01-01T01:01:23Z', '2018-01-01T01:01:54Z',
-         '2018-01-01T01:01:13Z', '2018-01-01T01:01:23Z',
-         '2018-01-01T01:01:04Z']
-dates = [ datetime.strptime(ii, "%Y-%m-%dT%H:%M:%SZ") for ii in dates ]
+dates = ['01:01:07Z', '01:01:39Z',
+         '01:01:32Z', '01:01:47Z',
+         '01:01:38Z', '01:01:12Z',
+         '01:01:15Z', '01:01:49Z',
+         '01:01:36Z', '01:01:52Z',
+         '01:01:01Z', '01:01:50Z',
+         '01:01:23Z', '01:01:54Z',
+         '01:01:13Z', '01:01:23Z',
+         '01:01:04Z']
+dates = [ datetime.strptime(ii, "%H:%M:%SZ" ) for ii in dates ]
+print( dates )
 
 ##############################################################################
 # Next, we'll iterate through each date and plot it on a horizontal line.
@@ -38,13 +39,13 @@ dates = [ datetime.strptime(ii, "%Y-%m-%dT%H:%M:%SZ") for ii in dates ]
 #
 # Note that Matplotlib will automatically plot datetime inputs.
 
-levels = np.array([-5, 5, -3, 3, -1, 1])
-fig, ax = plt.subplots(figsize=(8, 5))
+levels = np.array( [-5, 5, -3, 3, -1, 1] )
+fig, ax = plt.subplots( figsize=( 8, 5 ) )
 
 # Create the base line
 start = min(dates)
 stop = max(dates)
-ax.plot((start, stop), (0, 0), 'k', alpha=.5)
+ax.plot( ( start, stop ), ( 0,  0 ), 'k', alpha=.5 )
 
 # Iterate through releases annotating each one
 for ii, (iname, idate) in enumerate(zip(names, dates)):
