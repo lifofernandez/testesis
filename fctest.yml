@@ -1,27 +1,26 @@
-nombre: 'Feliz Cumplei2'
+nombre: 'Feliz Cumple'
 base: &base 
+  clave: 
+    alteraciones: 0
+    modo: 0
   intervalos: [ 
-    -24, -22,-20,-19,-17, -15, -13,
-    -12, -10, -8, -7, -5,  -3,  -1,
-      0,   2,  4,  5,  7,   9,  11,
-     12,  14, 16, 17, 19,  21,  23,
+    -12, -10, -8, -7, -5, -3, -1,
+      0,   2,  4,  5,  7,  9, 11,
+     12,  14, 15, 17, 19, 21, 23,
+     24
   ]
   alturas: [ 1 ] 
-  voces:
-   - [ 0 ]
-   - [ -3 ]
-   - [ -5 ]
-  transportar: 60 
-  transponer: 7 
+  transportar: 72 
   duraciones: [ 1.5 ]
-  bpm: 60
+  bpm: 60  
   metro: 3/4
   dinamicas: [ 1 ]
-  canal: 2
-  programa: 3
+  canal: 1 
+  programa: 1
 
 unidades: 
   espera:
+    <<: *base
     alturas: [ 0 ] 
     duraciones: [ 2 ]
   a: &a 
@@ -30,12 +29,14 @@ unidades:
     duraciones: [ .75, .25, 1, 1 ]
   b: &b 
     <<: *base
-    programa: 1
+    programa: 4
     alturas: [ 8, 7 ] 
     duraciones: [ 1, 2 ]
+    #reiterar: 1
   b`: 
     <<: *b
-    alturas: [ 9, 8 ] 
+    transponer: 1
+    #reiterar: 0
   a`: 
     <<: *a
     alturas: [ 5, 5, 12, 10 ] 
@@ -44,7 +45,7 @@ unidades:
     alturas: [ 8, 8, 7, 6 ] 
   a```: 
     <<: *a
-    alturas: [ 11, 11, 10, 8 ] 
+    alturas: [ 11, 11, 10, 8, 11, 10, 8 ] 
   A: 
     unidades: [ 'a', 'b' ] 
   A`: 
@@ -54,10 +55,11 @@ unidades:
   A``: 
     unidades: [ 'a```', 'b`' ] 
   estrofa: 
-   unidades: [
+    unidades: [
     'A',
     'A`',
-   ]
+  ]
+    #reiterar: 4
   estribillo: 
     unidades: [
     'B',
@@ -65,6 +67,8 @@ unidades:
   ]
 macroforma: !!seq [
   'espera',
+  'estrofa',
+  'estribillo',
   'estrofa',
   'estribillo',
 ]

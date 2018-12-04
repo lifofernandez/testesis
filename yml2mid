@@ -48,22 +48,8 @@ if args.plot:
   import matplotlib.pyplot as plt
   import numpy as np
   import matplotlib.dates as mdates
-  from datetime import datetime
-  names = ['v2.2.2', 'v2.2.1', 'v2.2.0', 'v2.1.2', 'v2.1.1', 'v2.1.0', 'v2.0.2',
-           'v2.0.1', 'v2.0.0', 'v1.5.3', 'v1.5.2', 'v1.5.1', 'v1.5.0', 'v1.4.3',
-           'v1.4.2', 'v1.4.1', 'v1.4.0']
-  
-  dates = ['01:01:07Z', '01:01:39Z',
-           '01:01:32Z', '01:01:47Z',
-           '01:01:38Z', '01:01:12Z',
-           '01:01:15Z', '01:01:49Z',
-           '01:01:36Z', '01:01:52Z',
-           '01:01:01Z', '01:01:50Z',
-           '01:01:23Z', '01:01:54Z',
-           '01:01:13Z', '01:01:23Z',
-           '01:01:04Z']
-  dates = [ datetime.strptime(ii, "%H:%M:%SZ" ) for ii in dates ]
-  print( dates )
+  from datetime import datetime, timedelta
+
 
 class Pista:
   """
@@ -101,6 +87,7 @@ class Pista:
     Pista.cantidad += 1
     self.oid = str( self.orden ) + self.nombre 
     self.base = base
+    self.duracion = 0
     self.paleta = paleta # paleta de unidades
     self.macroforma = macroforma
 
@@ -111,6 +98,7 @@ class Pista:
     #self.secuencia = self.ordenar( macroforma )
     #pprint.pprint( self.registros )
     if args.plot:
+      self.fig, self.ax = plt.subplots( figsize = ( 8, 5 ) )
       print( '#### crear grafico ####' )
     
 
@@ -182,7 +170,6 @@ class Pista:
               **Pista.defactos,
               **sucesion,
             }
-            factura[ 'dimension' ] = sum( factura[ 'duraciones' ] ) * ( 60 / factura[ 'bpm' ] )
             o = self.secuenciar( factura ) 
             self.secuencia += o  
 
@@ -217,6 +204,7 @@ class Pista:
     pasos = len( ganador )
     seq = []
  
+    dimension = 0 
     for paso in range( pasos ):
       """
       Combinar parametros: altura, duracion, dinamica, etc
@@ -289,11 +277,22 @@ for d in definiciones:
 
 opus = MIDIFile( Pista.cantidad ) 
 for pista in pistas:
+
   """
   Loop principal:
   """
   if args.plot:
     print( '#### PLOTEANDO ####' )
+    levels = np.array( [-5, 5, -3, 3, -1, 1] )
+    start =  datetime.strptime( str( timedelta( seconds = 1 ) ), "%H:%M:%S" ) 
+    dimensiones = sum( e['duracion'] * ( 60 / e['bpm'] ) for e in pista.secuencia ) 
+    stop  =  datetime.strptime( str( timedelta( seconds = dimensiones ) ), "%H:%M:%S" ) 
+    pista.ax.plot( 
+      ( start, stop ),
+      ( 0, 0 ),
+      'k',
+      alpha = .5
+    )
 
   momento = 0
   track = pista.orden
@@ -416,6 +415,38 @@ for pista in pistas:
         st
       )
 
+      if args.plot:
+        # TODO BUg solo anda con bpm = 60
+        m =  momento * ( 60 / bpm) 
+        idate = datetime.strptime( str( timedelta( seconds = m ) ), "%H:%M:%S" ) 
+        level = levels[ index % 6 ]
+        vert = 'top' if level < 0 else 'bottom'
+        pista.ax.scatter(
+          idate,
+          0,
+          s = 100,
+          facecolor = 'w',
+          edgecolor = 'k',
+          zorder = 9999
+         )
+         # Plot a line up to the text
+        pista.ax.plot(
+          ( idate, idate ), 
+          ( 0, level ), 
+          c = 'r', 
+          alpha = .7
+        )
+         # Give the text a faint background and align it properly
+        pista.ax.text(
+           idate,
+           level,
+           st,
+           horizontalalignment = 'right',
+           verticalalignment = vert,
+           fontsize = 14,
+           backgroundcolor = ( 1., 1., 1., .3 )
+        )
+
     voces = evento[ 'acorde' ] if evento[ 'acorde' ] else [ evento[ 'altura' ] ]
     dinamica = int( evento[ 'dinamica' ] * 126 )
     duracion = evento[ 'duracion' ] 
@@ -444,53 +475,31 @@ for pista in pistas:
         )
     momento += duracion
 
+  if args.plot:
+    pista.ax.set( title = pista.nombre )
+    # Set the xticks formatting
+    # format xaxis with 3 month intervals
+    pista.ax.get_xaxis().set_major_locator( mdates.SecondLocator( interval = 3 ) )
+    pista.ax.get_xaxis().set_major_formatter( mdates.DateFormatter( "%M %S" ) )
+    pista.fig.autofmt_xdate()
+    # Remove components for a cleaner look
+    plt.setp( 
+      (
+        pista.ax.get_yticklabels() + 
+        pista.ax.get_yticklines() +
+        list( pista.ax.spines.values() )
+      ),
+      visible=False
+    )
+
+
 with open( salida + ".mid", "wb" ) as output_file:
   """
   Salida
   """
   opus.writeFile( output_file )
 
-
 if args.plot:
-  ##############################################################################
-  # Next, we'll iterate through each date and plot it on a horizontal line.
-  # We'll add some styling to the text so that overlaps aren't as strong.
-  #
-  # Note that Matplotlib will automatically plot datetime inputs.
-  
-  levels = np.array( [-5, 5, -3, 3, -1, 1] )
-  fig, ax = plt.subplots( figsize=( 8, 5 ) )
-  
-  # Create the base line
-  start = min(dates)
-  stop = max(dates)
-  ax.plot( ( start, stop ), ( 0,  0 ), 'k', alpha=.5 )
-  
-  ## Iterate through releases annotating each one
-  #for ii, (iname, idate) in enumerate(zip(names, dates)):
-  #    level = levels[ii % 6]
-  #    vert = 'top' if level < 0 else 'bottom'
-  #
-  #    ax.scatter(idate, 0, s=100, facecolor='w', edgecolor='k', zorder=9999)
-  #    # Plot a line up to the text
-  #    ax.plot(
-  #     (idate, idate), 
-  #     (0, level), 
-  #     c='r', 
-  #     alpha=.7
-  #   )
-  #    # Give the text a faint background and align it properly
-  #    ax.text(idate, level, iname,
-  #            horizontalalignment='right', verticalalignment=vert, fontsize=14,
-  #            backgroundcolor=(1., 1., 1., .3))
-  #ax.set(title="Matplotlib release dates")
-  ## Set the xticks formatting
-  ## format xaxis with 3 month intervals
-  ax.get_xaxis().set_major_locator(mdates.SecondLocator(interval=3))
-  ax.get_xaxis().set_major_formatter(mdates.DateFormatter("%M %S"))
-  fig.autofmt_xdate()
-  
-  # Remove components for a cleaner look
-  plt.setp((ax.get_yticklabels() + ax.get_yticklines() +
-            list(ax.spines.values())), visible=False)
   plt.show()
+
+
