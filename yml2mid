@@ -125,9 +125,9 @@ class Pista:
     herencia.pop( 'unidades', None )
     herencia.pop( 'reiterar', None )
 
-
     for u in forma:  
       verboseprint( '-' * ( nivel - 1 ) +  u  )
+
       if u in self.paleta:
         uo = self.paleta[ u ]
         # TODO q cuente recurrencias en diferentes niveles
@@ -139,6 +139,7 @@ class Pista:
           'recurrencia' : recurrencia,
           'nivel'       : nivel,
         }
+
         if 'referente' in herencia:
           registro[ 'referente' ] = herencia[ 'referente' ] 
         sucesion = {
@@ -146,16 +147,13 @@ class Pista:
           **herencia,
           **registro
         } 
-
         reiterar = uo[ 'reiterar' ] if 'reiterar' in uo else 0
-
         n = str( nivel ) + u + str( recurrencia )
 
         for r in range( reiterar + 1 ):
           self.registros.setdefault( nivel , [] ).append( registro )
 
           if 'unidades' in uo:
-
             sucesion[ 'referente' ] = registro 
             self.ordenar( 
               uo[ 'unidades' ],
@@ -164,7 +162,6 @@ class Pista:
             ) 
 
           else: 
-
             #self.registros.setdefault( 'copa' , [] ).append( registro )
             factura = {
               **Pista.defactos,
@@ -181,6 +178,7 @@ class Pista:
     Genera una secuencia de eventos a partir de unidades preprocesadas
     """
     revertir = unidad[ 'revertir' ] if 'revertir' in unidad else None 
+
     if isinstance( revertir , list ): 
       for r in revertir:
         if r in unidad:
@@ -188,6 +186,7 @@ class Pista:
     elif isinstance( revertir , str ):
       if revertir in unidad:
         unidad[ revertir ].reverse() 
+
     intervalos    = unidad[ 'intervalos' ]
     alturas       = unidad[ 'alturas' ]
     voces         = unidad[ 'voces' ]
@@ -203,8 +202,7 @@ class Pista:
     ganador = max( candidatos, key=len )
     pasos = len( ganador )
     seq = []
- 
-    dimension = 0 
+
     for paso in range( pasos ):
       """
       Combinar parametros: altura, duracion, dinamica, etc
@@ -284,9 +282,13 @@ for pista in pistas:
   if args.plot:
     print( '#### PLOTEANDO ####' )
     levels = np.array( [-5, 5, -3, 3, -1, 1] )
-    start =  datetime.strptime( str( timedelta( seconds = 1 ) ), "%H:%M:%S" ) 
-    dimensiones = sum( e['duracion'] * ( 60 / e['bpm'] ) for e in pista.secuencia ) 
-    stop  =  datetime.strptime( str( timedelta( seconds = dimensiones ) ), "%H:%M:%S" ) 
+    formato =  '%H:%M:%S'
+    start = datetime.strptime( str( timedelta( seconds = 1 ) ), formato ) 
+    dimension = sum( e['duracion'] * ( 60 / e['bpm'] ) for e in pista.secuencia ) 
+    dimension = str( timedelta( seconds = dimension) )
+    dimension = dimension.split('.')[0] # revisar
+    dimension = datetime.strptime( dimension, formato ) 
+    stop  =  dimension
     pista.ax.plot( 
       ( start, stop ),
       ( 0, 0 ),
@@ -416,9 +418,10 @@ for pista in pistas:
       )
 
       if args.plot:
-        # TODO BUg solo anda con bpm = 60
         m =  momento * ( 60 / bpm) 
-        idate = datetime.strptime( str( timedelta( seconds = m ) ), "%H:%M:%S" ) 
+        t = str( timedelta( seconds = m ) )
+        t = t.split('.')[0] # borra microsegundos, revisar
+        idate = datetime.strptime( t , "%H:%M:%S" ) 
         level = levels[ index % 6 ]
         vert = 'top' if level < 0 else 'bottom'
         pista.ax.scatter(
