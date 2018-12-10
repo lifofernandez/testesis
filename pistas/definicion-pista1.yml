@@ -18,6 +18,7 @@ base: &base !!map
     modo: 0 # Modo de la escala, 0 = Mayor o 1 = Menor
 
   intervalos: !!seq 
+    &intervalos
     # Secuencia (lista ordenada) de intervalos 
     # recorrida por el puntero de alturas
     [ 
@@ -113,6 +114,7 @@ base: &base !!map
       71 : 120,
     ]
 
+
 unidades: !!map
   # Paleta de unidades para secuenciar
 
@@ -147,7 +149,11 @@ unidades: !!map
 
   B: &B 
     #metro: 9/8
-    unidades: [ 'a' , 'b^' ]
+    unidades: &unidades [ 'a' , 'b^' ]
+    #itertool: 
+    #  iterador: 'chain'
+    #  iterables: *unidades  
+    #  argumentos:  1 
 
   B^: 
     <<: *B
@@ -158,6 +164,10 @@ unidades: !!map
     fluctuacion: 0
 
   estrofa: 
+    itertool: &nuevos_intervalos
+      iterador: 'permutations'
+      iterables:  *intervalos
+      argumentos:  2 
     unidades: [ 'A', 'B', 'B^' ]
 
   estribo: 

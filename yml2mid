@@ -7,6 +7,9 @@ import math
 import random
 from midiutil import MIDIFile
 #from midiutil import *
+#from itertools import *
+import itertools
+
 
 """
 Argumentos y parametros globales
@@ -67,11 +70,13 @@ class Pista:
     'duraciones'    : [ 1 ],
     'dinamicas'     : [ 1 ],
     'fluctuacion'   : [ 1, 1 ], 
+    #'fluctuacion'   : { 'minimo' : 1, 'maximo' : 1 },
     'transportar'   : 0,
     'transponer'    : 0,
     'controladores' : [ None ],
     'reiterar'      : 1,
     'referente'     : None,
+    'itertools'     : { 'metodo' : None, 'argumentos' : [ None ] },
   }
  
   def __init__( 
@@ -122,12 +127,37 @@ class Pista:
     nivel += 1
     herencia.pop( 'unidades', None )
     herencia.pop( 'reiterar', None )
+    herencia.pop( 'itertool', None )
 
     for u in forma:  
       verboseprint( '-' * ( nivel - 1 ) +  u  )
 
       if u in self.paleta:
+
         uo = self.paleta[ u ]
+
+        #itertool = getattr( itertools, uo[ 'itertools' ][ 'metodo' ] ) if uo[ 'itertools'] is not None else None
+
+        itertool   = uo[ 'itertool' ] if 'itertool' in uo else None
+        iterador   = getattr( itertools, itertool[ 'iterador' ] ) if itertool and 'iterador' in itertool else None
+        iterables  = itertool[ 'iterables' ]  if itertool and 'iterables'  in itertool else None
+        argumentos = itertool[ 'argumentos' ] if itertool and 'argumentos' in itertool else None
+        if iterador and iterables:
+          print( iterador )
+          print( iterables )
+          print( argumentos )
+          resultado = iterador( iterables, argumentos )
+          for r in resultado:
+            pprint.pprint(r)
+
+         
+
+        #itertool = getattr( itertools, itertool ) 
+        ##itertool = getattr( itertools, 'chain' ) if 'itertools' in uo else 'chain'
+
+        #for i in iterador( iterables, argumentos ):
+        #    print(i)
+
         # TODO q cuente recurrencias en diferentes niveles
         recurrencia = sum( 
           [ 1 for o in self.registros[ nivel ] if o[ 'nombre' ] == u ]
