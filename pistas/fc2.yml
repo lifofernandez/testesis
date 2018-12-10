@@ -1,4 +1,4 @@
-nombre: 'Feliz Cumplei2'
+nombre: 'Feliz Cumple2'
 base: &base 
   intervalos: [ 
     -24, -22,-20,-19,-17, -15, -13,

@@ -37,7 +37,6 @@ base: &base !!map
     # Apilamiento de alturas 
     # cada voz es un lista
     # desplaza nº de intervalo
-    # TODO ver relacion voz /n de intervalo
     - [ 8, 6 ] 
     - [ 5 ] 
     - [ 3 ]
@@ -86,6 +85,7 @@ base: &base !!map
     # Factor de azar en dinamica
     # lista de dos valores: [inf, sup]
     # 0 a 1
+    # min, max
     [ 0.9, 1 ]
 
   revertir: !!seq
@@ -96,10 +96,10 @@ base: &base !!map
    # Canal MIDI 
    3
 
-  banco: !!str
-   # Banco MIDI
-   # No aplicado
-   'GM'
+   #banco: !!str
+   # # Banco MIDI
+   # # No aplicado
+   # 'GM'
 
   programa: !!int
     # Instrumento MIDI
