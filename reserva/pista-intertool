@@ -81,6 +81,13 @@ base: &base !!map
    # Lista ordenada de dinámicas
    [ 1, .5, .4 ]
 
+  
+  fluctuacion: !!seq
+    # Factor de azar en dinamica
+    # lista de dos valores: [inf, sup]
+    # 0 a 1
+    # min, max
+    [ 0.9, 1 ]
 
   revertir: !!seq
     # Revierte parametros del tipo !!seq
@@ -127,9 +134,7 @@ unidades: !!map
     clave: 
       alteraciones: 2
       modo: 1 
-    fluctuacion: 
-      min: .1
-      max: .4 
+    fluctuacion: [ .1, .4 ]
 
   b^: 
     <<: *b
@@ -144,7 +149,11 @@ unidades: !!map
 
   B: &B 
     #metro: 9/8
-    unidades: &unidadesB [ 'a' , 'b^' ]
+    unidades: &unidades [ 'a' , 'b^' ]
+    #itertool: 
+    #  iterador: 'chain'
+    #  iterables: *unidades  
+    #  argumentos:  1 
 
   B^: 
     <<: *B
@@ -152,9 +161,14 @@ unidades: !!map
     bmp: 89
     unidades: [ 'b', 'a' ] 
     dinamicas: [ 1 ]
+    fluctuacion: 0
 
   estrofa: 
     unidades: [ 'A', 'B', 'B^' ]
+    itertool: &nuevos_intervalos
+      iterador: 'permutations'
+      #argumentos: *intervalos 
+      argumentos: 'ABCD'
 
 
   estribo: 

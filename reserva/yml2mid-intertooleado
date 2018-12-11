@@ -69,7 +69,8 @@ class Pista:
     'voces'         : None,
     'duraciones'    : [ 1 ],
     'dinamicas'     : [ 1 ],
-    'fluctuacion'   : { 'min' : 1, 'max' : 1 },
+    'fluctuacion'   : [ 1, 1 ], 
+    #'fluctuacion'   : { 'minimo' : 1, 'maximo' : 1 },
     'transportar'   : 0,
     'transponer'    : 0,
     'controladores' : [ None ],
@@ -135,7 +136,24 @@ class Pista:
 
         uo = self.paleta[ u ]
 
+        itertool   = uo[ 'itertool' ] if 'itertool' in uo else None
+        iterador   = getattr( itertools, itertool[ 'iterador' ] ) if itertool and 'iterador' in itertool else None
+        argumentos = itertool[ 'argumentos' ] if itertool and 'argumentos' in itertool else None
+        if iterador and argumentos:
+          #print( iterador )
+          #print( argumentos )
+          resultado = iterador( argumentos )
+          #propiedad = uo[ iterable ] if iterable in uo else None
+          for r in resultado:
+            print(r)
 
+         
+
+        #itertool = getattr( itertools, itertool ) 
+        ##itertool = getattr( itertools, 'chain' ) if 'itertools' in uo else 'chain'
+
+        #for i in iterador( iterables, argumentos ):
+        #    print(i)
 
         # TODO q cuente recurrencias en diferentes niveles
         recurrencia = sum( 
@@ -215,13 +233,12 @@ class Pista:
       Combinar parametros: altura, duracion, dinamica, etc
       """
       duracion = duraciones[ paso % len( duraciones ) ]
-      # TODO REVISAR
-      rand_min = unidad['fluctuacion']['min'] if 'min' in unidad[ 'fluctuacion' ] else 1
-      rand_max = unidad['fluctuacion']['max'] if 'max' in unidad[ 'fluctuacion' ] else 1
-      fluctuacion = random.uniform( 
-         rand_min,
-         rand_max 
-      ) if ( rand_min is not 1 ) or ( rand_max is not 1 ) else 1
+      fluctuacion = 1
+      if isinstance( unidad[ 'fluctuacion' ], list ):
+        fluctuacion = random.uniform( 
+          unidad[ 'fluctuacion' ][0],
+          unidad[ 'fluctuacion' ][1] 
+        )
       dinamica = dinamicas[ paso % len( dinamicas ) ] * fluctuacion
       controlador = controladores[ paso % len( controladores ) ]
       altura = alturas[ paso % len( alturas ) ]
