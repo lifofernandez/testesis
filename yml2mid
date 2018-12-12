@@ -35,7 +35,7 @@ parser.add_argument(
 parser.add_argument( 
  '-p',
  '--plot',
- help = 'Ploteo del arbol de relaciones entre unidades.(dot ó png)',
+ help = 'Ploteo del arbol de relaciones entre unidades (dot ó png)',
 )
 args = parser.parse_args()
 
@@ -75,7 +75,6 @@ class Pista:
     'controladores' : [ None ],
     'reiterar'      : 1,
     'referente'     : None,
-    'itertools'     : { 'metodo' : None, 'argumentos' : [ None ] },
   }
  
   def __init__( 
@@ -101,8 +100,8 @@ class Pista:
     #pprint.pprint( self.registros )
 
     if args.plot:
-      self.fig, self.ax = plt.subplots( figsize = ( 8, 5 ) )
       print( '#### crear grafico ####' )
+      self.fig, self.ax = plt.subplots( figsize = ( 8, 5 ) )
 
     verboseprint( '\n#### ' + self.nombre + ' ####' )
 
@@ -126,7 +125,6 @@ class Pista:
     nivel += 1
     herencia.pop( 'unidades', None )
     herencia.pop( 'reiterar', None )
-    #herencia.pop( 'itertool', None )
 
     for u in forma:  
       verboseprint( '-' * ( nivel - 1 ) +  u  )
@@ -134,8 +132,6 @@ class Pista:
       if u in self.paleta:
 
         uo = self.paleta[ u ]
-
-
 
         # TODO q cuente recurrencias en diferentes niveles
         recurrencia = sum( 
@@ -410,11 +406,9 @@ for pista in pistas:
         #opus.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
 
     if ( evento[ 'orden' ] == 0 ):
-      #verboseprint( st )
       st = ''
       ers = referir( evento[ 'referente' ] ) if evento[ 'referente' ] != None else [( 0, 0 )]
       prs = referir( previo[ 'referente' ] ) if previo[ 'referente' ] != None else [( 0, 0 )]
-
       for er, pr in zip( ers, prs ):
         if er != pr: 
           st += str( er[ 0 ] ) + ' #' + str( er[ 1 ] ) + '\n' 
@@ -447,7 +441,7 @@ for pista in pistas:
           c = 'r', 
           alpha = .7
         )
-         # Give the text a faint background and align it properly
+        # Give the text a faint background and align it properly
         pista.ax.text(
            idate,
            level,
@@ -467,7 +461,7 @@ for pista in pistas:
       if voz == 'S':
         dinamica = 0
         altura = 0
-      #TODO agregar a lista de notas antes de mandar a opus.
+      # TODO agregar a lista de notas antes de mandar a opus.
       opus.addNote( 
         track, 
         canal, 
