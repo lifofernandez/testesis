@@ -184,8 +184,8 @@ class Pista:
     """
     Genera una secuencia de eventos a partir de unidades preprocesadas
     """
-    revertir = unidad[ 'revertir' ] if 'revertir' in unidad else None 
 
+    revertir = unidad[ 'revertir' ] if 'revertir' in unidad else None 
     if isinstance( revertir , list ): 
       for r in revertir:
         if r in unidad:
@@ -206,7 +206,7 @@ class Pista:
       alturas,
       controladores,
     ]
-    ganador = max( candidatos, key=len )
+    ganador = max( candidatos, key = len )
     pasos = len( ganador )
     seq = []
 
@@ -216,17 +216,18 @@ class Pista:
       """
       duracion = duraciones[ paso % len( duraciones ) ]
       # TODO REVISAR
-      rand_min = unidad['fluctuacion']['min'] if 'min' in unidad[ 'fluctuacion' ] else 1
-      rand_max = unidad['fluctuacion']['max'] if 'max' in unidad[ 'fluctuacion' ] else 1
+      rand_min = unidad['fluctuacion']['min'] if 'min' in unidad[ 'fluctuacion' ] else None
+      rand_max = unidad['fluctuacion']['max'] if 'max' in unidad[ 'fluctuacion' ] else None
       fluctuacion = random.uniform( 
          rand_min,
          rand_max 
-      ) if ( rand_min is not 1 ) or ( rand_max is not 1 ) else 1
+      ) if rand_min or rand_max else 1
       dinamica = dinamicas[ paso % len( dinamicas ) ] * fluctuacion
       controlador = controladores[ paso % len( controladores ) ]
       altura = alturas[ paso % len( alturas ) ]
       acorde = []
       nota = 'S' # Silencio
+
       if altura != 0:
         """
         altura / puntero intervalo
@@ -239,7 +240,7 @@ class Pista:
             tonica = altura + ( voz[ paso % len( voz ) ] ) - 1 
             acorde += [ transportar +  intervalos[ tonica + transponer % len( intervalos ) ]  ]
       evento = {
-        **unidad,
+        **unidad, #TODO pasa mucha cosa de mas aca
         'unidad'      : unidad[ 'nombre' ],
         'orden'       : paso,
         'altura'      : nota,
@@ -253,7 +254,7 @@ class Pista:
 
 def referir(
   refs,
-  oi = None,
+  o = None,
   ):
   """
   Extrae referentes recursivamente
@@ -262,7 +263,7 @@ def referir(
   nombre      = refs[ 'nombre' ]      if 'nombre'      in refs else None
   recurrencia = refs[ 'recurrencia' ] if 'recurrencia' in refs else None
   nivel       = refs[ 'nivel' ]       if 'nivel'       in refs else None
-  output      = oi                    if oi is not None        else [ None ] * nivel 
+  output      = o                     if o is not None         else [ None ] * nivel 
   output[ nivel - 1 ] = ( nombre, recurrencia )
   if referente:
     referir( referente, output )
