@@ -94,7 +94,7 @@ base: &base !!map
     103
    
   # Cambio de Banco MIDI
-  # Los bancos midi se alternan através de cambios de control
+  # Los bancos MIDI se alternan através de cambios de control
   # CC#0 numero de banco, CC#32 numero de programa 
   # Ej: Programa 160 = 2do banco:32º instrumento/programa = CC#0:2,CC#32:32
   # https://www.mutools.com/info/docs/mulab/using-bank-select-and-prog-changes.html

@@ -7,6 +7,7 @@ import math
 import random
 from midiutil import MIDIFile
 #from midiutil import *
+#import midiutil 
 
 """
 Argumentos y parametros globales
@@ -274,6 +275,8 @@ for d in definiciones:
   pistas.append( pista )
 
 opus = MIDIFile( Pista.cantidad ) 
+
+potus = []
 for pista in pistas:
   """
   Loop principal:
@@ -297,18 +300,20 @@ for pista in pistas:
 
   momento = 0
   track = pista.orden
-  opus.addTrackName(
+  potus.append([
+    'addTrackName',
     track,
     momento,
     pista.nombre
-  )
+  ])
 
   if 'bpm' in pista.base:
-    opus.addTempo(
+    potus.append([
+      'addTempo',
       track,
       momento,
       pista.base['bpm']
-    )
+    ])
 
   if 'metro' in pista.base:
     """
@@ -322,31 +327,34 @@ for pista in pistas:
     denominador      = int( math.log10( int( metro[1] ) ) / math.log10( 2 ) )
     relojes_por_tick = 12 * denominador
     notas_por_negra  = 8
-    opus.addTimeSignature( 
+    potus.append([
+      'addTimeSignature',
       track,
       momento,
       numerador,
       denominador,
       relojes_por_tick, 
       notas_por_negra
-    )
+    ])
 
   if 'clave' in pista.base:
-    opus.addKeySignature(
+    potus.append([
+      'addKeySignature',
       track,
       momento,
       pista.base[ 'clave' ][ 'alteraciones' ],
       1, # multiplica por el n de alteraciones
       pista.base[ 'clave' ][ 'modo' ]
-    )
+    ])
 
   if 'programa' in pista.base:
-    opus.addProgramChange(
+    potus.append([
+      'addProgramChange',
       track,
       pista.base[ 'canal' ],
       momento,  
       pista.base[ 'programa' ]
-    )
+    ])
 
   for index, evento in enumerate( pista.secuencia ):
     verboseprint( evento )
@@ -357,11 +365,12 @@ for pista in pistas:
     bpm = evento[ 'bpm' ]
 
     if ( previo['bpm'] != bpm ):
-      opus.addTempo(
+      potus.append([
+        'addTempo',
         track,
         momento,
         bpm,
-      )
+      ])
     metro = evento[ 'metro' ]
 
     if ( previo[ 'metro' ] != metro ):
@@ -370,34 +379,37 @@ for pista in pistas:
       denominador      = int( math.log10( int( metro[ 1 ] ) ) / math.log10( 2 ) )
       relojes_por_tick = 12 * denominador
       notas_por_negra  = 8
-      opus.addTimeSignature( 
+      potus.append([
+        'addTimeSignature',
         track,
         momento,
         numerador,
         denominador,
         relojes_por_tick, 
         notas_por_negra
-      )
+      ])
     clave = evento[ 'clave' ]
 
     if ( previo[ 'clave' ] != clave ):
-     opus.addKeySignature(
+     potus.append([
+       'addKeySignature',
        track,
        momento,
        clave[ 'alteraciones' ],
        1, # multiplica por el n de alteraciones
        clave[ 'modo' ]
-     )
+     ])
     programa = evento[ 'programa' ]
 
     if programa:
       if ( previo[ 'programa' ] != programa ):
-        opus.addProgramChange(
+        potus.append([
+          'addProgramChange',
           track,
           canal, 
           momento, 
           programa
-        )
+        ])
         #opus.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
 
     if ( evento[ 'orden' ] == 0 ):
@@ -408,11 +420,12 @@ for pista in pistas:
         if er != pr: 
           st += str( er[ 0 ] ) + ' #' + str( er[ 1 ] ) + '\n' 
       st += unidad 
-      opus.addText(
+      potus.append([
+       'addText',
         track,
         momento,
         st
-      )
+      ])
 
       if args.plot:
         m =  momento * ( 60 / bpm) 
@@ -457,23 +470,25 @@ for pista in pistas:
         dinamica = 0
         altura = 0
       # TODO agregar a lista de notas antes de mandar a opus.
-      opus.addNote( 
+      potus.append([
+        'addNote',
         track, 
         canal, 
         altura, 
         momento, 
         duracion, 
         dinamica,
-      )
+      ])
     if evento[ 'controlador' ]:
       for controlador, parametro in evento[ 'controlador' ].items():
-        opus.addControllerEvent( 
+        potus.append([
+         'addControllerEvent',
           track, 
           canal, 
           momento, 
           controlador, 
           parametro, 
-        )
+        ])
     momento += duracion
 
   if args.plot:
@@ -494,13 +509,19 @@ for pista in pistas:
     )
 
 
-with open( salida + ".mid", "wb" ) as output_file:
-  """
-  Salida
-  """
-  opus.writeFile( output_file )
+#with open( salida + ".mid", "wb" ) as output_file:
+#  """
+#  Salida
+#  """
+#  #cambiar a potus
+#  opus.writeFile( output_file )
+
+for potu in potus:
+    mu = getattr( MIDIFile, potu[0] )
+    pprint.pprint( potu[1:] )
+    mu( *potu[1:] )
 
 if args.plot:
   plt.show()
 
-
+# un commit antes para volver a la implementacion basica de midiutil add function 
