@@ -16,7 +16,7 @@ base: &base
   metro: 3/4
   dinamicas: [ 1 ]
   canal: 1 
-  programa: 1
+  programa: 5
 
 unidades: 
   espera:
@@ -32,6 +32,7 @@ unidades:
     programa: 4
     alturas: [ 8, 7 ] 
     duraciones: [ 1, 2 ]
+    programa: 33
     #reiterar: 1
   b`: 
     <<: *b

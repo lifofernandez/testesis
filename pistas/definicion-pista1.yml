@@ -73,13 +73,13 @@ base: &base !!map
 
   reiterar: !!int
     # Catidad de veces q se toca esta unidad 
-    # Esta propiedad no se hereda, sino repetiria hijos
+    # Reiterarse a si misma,
+    # no es trasferible, no se hereda, caso contrario se reterarian los referidos
     0
 
   dinamicas: !!seq 
    # Lista ordenada de dinámicas
    [ 1, .5, .4 ]
-
 
   revertir: !!seq
     # Revierte parametros del tipo !!seq
@@ -89,15 +89,17 @@ base: &base !!map
    # Canal MIDI 
    3
 
-   #banco: !!str
-   # # Banco MIDI
-   # # No aplicado
-   # 'GM'
-
   programa: !!int
     # Instrumento MIDI
     103
    
+  # Cambio de Banco MIDI
+  # Los bancos midi se alternan através de cambios de control
+  # CC#0 numero de banco, CC#32 numero de programa 
+  # Ej: Programa 160 = 2do banco:32º instrumento/programa = CC#0:2,CC#32:32
+  # https://www.mutools.com/info/docs/mulab/using-bank-select-and-prog-changes.html
+  # http://www.andrelouis.com/qws/art/art009.htm
+
   controladores: !!seq
     # Secuencia de pares nº controlador : parametro
     [
@@ -105,7 +107,6 @@ base: &base !!map
       70 :  90,
       71 : 120,
     ]
-
 
 unidades: !!map
   # Paleta de unidades para secuenciar

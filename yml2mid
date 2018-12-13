@@ -7,9 +7,6 @@ import math
 import random
 from midiutil import MIDIFile
 #from midiutil import *
-#from itertools import *
-import itertools
-
 
 """
 Argumentos y parametros globales
@@ -130,9 +127,7 @@ class Pista:
       verboseprint( '-' * ( nivel - 1 ) +  u  )
 
       if u in self.paleta:
-
         uo = self.paleta[ u ]
-
         # TODO q cuente recurrencias en diferentes niveles
         recurrencia = sum( 
           [ 1 for o in self.registros[ nivel ] if o[ 'nombre' ] == u ]
@@ -290,7 +285,7 @@ for pista in pistas:
     start = datetime.strptime( str( timedelta( seconds = 1 ) ), formato ) 
     dimension = sum( e['duracion'] * ( 60 / e['bpm'] ) for e in pista.secuencia ) 
     dimension = str( timedelta( seconds = dimension) )
-    dimension = dimension.split('.')[0] # revisar
+    dimension = dimension.split('.')[0] 
     dimension = datetime.strptime( dimension, formato ) 
     stop  =  dimension
     pista.ax.plot( 
@@ -422,7 +417,7 @@ for pista in pistas:
       if args.plot:
         m =  momento * ( 60 / bpm) 
         t = str( timedelta( seconds = m ) )
-        t = t.split('.')[0] # borra microsegundos, revisar
+        t = t.split('.')[0] # borra microsegundos
         idate = datetime.strptime( t , "%H:%M:%S" ) 
         level = levels[ index % 6 ]
         vert = 'top' if level < 0 else 'bottom'
