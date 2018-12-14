@@ -509,17 +509,15 @@ for pista in pistas:
     )
 
 
-#with open( salida + ".mid", "wb" ) as output_file:
-#  """
-#  Salida
-#  """
-#  #cambiar a potus
-#  opus.writeFile( output_file )
 
 for potu in potus:
-    mu = getattr( MIDIFile, potu[0] )
-    pprint.pprint( potu[1:] )
-    mu( *potu[1:] )
+    mu = getattr( opus, potu[0] )( *potu[1:] )
+
+with open( salida + ".mid", "wb" ) as output_file:
+  """
+  Salida
+  """
+  opus.writeFile( output_file )
 
 if args.plot:
   plt.show()
