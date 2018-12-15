@@ -62,14 +62,14 @@ base: &base !!map
     # Clave de compás
     4/4
 
-  #desplazar: !!float
+  desplazar: !!float
   #  # Ajuste temporal 
   #  # momento, cuando ocurre o acontence
   #  # offset : + / - offset con la "posicion" original 
   #  # 0 es que donde debe acontecer originalmente
   #  # Ejemplo: "-2" anticipar 2 pulsos o ".5" demorar medio pulso
   #  # No aplicado
-  #  0
+    0
 
   reiterar: !!int
     # Catidad de veces q se toca esta unidad 
@@ -130,6 +130,7 @@ unidades: !!map
     fluctuacion: 
       min: .1
       max: .4 
+    desplazar: -1
 
   b^: 
     <<: *b

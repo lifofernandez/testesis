@@ -463,6 +463,8 @@ for pista in pistas:
     voces = evento[ 'acorde' ] if evento[ 'acorde' ] else [ evento[ 'altura' ] ]
     dinamica = int( evento[ 'dinamica' ] * 126 )
     duracion = evento[ 'duracion' ] 
+    retraso = evento[ 'desplazar' ] 
+    momentum = momento + retraso
 
     for voz in voces:
       altura = voz 
@@ -475,7 +477,7 @@ for pista in pistas:
         track, 
         canal, 
         altura, 
-        momento, 
+        momentum, 
         duracion, 
         dinamica,
       ])

@@ -17,6 +17,7 @@ base: &base
   dinamicas: [ 1 ]
   canal: 1 
   programa: 5
+  desplazar: 0
 
 unidades: 
   espera:
@@ -50,6 +51,7 @@ unidades:
   A`: 
     unidades: [ 'a' , 'b`' ]
   B: 
+    desplazar: 0
     unidades: [ 'a`', 'a``' ] 
   A``: 
     unidades: [ 'a```', 'b`' ] 
