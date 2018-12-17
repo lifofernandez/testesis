@@ -66,6 +66,7 @@ class Pista:
     'intervalos'    : [ 1 ],
     'voces'         : None,
     'duraciones'    : [ 1 ],
+    'desplazar'     : 0,
     'dinamicas'     : [ 1 ],
     'fluctuacion'   : { 'min' : 1, 'max' : 1 },
     'transportar'   : 0,
@@ -276,10 +277,13 @@ for d in definiciones:
 
 opus = MIDIFile( Pista.cantidad ) 
 
-potus = []
+eventos_midi = []
 for pista in pistas:
   """
   Loop principal:
+  Convierte secuencia de eventos a eventos midi
+  TODO: agregar funcciones addiocionales:
+  https://midiutil.readthedocs.io/en/1.2.1/class.html#classref
   """
   if args.plot:
     print( '#### PLOTEANDO ####' )
@@ -300,7 +304,7 @@ for pista in pistas:
 
   momento = 0
   track = pista.orden
-  potus.append([
+  eventos_midi.append([
     'addTrackName',
     track,
     momento,
@@ -308,7 +312,7 @@ for pista in pistas:
   ])
 
   if 'bpm' in pista.base:
-    potus.append([
+    eventos_midi.append([
       'addTempo',
       track,
       momento,
@@ -327,7 +331,7 @@ for pista in pistas:
     denominador      = int( math.log10( int( metro[1] ) ) / math.log10( 2 ) )
     relojes_por_tick = 12 * denominador
     notas_por_negra  = 8
-    potus.append([
+    eventos_midi.append([
       'addTimeSignature',
       track,
       momento,
@@ -338,7 +342,7 @@ for pista in pistas:
     ])
 
   if 'clave' in pista.base:
-    potus.append([
+    eventos_midi.append([
       'addKeySignature',
       track,
       momento,
@@ -348,7 +352,7 @@ for pista in pistas:
     ])
 
   if 'programa' in pista.base:
-    potus.append([
+    eventos_midi.append([
       'addProgramChange',
       track,
       pista.base[ 'canal' ],
@@ -365,7 +369,7 @@ for pista in pistas:
     bpm = evento[ 'bpm' ]
 
     if ( previo['bpm'] != bpm ):
-      potus.append([
+      eventos_midi.append([
         'addTempo',
         track,
         momento,
@@ -379,7 +383,7 @@ for pista in pistas:
       denominador      = int( math.log10( int( metro[ 1 ] ) ) / math.log10( 2 ) )
       relojes_por_tick = 12 * denominador
       notas_por_negra  = 8
-      potus.append([
+      eventos_midi.append([
         'addTimeSignature',
         track,
         momento,
@@ -391,7 +395,7 @@ for pista in pistas:
     clave = evento[ 'clave' ]
 
     if ( previo[ 'clave' ] != clave ):
-     potus.append([
+     eventos_midi.append([
        'addKeySignature',
        track,
        momento,
@@ -403,7 +407,7 @@ for pista in pistas:
 
     if programa:
       if ( previo[ 'programa' ] != programa ):
-        potus.append([
+        eventos_midi.append([
           'addProgramChange',
           track,
           canal, 
@@ -413,6 +417,9 @@ for pista in pistas:
         #opus.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
 
     if ( evento[ 'orden' ] == 0 ):
+      # TODO: Revisar "desplazar"  
+      desplazar = evento[ 'desplazar' ] 
+      momento += desplazar 
       st = ''
       ers = referir( evento[ 'referente' ] ) if evento[ 'referente' ] != None else [( 0, 0 )]
       prs = referir( previo[ 'referente' ] ) if previo[ 'referente' ] != None else [( 0, 0 )]
@@ -420,7 +427,7 @@ for pista in pistas:
         if er != pr: 
           st += str( er[ 0 ] ) + ' #' + str( er[ 1 ] ) + '\n' 
       st += unidad 
-      potus.append([
+      eventos_midi.append([
        'addText',
         track,
         momento,
@@ -463,8 +470,6 @@ for pista in pistas:
     voces = evento[ 'acorde' ] if evento[ 'acorde' ] else [ evento[ 'altura' ] ]
     dinamica = int( evento[ 'dinamica' ] * 126 )
     duracion = evento[ 'duracion' ] 
-    retraso = evento[ 'desplazar' ] 
-    momentum = momento + retraso
 
     for voz in voces:
       altura = voz 
@@ -472,18 +477,18 @@ for pista in pistas:
         dinamica = 0
         altura = 0
       # TODO agregar a lista de notas antes de mandar a opus.
-      potus.append([
+      eventos_midi.append([
         'addNote',
         track, 
         canal, 
         altura, 
-        momentum, 
+        momento, 
         duracion, 
         dinamica,
       ])
     if evento[ 'controlador' ]:
       for controlador, parametro in evento[ 'controlador' ].items():
-        potus.append([
+        eventos_midi.append([
          'addControllerEvent',
           track, 
           canal, 
@@ -512,8 +517,8 @@ for pista in pistas:
 
 
 
-for potu in potus:
-    mu = getattr( opus, potu[0] )( *potu[1:] )
+for em in eventos_midi:
+    mu = getattr( opus, em[0] )( *em[1:] )
 
 with open( salida + ".mid", "wb" ) as output_file:
   """
@@ -524,4 +529,3 @@ with open( salida + ".mid", "wb" ) as output_file:
 if args.plot:
   plt.show()
 
-# un commit antes para volver a la implementacion basica de midiutil add function 
