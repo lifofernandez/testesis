@@ -418,6 +418,7 @@ for pista in pistas:
 
     if ( evento[ 'orden' ] == 0 ):
       # TODO: Revisar "desplazar"  
+      # al igual que revertir, es un modificador de unidad ¿deberia "herederse"?
       desplazar = evento[ 'desplazar' ] 
       momento += desplazar 
       st = ''
