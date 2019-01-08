@@ -1,12 +1,8 @@
 nombre: 'Billie Jean: Drum'
 base: &base 
-  intervalos: [ 
-      0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 
-     10, 11, 12, 13, 14, 15, 16, 17, 18, 19,  
-     20, 21, 22, 23, 24, 
-  ]
+  intervalos: [ 42, 36, 38 ]
   alturas: [ 1 ] 
-  transportar: 35 
+  transportar: 0 
   duraciones: [ .5 ]
   bpm: 100  
   metro: 4/4
@@ -16,19 +12,24 @@ base: &base
 unidades: 
   a:
     <<: *base
-    alturas: [ 8, 8 ]
+    alturas: [ 1, 1 ]
     voces:
       - [ 0 ]
-      - [ -6, 0 ]
+      - [ 1, 0 ]
   b:
     <<: *base
-    alturas: [ 8, 8 ]
+    alturas: [ 1, 1 ]
     voces:
       - [ 0 ]
-      - [ -1, 0 ]
+      - [ 2, 0 ]
   test:
     # Tocar todo el drum-set
     <<: *base
+    intervalos: [ 
+       0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 
+       10, 11, 12, 13, 14, 15, 16, 17, 18, 19,  
+       20, 21, 22, 23, 24, 
+    ]
     alturas: [ 
        1,  2,  3,  4 , 5,  6,  7,  8,  9, 10, 
       11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 

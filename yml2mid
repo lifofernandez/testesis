@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+
 import argparse
 import yaml
 import pprint
@@ -227,11 +228,11 @@ class Pista:
         """
         transponer  = unidad[ 'transponer' ] 
         transportar = unidad[ 'transportar' ]
-        nota = transportar + intervalos[ ( altura - 1 ) + transponer % len( intervalos ) ] 
+        nota = transportar + intervalos[ ( ( altura - 1 ) + transponer ) % len( intervalos ) ] 
         if voces:
-          for voz in voces:
-            tonica = altura + ( voz[ paso % len( voz ) ] ) - 1 
-            acorde += [ transportar +  intervalos[ tonica + transponer % len( intervalos ) ]  ]
+          for v in voces:
+            voz = ( altura + ( v[ paso % len( v ) ] ) - 1 ) + transponer
+            acorde += [ transportar +  intervalos[ voz % len( intervalos ) ]  ]
       evento = {
         **unidad, #TODO pasa mucha cosa de mas aca
         'unidad'      : unidad[ 'nombre' ],
@@ -530,3 +531,8 @@ with open( salida + ".mid", "wb" ) as output_file:
 if args.plot:
   plt.show()
 
+"""
+TEMITAS:
+    [x] revisar transportar
+    [ ] revisar diferentes tempos en diferentes traks
+"""
