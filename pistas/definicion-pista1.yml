@@ -68,7 +68,7 @@ base: &base !!map
   #  # offset : + / - offset con la "posicion" original 
   #  # 0 es que donde debe acontecer originalmente
   #  # Ejemplo: "-2" anticipar 2 pulsos o ".5" demorar medio pulso
-  #  # No aplicado
+  #  # En desarrollo, pruebas
     0
 
   reiterar: !!int

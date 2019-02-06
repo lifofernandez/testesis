@@ -178,8 +178,8 @@ class Pista:
     """
     Genera una secuencia de eventos a partir de unidades preprocesadas
     """
-
     revertir = unidad[ 'revertir' ] if 'revertir' in unidad else None 
+
     if isinstance( revertir , list ): 
       for r in revertir:
         if r in unidad:
@@ -246,6 +246,7 @@ class Pista:
       seq.append( evento )
     return seq 
 
+
 def referir(
   refs,
   o = None,
@@ -276,9 +277,8 @@ for d in definiciones:
   )
   pistas.append( pista )
 
-opus = MIDIFile( Pista.cantidad ) 
 
-eventos_midi = []
+midis = []
 for pista in pistas:
   """
   Loop principal:
@@ -305,7 +305,7 @@ for pista in pistas:
 
   momento = 0
   track = pista.orden
-  eventos_midi.append([
+  midis.append([
     'addTrackName',
     track,
     momento,
@@ -313,7 +313,7 @@ for pista in pistas:
   ])
 
   if 'bpm' in pista.base:
-    eventos_midi.append([
+    midis.append([
       'addTempo',
       track,
       momento,
@@ -332,7 +332,7 @@ for pista in pistas:
     denominador      = int( math.log10( int( metro[1] ) ) / math.log10( 2 ) )
     relojes_por_tick = 12 * denominador
     notas_por_negra  = 8
-    eventos_midi.append([
+    midis.append([
       'addTimeSignature',
       track,
       momento,
@@ -343,7 +343,7 @@ for pista in pistas:
     ])
 
   if 'clave' in pista.base:
-    eventos_midi.append([
+    midis.append([
       'addKeySignature',
       track,
       momento,
@@ -353,7 +353,7 @@ for pista in pistas:
     ])
 
   if 'programa' in pista.base:
-    eventos_midi.append([
+    midis.append([
       'addProgramChange',
       track,
       pista.base[ 'canal' ],
@@ -370,7 +370,7 @@ for pista in pistas:
     bpm = evento[ 'bpm' ]
 
     if ( previo['bpm'] != bpm ):
-      eventos_midi.append([
+      midis.append([
         'addTempo',
         track,
         momento,
@@ -384,7 +384,7 @@ for pista in pistas:
       denominador      = int( math.log10( int( metro[ 1 ] ) ) / math.log10( 2 ) )
       relojes_por_tick = 12 * denominador
       notas_por_negra  = 8
-      eventos_midi.append([
+      midis.append([
         'addTimeSignature',
         track,
         momento,
@@ -396,7 +396,7 @@ for pista in pistas:
     clave = evento[ 'clave' ]
 
     if ( previo[ 'clave' ] != clave ):
-     eventos_midi.append([
+     midis.append([
        'addKeySignature',
        track,
        momento,
@@ -408,7 +408,7 @@ for pista in pistas:
 
     if programa:
       if ( previo[ 'programa' ] != programa ):
-        eventos_midi.append([
+        midis.append([
           'addProgramChange',
           track,
           canal, 
@@ -429,13 +429,15 @@ for pista in pistas:
         if er != pr: 
           st += str( er[ 0 ] ) + ' #' + str( er[ 1 ] ) + '\n' 
       st += unidad 
-      eventos_midi.append([
+      midis.append([
        'addText',
         track,
         momento,
         st
       ])
 
+      """ Ploteo
+      """
       if args.plot:
         m =  momento * ( 60 / bpm) 
         t = str( timedelta( seconds = m ) )
@@ -478,8 +480,7 @@ for pista in pistas:
       if voz == 'S':
         dinamica = 0
         altura = 0
-      # TODO agregar a lista de notas antes de mandar a opus.
-      eventos_midi.append([
+      midis.append([
         'addNote',
         track, 
         canal, 
@@ -490,7 +491,7 @@ for pista in pistas:
       ])
     if evento[ 'controlador' ]:
       for controlador, parametro in evento[ 'controlador' ].items():
-        eventos_midi.append([
+        midis.append([
          'addControllerEvent',
           track, 
           canal, 
@@ -517,11 +518,9 @@ for pista in pistas:
       visible=False
     )
 
-
-
-for em in eventos_midi:
-    mu = getattr( opus, em[0] )( *em[1:] )
-
+opus = MIDIFile( Pista.cantidad ) 
+for m in midis:
+    mu = getattr( opus, m[0] )( *m[1:] )
 with open( salida + ".mid", "wb" ) as output_file:
   """
   Salida
@@ -532,7 +531,13 @@ if args.plot:
   plt.show()
 
 """
+TO DO:
+    [ ] Encapzular como modulo de python
+    [ ] Desplazar
+    [ ] Error Hanglin, Rolando / YAML validation / Debug output
+    [ ] Ploteo
+
 TEMITAS:
-    [x] revisar transportar
-    [ ] revisar diferentes tempos en diferentes traks
+    [x] Revisar transportar
+    [ ] Revisar diferentes tempos en diferentes traks
 """
