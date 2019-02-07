@@ -138,7 +138,7 @@ unidades: !!map
     revertir: [ 'alturas' ]
   
   # Unidad de unidades ( UoUs )
-  # Propiedades "Pisan" a las de las unidades referidas 
+  # Propiedades sobrescriben a las de las unidades referidas 
   A: 
     unidades: [ 'a', 'b' ] 
     reiterar: 3
