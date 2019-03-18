@@ -6,14 +6,6 @@ import random
 from midiutil import MIDIFile
 from pista import Pista
 
-# VOLAR DE ACA
-if args.plot:
-  print( '#### CARGANDO libs ####' )
-  import matplotlib.pyplot as plt
-  import numpy as np
-  import matplotlib.dates as mdates
-  from datetime import datetime, timedelta
-
 definiciones = []
 for archivo in args.archivos:
   data = open( archivo.name, 'r' )
@@ -121,26 +113,6 @@ for pista in pistas:
       pista.base[ 'programa' ]
     ])
 
-  # VOLAR DE ACA
-  if args.plot:
-    print( '#### PLOTEANDO ####' )
-    grafico, ejes = plt.subplots( figsize = ( 8, 5 ) )
-    levels = np.array( [-5, 5, -3, 3, -1, 1] )
-    formato =  '%H:%M:%S'
-    start = datetime.strptime( str( timedelta( seconds = 1 ) ), formato ) 
-    dimension = sum( e['duracion'] * ( 60 / e['bpm'] ) for e in pista.secuencia ) 
-    dimension = str( timedelta( seconds = dimension) )
-    dimension = dimension.split('.')[0] 
-    dimension = datetime.strptime( dimension, formato ) 
-    stop  =  dimension
-
-    ejes.plot( 
-      ( start, stop ),
-      ( 0, 0 ),
-      'k',
-      alpha = .5
-    )
-
   for index, evento in enumerate( pista.secuencia ):
     verboseprint( evento )
     previo = pista.secuencia[ index - 1 ]
@@ -176,14 +148,14 @@ for pista in pistas:
     clave = evento[ 'clave' ]
 
     if ( previo[ 'clave' ] != clave ):
-     MIDIS.append([
-       'addKeySignature',
-       track,
-       momento,
-       clave[ 'alteraciones' ],
-       1, # multiplica por el n de alteraciones
-       clave[ 'modo' ]
-     ])
+      MIDIS.append([
+        'addKeySignature',
+        track,
+        momento,
+        clave[ 'alteraciones' ],
+        1, # multiplica por el n de alteraciones
+        clave[ 'modo' ]
+      ])
     programa = evento[ 'programa' ]
 
     if programa:
@@ -198,7 +170,6 @@ for pista in pistas:
         #opus.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
 
     if ( evento[ 'orden' ] == 0 ):
-      # TODO: Revisar "desplazar"  
       # al igual que revertir, es un modificador de unidad ¿deberia "herederse"?
       desplazar = evento[ 'desplazar' ] 
       momento += desplazar 
@@ -209,47 +180,13 @@ for pista in pistas:
         if er != pr: 
           texto += str( er[ 0 ] ) + ' #' + str( er[ 1 ] ) + '\n' 
       texto += unidad 
+
       MIDIS.append([
        'addText',
         track,
         momento,
         texto 
       ])
-
-      # VOLAR DE ACA
-      if args.plot:
-        m =  momento * ( 60 / bpm) 
-        t = str( timedelta( seconds = m ) )
-        t = t.split('.')[0] # borra microsegundos
-        idate = datetime.strptime( t , "%H:%M:%S" ) 
-        level = levels[ index % 6 ]
-        vert = 'top' if level < 0 else 'bottom'
-        ejes.scatter(
-          idate,
-          0,
-          s = 100,
-          facecolor = 'w',
-          edgecolor = 'k',
-          zorder = 9999
-         )
-         # Plot a line up to the text
-        ejes.plot(
-          ( idate, idate ), 
-          ( 0, level ), 
-          c = 'r', 
-          alpha = .7
-        )
-        # Give the text a faint background and align it properly
-        ejes.text(
-           idate,
-           level,
-           texto,
-           horizontalalignment = 'right',
-           verticalalignment = vert,
-           fontsize = 14,
-           backgroundcolor = ( 1., 1., 1., .3 )
-        )
-        ###
 
     voces = evento[ 'acorde' ] if evento[ 'acorde' ] else [ evento[ 'altura' ] ]
     dinamica = int( evento[ 'dinamica' ] * 126 )
@@ -281,27 +218,6 @@ for pista in pistas:
           parametro, 
         ])
     momento += duracion
-
-  #SALE DE NIVEL DE EVENTO
-
-  ### Sacar de aca
-  if args.plot:
-    ejes.set( title = pista.nombre )
-    # Set the x ticks formatting
-    # format x axis with 3 month intervals
-    ejes.get_xaxis().set_major_locator( mdates.SecondLocator( interval = 3 ) )
-    ejes.get_xaxis().set_major_formatter( mdates.DateFormatter( "%M %S" ) )
-    grafico.autofmt_xdate()
-    # Remove components for a cleaner look
-    plt.setp( 
-      (
-        ejes.get_yticklabels() + 
-        ejes.get_yticklines() +
-        list( ejes.spines.values() )
-      ),
-      visible = False
-    )
-
 ### termina MAIN LOOP
 
 ### salida midi
@@ -311,9 +227,96 @@ for m in MIDIS:
 with open( salida + ".mid", "wb" ) as output_file:
   opus.writeFile( output_file )
 
+
 ### salida graf
-if args.plot:
-  plt.show()
+if args.plotear:
+  # TODO: rediseñar y eliminar redundancias con el loop anterior
+  # pasar a otro fichero
+  print( '#### CARGANDO libs ####' )
+  import matplotlib.pyplot as ploter
+  import numpy as np
+  import matplotlib.dates as mdates
+  from datetime import datetime, timedelta
+  print( '#### PLOTEANDO ####' )
+  for pista in pistas:
+    momento = 0
+    track = pista.orden
+    grafico, eje_x = ploter.subplots( figsize = ( 8, 5 ) )
+    levels = np.array( [-5, 5, -3, 3, -1, 1] )
+    formato =  '%H:%M:%S'
+    start = datetime.strptime( str( timedelta( seconds = 1 ) ), formato ) 
+    dimension = sum( e['duracion'] * ( 60 / e['bpm'] ) for e in pista.secuencia ) 
+    dimension = str( timedelta( seconds = dimension) )
+    dimension = dimension.split('.')[0] 
+    dimension = datetime.strptime( dimension, formato ) 
+    stop  =  dimension
+    eje_x.plot( 
+      ( start, stop ),
+      ( 0, 0 ),
+      'k',
+      alpha = .5
+    )
+    eje_x.set( title = pista.nombre )
+
+    for index, evento in enumerate( pista.secuencia ):
+      if ( evento[ 'orden' ] == 0 ):
+        desplazar = evento[ 'desplazar' ] 
+        momento += desplazar 
+        texto = ''
+        evento_referentes = referir( evento[ 'referente' ] ) if evento[ 'referente' ] != None else [( 0, 0 )]
+        previo_referentes = referir( previo[ 'referente' ] ) if previo[ 'referente' ] != None else [( 0, 0 )]
+        for er, pr in zip( evento_referentes , previo_referentes ):
+          if er != pr: 
+            texto += str( er[ 0 ] ) + ' #' + str( er[ 1 ] ) + '\n' 
+        texto += evento['unidad'] 
+        m =  momento * ( 60 / bpm) 
+        t = str( timedelta( seconds = m ) )
+        t = t.split('.')[0] # borra microsegundos
+        idate = datetime.strptime( t , "%H:%M:%S" ) 
+        level = levels[ index % 6 ]
+        vert = 'top' if level < 0 else 'bottom'
+        eje_x.scatter(
+          idate,
+          0,
+          s = 100,
+          facecolor = 'w',
+          edgecolor = 'k',
+          zorder = 9999
+         )
+         # Plot a line up to the text
+        eje_x.plot(
+          ( idate, idate ), 
+          ( 0, level ), 
+          c = 'r', 
+          alpha = .7
+        )
+        # Give the text a faint background and align it properly
+        eje_x.text(
+           idate,
+           level,
+           texto,
+           horizontalalignment = 'right',
+           verticalalignment = vert,
+           fontsize = 14,
+           backgroundcolor = ( 1., 1., 1., .3 )
+        )
+      momento += evento[ 'duracion' ] 
+
+    # Set the x ticks formatting
+    # format x axis with 3 second intervals
+    eje_x.get_xaxis().set_major_locator( mdates.SecondLocator( interval = 3 ) )
+    eje_x.get_xaxis().set_major_formatter( mdates.DateFormatter( "%M %S" ) )
+    grafico.autofmt_xdate()
+    # Remove components for a cleaner look
+    ploter.setp( 
+      (
+        eje_x.get_yticklabels() + 
+        eje_x.get_yticklines() +
+        list( eje_x.spines.values() )
+      ),
+      visible = False
+    )
+  ploter.show()
 
 
 """

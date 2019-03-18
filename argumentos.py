@@ -23,7 +23,7 @@ parser.add_argument(
 )
 parser.add_argument( 
  '-p',
- '--plot',
+ '--plotear',
  help = 'Ploteo del arbol de relaciones entre unidades (dot ó png)',
 )
 args = parser.parse_args()
