@@ -124,6 +124,7 @@ for pista in pistas:
   # VOLAR DE ACA
   if args.plot:
     print( '#### PLOTEANDO ####' )
+    grafico, ejes = plt.subplots( figsize = ( 8, 5 ) )
     levels = np.array( [-5, 5, -3, 3, -1, 1] )
     formato =  '%H:%M:%S'
     start = datetime.strptime( str( timedelta( seconds = 1 ) ), formato ) 
@@ -132,7 +133,8 @@ for pista in pistas:
     dimension = dimension.split('.')[0] 
     dimension = datetime.strptime( dimension, formato ) 
     stop  =  dimension
-    pista.ax.plot( 
+
+    ejes.plot( 
       ( start, stop ),
       ( 0, 0 ),
       'k',
@@ -222,7 +224,7 @@ for pista in pistas:
         idate = datetime.strptime( t , "%H:%M:%S" ) 
         level = levels[ index % 6 ]
         vert = 'top' if level < 0 else 'bottom'
-        pista.ax.scatter(
+        ejes.scatter(
           idate,
           0,
           s = 100,
@@ -231,14 +233,14 @@ for pista in pistas:
           zorder = 9999
          )
          # Plot a line up to the text
-        pista.ax.plot(
+        ejes.plot(
           ( idate, idate ), 
           ( 0, level ), 
           c = 'r', 
           alpha = .7
         )
         # Give the text a faint background and align it properly
-        pista.ax.text(
+        ejes.text(
            idate,
            level,
            texto,
@@ -284,18 +286,18 @@ for pista in pistas:
 
   ### Sacar de aca
   if args.plot:
-    pista.ax.set( title = pista.nombre )
+    ejes.set( title = pista.nombre )
     # Set the x ticks formatting
     # format x axis with 3 month intervals
-    pista.ax.get_xaxis().set_major_locator( mdates.SecondLocator( interval = 3 ) )
-    pista.ax.get_xaxis().set_major_formatter( mdates.DateFormatter( "%M %S" ) )
-    pista.fig.autofmt_xdate()
+    ejes.get_xaxis().set_major_locator( mdates.SecondLocator( interval = 3 ) )
+    ejes.get_xaxis().set_major_formatter( mdates.DateFormatter( "%M %S" ) )
+    grafico.autofmt_xdate()
     # Remove components for a cleaner look
     plt.setp( 
       (
-        pista.ax.get_yticklabels() + 
-        pista.ax.get_yticklines() +
-        list( pista.ax.spines.values() )
+        ejes.get_yticklabels() + 
+        ejes.get_yticklines() +
+        list( ejes.spines.values() )
       ),
       visible = False
     )

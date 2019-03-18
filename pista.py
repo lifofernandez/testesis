@@ -1,14 +1,6 @@
 from argumentos import args, verboseprint
 import random
 
-# VOLAR DE ACA
-if args.plot:
-  print( '#### CARGANDO libs ####' )
-  import matplotlib.pyplot as plt
-  import numpy as np
-  import matplotlib.dates as mdates
-  from datetime import datetime, timedelta
-
 class Pista:
   """
   Clase para cada 'track' a partir de archivos.yml
@@ -41,24 +33,20 @@ class Pista:
     paleta,
     macroforma,
   ):
-    self.nombre = nombre
-    self.orden = Pista.cantidad 
+    self.nombre     = nombre
+    self.orden      = Pista.cantidad 
     Pista.cantidad += 1
-    self.oid = str( self.orden ) + self.nombre 
-    self.base = base
-    self.duracion = 0
-    self.paleta = paleta # paleta de unidades
+    self.oid        = str( self.orden ) + self.nombre 
+    self.base       = base
+    self.duracion   = 0
+    self.paleta     = paleta # paleta de unidades
     self.macroforma = macroforma
 
-    self.registros = {}
-    self.secuencia = [] 
+    self.registros  = {}
+    self.secuencia  = [] 
     self.ordenar()
     #self.secuencia = self.ordenar( macroforma )
     #pprint.pprint( self.registros )
-
-    if args.plot:
-      print( '#### crear grafico ####' )
-      self.fig, self.ax = plt.subplots( figsize = ( 8, 5 ) )
 
     verboseprint( '\n#### ' + self.nombre + ' ####' )
 
