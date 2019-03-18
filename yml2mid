@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 from argumentos import args, verboseprint
 import yaml
-import pprint
 import math
 import random
 from midiutil import MIDIFile
@@ -55,35 +54,18 @@ for d in definiciones:
   pistas.append( pista )
 
 ### main
-midis = []
+MIDIS = []
 for pista in pistas:
   """
   Loop principal:
   Convierte secuencia de eventos a eventos midi
-  TODO: agregar funcciones addiocionales:
+  TODO: agregar funcciones adicionales:
   https://midiutil.readthedocs.io/en/1.2.1/class.html#classref
   """
-  # VOLAR DE ACA
-  if args.plot:
-    print( '#### PLOTEANDO ####' )
-    levels = np.array( [-5, 5, -3, 3, -1, 1] )
-    formato =  '%H:%M:%S'
-    start = datetime.strptime( str( timedelta( seconds = 1 ) ), formato ) 
-    dimension = sum( e['duracion'] * ( 60 / e['bpm'] ) for e in pista.secuencia ) 
-    dimension = str( timedelta( seconds = dimension) )
-    dimension = dimension.split('.')[0] 
-    dimension = datetime.strptime( dimension, formato ) 
-    stop  =  dimension
-    pista.ax.plot( 
-      ( start, stop ),
-      ( 0, 0 ),
-      'k',
-      alpha = .5
-    )
-
   momento = 0
   track = pista.orden
-  midis.append([
+
+  MIDIS.append([
     'addTrackName',
     track,
     momento,
@@ -91,7 +73,7 @@ for pista in pistas:
   ])
 
   if 'bpm' in pista.base:
-    midis.append([
+    MIDIS.append([
       'addTempo',
       track,
       momento,
@@ -110,7 +92,7 @@ for pista in pistas:
     denominador      = int( math.log10( int( metro[1] ) ) / math.log10( 2 ) )
     relojes_por_tick = 12 * denominador
     notas_por_negra  = 8
-    midis.append([
+    MIDIS.append([
       'addTimeSignature',
       track,
       momento,
@@ -121,7 +103,7 @@ for pista in pistas:
     ])
 
   if 'clave' in pista.base:
-    midis.append([
+    MIDIS.append([
       'addKeySignature',
       track,
       momento,
@@ -131,13 +113,31 @@ for pista in pistas:
     ])
 
   if 'programa' in pista.base:
-    midis.append([
+    MIDIS.append([
       'addProgramChange',
       track,
       pista.base[ 'canal' ],
       momento,  
       pista.base[ 'programa' ]
     ])
+
+  # VOLAR DE ACA
+  if args.plot:
+    print( '#### PLOTEANDO ####' )
+    levels = np.array( [-5, 5, -3, 3, -1, 1] )
+    formato =  '%H:%M:%S'
+    start = datetime.strptime( str( timedelta( seconds = 1 ) ), formato ) 
+    dimension = sum( e['duracion'] * ( 60 / e['bpm'] ) for e in pista.secuencia ) 
+    dimension = str( timedelta( seconds = dimension) )
+    dimension = dimension.split('.')[0] 
+    dimension = datetime.strptime( dimension, formato ) 
+    stop  =  dimension
+    pista.ax.plot( 
+      ( start, stop ),
+      ( 0, 0 ),
+      'k',
+      alpha = .5
+    )
 
   for index, evento in enumerate( pista.secuencia ):
     verboseprint( evento )
@@ -148,7 +148,7 @@ for pista in pistas:
     bpm = evento[ 'bpm' ]
 
     if ( previo['bpm'] != bpm ):
-      midis.append([
+      MIDIS.append([
         'addTempo',
         track,
         momento,
@@ -162,7 +162,7 @@ for pista in pistas:
       denominador      = int( math.log10( int( metro[ 1 ] ) ) / math.log10( 2 ) )
       relojes_por_tick = 12 * denominador
       notas_por_negra  = 8
-      midis.append([
+      MIDIS.append([
         'addTimeSignature',
         track,
         momento,
@@ -174,7 +174,7 @@ for pista in pistas:
     clave = evento[ 'clave' ]
 
     if ( previo[ 'clave' ] != clave ):
-     midis.append([
+     MIDIS.append([
        'addKeySignature',
        track,
        momento,
@@ -186,7 +186,7 @@ for pista in pistas:
 
     if programa:
       if ( previo[ 'programa' ] != programa ):
-        midis.append([
+        MIDIS.append([
           'addProgramChange',
           track,
           canal, 
@@ -200,18 +200,18 @@ for pista in pistas:
       # al igual que revertir, es un modificador de unidad ¿deberia "herederse"?
       desplazar = evento[ 'desplazar' ] 
       momento += desplazar 
-      st = ''
-      ers = referir( evento[ 'referente' ] ) if evento[ 'referente' ] != None else [( 0, 0 )]
-      prs = referir( previo[ 'referente' ] ) if previo[ 'referente' ] != None else [( 0, 0 )]
-      for er, pr in zip( ers, prs ):
+      texto = ''
+      evento_referentes = referir( evento[ 'referente' ] ) if evento[ 'referente' ] != None else [( 0, 0 )]
+      previo_referentes = referir( previo[ 'referente' ] ) if previo[ 'referente' ] != None else [( 0, 0 )]
+      for er, pr in zip( evento_referentes , previo_referentes ):
         if er != pr: 
-          st += str( er[ 0 ] ) + ' #' + str( er[ 1 ] ) + '\n' 
-      st += unidad 
-      midis.append([
+          texto += str( er[ 0 ] ) + ' #' + str( er[ 1 ] ) + '\n' 
+      texto += unidad 
+      MIDIS.append([
        'addText',
         track,
         momento,
-        st
+        texto 
       ])
 
       # VOLAR DE ACA
@@ -241,12 +241,13 @@ for pista in pistas:
         pista.ax.text(
            idate,
            level,
-           st,
+           texto,
            horizontalalignment = 'right',
            verticalalignment = vert,
            fontsize = 14,
            backgroundcolor = ( 1., 1., 1., .3 )
         )
+        ###
 
     voces = evento[ 'acorde' ] if evento[ 'acorde' ] else [ evento[ 'altura' ] ]
     dinamica = int( evento[ 'dinamica' ] * 126 )
@@ -257,7 +258,7 @@ for pista in pistas:
       if voz == 'S':
         dinamica = 0
         altura = 0
-      midis.append([
+      MIDIS.append([
         'addNote',
         track, 
         canal, 
@@ -266,9 +267,10 @@ for pista in pistas:
         duracion, 
         dinamica,
       ])
+
     if evento[ 'controlador' ]:
       for controlador, parametro in evento[ 'controlador' ].items():
-        midis.append([
+        MIDIS.append([
          'addControllerEvent',
           track, 
           canal, 
@@ -278,11 +280,13 @@ for pista in pistas:
         ])
     momento += duracion
 
+  #SALE DE NIVEL DE EVENTO
+
   ### Sacar de aca
   if args.plot:
     pista.ax.set( title = pista.nombre )
-    # Set the xticks formatting
-    # format xaxis with 3 month intervals
+    # Set the x ticks formatting
+    # format x axis with 3 month intervals
     pista.ax.get_xaxis().set_major_locator( mdates.SecondLocator( interval = 3 ) )
     pista.ax.get_xaxis().set_major_formatter( mdates.DateFormatter( "%M %S" ) )
     pista.fig.autofmt_xdate()
@@ -293,21 +297,19 @@ for pista in pistas:
         pista.ax.get_yticklines() +
         list( pista.ax.spines.values() )
       ),
-      visible=False
+      visible = False
     )
 
 ### termina MAIN LOOP
 
-### salida
+### salida midi
 opus = MIDIFile( Pista.cantidad ) 
-for m in midis:
+for m in MIDIS:
     mu = getattr( opus, m[0] )( *m[1:] )
 with open( salida + ".mid", "wb" ) as output_file:
-  """
-  Salida
-  """
   opus.writeFile( output_file )
 
+### salida graf
 if args.plot:
   plt.show()
 
