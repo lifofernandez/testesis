@@ -68,17 +68,18 @@ for pista in pistas:
   ])
 
   formato =  '%H:%M:%S'
+
   comienzo  = datetime.strptime( str( timedelta( seconds = 1 ) ), formato ) 
+  duracion_parte = 0
   # pasar al final
-  dimension = sum( e['duracion'] * ( 60 / e['bpm'] ) for e in pista.secuencia ) 
-  dimension = str( timedelta( seconds = dimension) )
-  dimension = dimension.split( '.' )[0] 
-  dimension = datetime.strptime( dimension, formato ) 
+  # dimension = sum( e['duracion'] * ( 60 / e['bpm'] ) for e in pista.secuencia ) 
+  # dimension = str( timedelta( seconds = dimension) )
+  # dimension = dimension.split( '.' )[0] 
+  # dimension = datetime.strptime( dimension, formato ) 
   parte = {
     'orden'     : track,
     'nombre'    : pista.nombre,
     'comienzo'  : comienzo, 
-    'dimension' : dimension,
     'unidades'  : [],
   }
 
@@ -101,7 +102,7 @@ for pista in pistas:
     numerador        = int( metro[0] ) 
     denominador      = int( math.log10( int( metro[1] ) ) / math.log10( 2 ) )
     relojes_por_tick = 12 * denominador
-    notas_por_negra  = 8
+    notas_por_pulso = 8
     MIDIS.append([
       'addTimeSignature',
       track,
@@ -109,7 +110,7 @@ for pista in pistas:
       numerador,
       denominador,
       relojes_por_tick, 
-      notas_por_negra
+      notas_por_pulso
     ])
 
   if 'clave' in pista.base:
@@ -153,7 +154,7 @@ for pista in pistas:
       numerador        = int( metro[ 0 ] ) 
       denominador      = int( math.log10( int( metro[ 1 ] ) ) / math.log10( 2 ) )
       relojes_por_tick = 12 * denominador
-      notas_por_negra  = 8
+      notas_por_pulso = 8
       MIDIS.append([
         'addTimeSignature',
         track,
@@ -161,7 +162,7 @@ for pista in pistas:
         numerador,
         denominador,
         relojes_por_tick, 
-        notas_por_negra
+        notas_por_pulso
       ])
     clave = evento[ 'clave' ]
 
@@ -187,13 +188,13 @@ for pista in pistas:
         ])
         #opus.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
 
-    # LOS MODIFICADORES DE UNIDAD
-    duracion = evento[ 'duracion' ] 
+    duracion_evento = evento[ 'duracion' ] 
 
     if ( evento[ 'orden' ] == 0 ):
       # al igual que revertir, es un modificador de unidad...
       desplazar = evento[ 'desplazar' ] 
       momento += desplazar 
+
       texto = ''
       evento_referentes = referir( evento[ 'referente' ] ) if evento[ 'referente' ] != None else [( 0, 0 )]
       previo_referentes = referir( previo[ 'referente' ] ) if previo[ 'referente' ] != None else [( 0, 0 )]
@@ -211,7 +212,7 @@ for pista in pistas:
       unidad = {
         'etiqueta' : texto,
         'cuando'   : momento,
-        'duracion' : duracion,
+        #'duracion' : duracion_unidad,
       }
       parte[ 'unidades' ].append( unidad ) 
 
@@ -228,7 +229,7 @@ for pista in pistas:
         canal, 
         altura, 
         momento, 
-        duracion, 
+        duracion_evento, 
         dinamica,
       ])
 
@@ -242,7 +243,12 @@ for pista in pistas:
           controlador, 
           parametro, 
         ])
-    momento += duracion
+    momento += duracion_evento
+    duracion_parte += duracion_evento * ( 60 / bpm )
+  duracion_parte = str( timedelta( seconds = duracion_parte ) )
+  duracion_parte = duracion_parte.split( '.' )[0] 
+  parte[ 'duracion' ] = datetime.strptime( duracion_parte, formato ) 
+
   PARTES.append( parte )
 
 ### termina MAIN LOOP
@@ -268,7 +274,7 @@ if args.plotear:
     #formato =  '%H:%M:%S'
     start = parte['comienzo']
     track = parte['orden']
-    dimension = parte['dimension']
+    dimension = parte['duracion']
     stop  =  dimension
     eje_x.plot( 
       ( start, stop ),
