@@ -42,7 +42,6 @@ def referir(
 
 EVENTOS_MIDI = []
 PARTES = []
-
 for pista in PISTAS:
   """
   Loop principal:
@@ -60,18 +59,10 @@ for pista in PISTAS:
     pista.nombre
   ])
 
-
   comienzo  = datetime.strptime( 
     str( timedelta( seconds = 0 ) ),
     formato_tiempo 
   ) 
-  duracion_parte = 0
-  parte = {
-    'orden'     : track,
-    'nombre'    : pista.nombre,
-    'comienzo'  : comienzo, 
-    'etiquetas' : [],
-  }
 
   if 'bpm' in pista.base:
     EVENTOS_MIDI.append([
@@ -121,6 +112,14 @@ for pista in PISTAS:
       momento,  
       pista.base[ 'programa' ]
     ])
+
+  parte = {
+    'orden'     : track,
+    'nombre'    : pista.nombre,
+    'comienzo'  : comienzo, 
+    'etiquetas' : [],
+  }
+  duracion_parte = 0
 
   for index, evento in enumerate( pista.secuencia ):
     verboseprint( evento )
@@ -186,9 +185,9 @@ for pista in PISTAS:
       momento += desplazar 
 
       texto = ''
-      evento_referentes = referir( evento[ 'referente' ] ) if evento[ 'referente' ] != None else [( 0, 0 )]
-      previo_referentes = referir( previo[ 'referente' ] ) if previo[ 'referente' ] != None else [( 0, 0 )]
-      for er, pr in zip( evento_referentes , previo_referentes ):
+      ers = referir( evento[ 'referente' ] ) if evento[ 'referente' ] != None else [ ( 0, 0 ) ]
+      prs = referir( previo[ 'referente' ] ) if previo[ 'referente' ] != None else [ ( 0, 0 ) ]
+      for er, pr in zip( ers , prs ):
         if er != pr: 
           texto += str( er[ 0 ] ) + ' #' + str( er[ 1 ] ) + '\n' 
       texto += unidad 
@@ -200,8 +199,8 @@ for pista in PISTAS:
         texto 
       ])
       etiqueta = {
-        'texto' : texto,
-        'cuando'   : momento,
+        'texto'  : texto,
+        'cuando' : momento,
         #'hasta' : duracion_unidad,
       }
       parte[ 'etiquetas' ].append( etiqueta ) 

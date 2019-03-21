@@ -53,7 +53,6 @@ for parte in PARTES:
        backgroundcolor = ( 1., 1., 1., .3 )
     )
     # TODO: Agregar etiqueta al final dela parte
-    #momento += evento[ 'duracion' ] 
 
   # Set the x ticks formatting
   # format x axis with 3 second intervals
