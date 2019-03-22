@@ -71,17 +71,17 @@ class Pista:
     herencia.pop( 'unidades', None )
     herencia.pop( 'reiterar', None )
 
-    for u in forma:  
-      verboseprint( '-' * ( nivel - 1 ) +  u  )
+    for unidad in forma:  
+      verboseprint( '-' * ( nivel - 1 ) +  unidad )
 
-      if u in self.paleta:
-        uo = self.paleta[ u ]
+      if unidad in self.paleta:
+        unidad_objeto = self.paleta[ unidad ]
         # TODO q cuente recurrencias en diferentes niveles
         recurrencia = sum( 
-          [ 1 for o in self.registros[ nivel ] if o[ 'nombre' ] == u ]
+          [ 1 for r in self.registros[ nivel ] if r[ 'nombre' ] == unidad ]
         ) if nivel in self.registros else 0 
         registro = { 
-          'nombre'      : u,
+          'nombre'      : unidad,
           'recurrencia' : recurrencia,
           'nivel'       : nivel,
         }
@@ -89,20 +89,20 @@ class Pista:
         if 'referente' in herencia:
           registro[ 'referente' ] = herencia[ 'referente' ] 
         sucesion = {
-          **uo,
+          **unidad_objeto,
           **herencia,
           **registro
         } 
-        reiterar = uo[ 'reiterar' ] if 'reiterar' in uo else 0
-        n = str( nivel ) + u + str( recurrencia )
+        reiterar = unidad_objeto[ 'reiterar' ] if 'reiterar' in unidad_objeto else 0
+        n = str( nivel ) + unidad + str( recurrencia )
 
         for r in range( reiterar + 1 ):
           self.registros.setdefault( nivel , [] ).append( registro )
 
-          if 'unidades' in uo:
+          if 'unidades' in unidad_objeto:
             sucesion[ 'referente' ] = registro 
             self.ordenar( 
-              uo[ 'unidades' ],
+              unidad_objeto[ 'unidades' ],
               nivel,
               sucesion,
             ) 
@@ -113,8 +113,7 @@ class Pista:
               **Pista.defactos,
               **sucesion,
             }
-            o = self.secuenciar( factura ) 
-            self.secuencia += o  
+            self.secuencia += self.secuenciar( factura ) 
 
   def secuenciar( 
     self,
@@ -147,7 +146,7 @@ class Pista:
     ]
     ganador = max( candidatos, key = len )
     pasos = len( ganador )
-    seq = []
+    secuencia = []
 
     for paso in range( pasos ):
       """
@@ -177,8 +176,9 @@ class Pista:
           for v in voces:
             voz = ( altura + ( v[ paso % len( v ) ] ) - 1 ) + transponer
             acorde += [ transportar +  intervalos[ voz % len( intervalos ) ]  ]
+
       evento = {
-        **unidad, #TODO pasa mucha cosa de mas aca
+        **unidad, # Pasa muchas cosas de mas aca...
         'unidad'      : unidad[ 'nombre' ],
         'orden'       : paso,
         'altura'      : nota,
@@ -187,5 +187,5 @@ class Pista:
         'dinamica'    : dinamica,
         'controlador' : controlador,
       }
-      seq.append( evento )
-    return seq 
+      secuencia.append( evento )
+    return secuencia 

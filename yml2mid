@@ -1,6 +1,5 @@
 #!/usr/bin/env python
-from argumentos import args, verboseprint
-from datetime import datetime, timedelta
+from argumentos import args
 from main import EVENTOS_MIDI, PARTES, formato_tiempo
 if args.plotear:
   import ploteo
