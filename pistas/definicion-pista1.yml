@@ -63,12 +63,12 @@ base: &base !!map
     4/4
 
   desplazar: !!float
-  #  # Ajuste temporal 
-  #  # momento, cuando ocurre o acontence
-  #  # offset : + / - offset con la "posicion" original 
-  #  # 0 es que donde debe acontecer originalmente
-  #  # Ejemplo: "-2" anticipar 2 pulsos o ".5" demorar medio pulso
-  #  # En desarrollo, pruebas
+    # Ajuste temporal 
+    # momento, cuando ocurre o acontence
+    # offset : + / - offset con la "posicion" original 
+    # 0 es que donde debe acontecer originalmente
+    # Ejemplo: "-2" anticipar 2 pulsos o ".5" demorar medio pulso
+    # En desarrollo, pruebas
     0
 
   reiterar: !!int

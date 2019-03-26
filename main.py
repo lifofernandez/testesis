@@ -59,11 +59,6 @@ for pista in PISTAS:
     pista.nombre
   ])
 
-  comienzo  = datetime.strptime( 
-    str( timedelta( seconds = 0 ) ),
-    formato_tiempo 
-  ) 
-
   if 'bpm' in pista.base:
     EVENTOS_MIDI.append([
       'addTempo',
@@ -112,6 +107,11 @@ for pista in PISTAS:
       momento,  
       pista.base[ 'programa' ]
     ])
+
+  comienzo = datetime.strptime( 
+    str( timedelta( seconds = 0 ) ),
+    formato_tiempo 
+  ) 
 
   parte = {
     'orden'     : track,

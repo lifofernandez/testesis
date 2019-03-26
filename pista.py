@@ -38,7 +38,7 @@ class Pista:
     Pista.cantidad += 1
     self.oid        = str( self.orden ) + self.nombre 
     self.base       = base
-    self.duracion   = 0
+    #self.duracion   = 0
     self.paleta     = paleta # paleta de unidades
     self.macroforma = macroforma
 
@@ -76,7 +76,7 @@ class Pista:
 
       if unidad in self.paleta:
         unidad_objeto = self.paleta[ unidad ]
-        # TODO q cuente recurrencias en diferentes niveles
+        # Cuenta recurrencias en este nivel
         recurrencia = sum( 
           [ 1 for r in self.registros[ nivel ] if r[ 'nombre' ] == unidad ]
         ) if nivel in self.registros else 0 
@@ -88,6 +88,7 @@ class Pista:
 
         if 'referente' in herencia:
           registro[ 'referente' ] = herencia[ 'referente' ] 
+
         sucesion = {
           **unidad_objeto,
           **herencia,
