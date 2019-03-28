@@ -9,7 +9,7 @@ class Pista:
   defactos = {
     'bpm'           : 60,
     'canal'         : 1,
-    'programa'      : None,
+    'programa'      : 1,
     'metro'         : '4/4',
     'alturas'       : [ 1 ],
     'clave'         : { 'alteraciones' : 0, 'modo' : 0 },
@@ -29,7 +29,7 @@ class Pista:
   def __init__( 
     self,
     nombre,
-    base,
+    #base,
     paleta,
     macroforma,
   ):
@@ -37,10 +37,19 @@ class Pista:
     self.orden      = Pista.cantidad 
     Pista.cantidad += 1
     self.oid        = str( self.orden ) + self.nombre 
-    self.base       = base
+    """
+    Parametros defactos de unidadad llamados "base"
+    """
+    #self.base       = base
     #self.duracion   = 0
-    self.paleta     = paleta # paleta de unidades
+    """
+    Principal Lista ordenada de unidades "macroforma"
+    """
     self.macroforma = macroforma
+    """
+    A partir de esa lista busca en la "paleta de unidades"
+    """
+    self.paleta     = paleta
 
     self.registros  = {}
     self.secuencia  = [] 

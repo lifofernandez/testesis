@@ -4,7 +4,9 @@ from main import EVENTOS_MIDI, PARTES, formato_tiempo
 if args.plotear:
   import ploteo
 
-### Salida MIDI
+"""
+ Salida MIDI
+"""
 nombre_archivo = args.output
 from midiutil import MIDIFile
 #pistas_cantidad = Pista.cantidad 

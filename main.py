@@ -7,6 +7,9 @@ formato_tiempo =  '%H:%M:%S'
 
 DEFS = []
 for archivo in args.archivos:
+  """
+  Lee ficheros YAML como argumentos posicionales 
+  """
   data = open( archivo.name, 'r' )
   DEFS.append( yaml.load( data ) )
 
@@ -17,7 +20,7 @@ for d in DEFS:
   """
   pista = Pista(
     d[ 'nombre' ],
-    d[ 'base' ],
+    #d[ 'base' ],
     d[ 'unidades' ],
     d[ 'macroforma' ],
   )
@@ -28,7 +31,7 @@ def referir(
   o = None,
   ):
   """
-  Extrae referentes recursivamente
+  Comprueba referentes recursivamente
   """
   referente   = refs[ 'referente' ]   if 'referente'   in refs else None
   nombre      = refs[ 'nombre' ]      if 'nombre'      in refs else None
@@ -46,7 +49,7 @@ for pista in PISTAS:
   """
   Loop principal:
   Convierte secuencia de eventos a eventos midi
-  TODO: agregar funcciones adicionales:
+  TODO: agregar funcciones de midiutil adicionales:
   https://midiutil.readthedocs.io/en/1.2.1/class.html#classref
   """
   momento = 0
@@ -59,54 +62,6 @@ for pista in PISTAS:
     pista.nombre
   ])
 
-  if 'bpm' in pista.base:
-    EVENTOS_MIDI.append([
-      'addTempo',
-      track,
-      momento,
-      pista.base['bpm']
-    ])
-
-  if 'metro' in pista.base:
-    """
-    Time Signature event
-    https://midiutil.readthedocs.io/en/1.2.1/class.html#midiutil.MidiFile.MIDIFile.addTimeSignature
-    denominator  = negative power of two: log10( X ) / log10( 2 ) 
-    2 represents a quarter-note, 3 an eighth-note, etc.
-    """
-    metro            = pista.base['metro'].split( '/' )
-    numerador        = int( metro[0] ) 
-    denominador      = int( math.log10( int( metro[1] ) ) / math.log10( 2 ) )
-    relojes_por_tick = 12 * denominador
-    notas_por_pulso = 8
-    EVENTOS_MIDI.append([
-      'addTimeSignature',
-      track,
-      momento,
-      numerador,
-      denominador,
-      relojes_por_tick, 
-      notas_por_pulso
-    ])
-
-  if 'clave' in pista.base:
-    EVENTOS_MIDI.append([
-      'addKeySignature',
-      track,
-      momento,
-      pista.base[ 'clave' ][ 'alteraciones' ],
-      1, # multiplica por el n de alteraciones
-      pista.base[ 'clave' ][ 'modo' ]
-    ])
-
-  if 'programa' in pista.base:
-    EVENTOS_MIDI.append([
-      'addProgramChange',
-      track,
-      pista.base[ 'canal' ],
-      momento,  
-      pista.base[ 'programa' ]
-    ])
 
   comienzo = datetime.strptime( 
     str( timedelta( seconds = 0 ) ),
@@ -114,10 +69,10 @@ for pista in PISTAS:
   ) 
 
   parte = {
-    'orden'     : track,
-    'nombre'    : pista.nombre,
-    'comienzo'  : comienzo, 
-    'etiquetas' : [],
+     'orden'     : track,
+     'nombre'    : pista.nombre,
+     'comienzo'  : comienzo, 
+     'etiquetas' : [],
   }
   duracion_parte = 0
 
@@ -126,8 +81,59 @@ for pista in PISTAS:
     previo = pista.secuencia[ index - 1 ]
     unidad = evento[ 'unidad' ]
     previa = previo[ 'unidad' ]
-    canal  = evento[ 'canal' ]
-    bpm    = evento[ 'bpm' ]
+
+    canal = evento[ 'canal' ]
+    bpm   = evento[ 'bpm' ]
+    metro = evento['metro'].split( '/' )
+    #metro = evento[ 'metro' ]
+    clave = evento[ 'clave' ]
+    programa = evento[ 'programa' ]
+    duracion_evento = evento[ 'duracion' ] 
+
+    if ( index == 0 ):
+      EVENTOS_MIDI.append([
+        'addTempo',
+        track,
+        momento,
+        bpm
+      ])
+
+      """
+      Time Signature event
+      https://midiutil.readthedocs.io/en/1.2.1/class.html#midiutil.MidiFile.MIDIFile.addTimeSignature
+      denominator  = negative power of two: log10( X ) / log10( 2 ) 
+      2 represents a quarter-note, 3 an eighth-note, etc.
+      """
+      numerador        = int( metro[0] ) 
+      denominador      = int( math.log10( int( metro[1] ) ) / math.log10( 2 ) )
+      relojes_por_tick = 12 * denominador
+      notas_por_pulso = 8
+      EVENTOS_MIDI.append([
+        'addTimeSignature',
+        track,
+        momento,
+        numerador,
+        denominador,
+        relojes_por_tick, 
+        notas_por_pulso
+      ])
+
+      EVENTOS_MIDI.append([
+        'addKeySignature',
+        track,
+        momento,
+        clave[ 'alteraciones' ],
+        1, # multiplica por el n de alteraciones
+        clave[ 'modo' ]
+      ])
+
+      EVENTOS_MIDI.append([
+        'addProgramChange',
+        track,
+        canal,
+        momento,  
+        programa
+      ])
 
     if ( previo['bpm'] != bpm ):
       EVENTOS_MIDI.append([
@@ -136,10 +142,8 @@ for pista in PISTAS:
         momento,
         bpm,
       ])
-    metro = evento[ 'metro' ]
 
     if ( previo[ 'metro' ] != metro ):
-      metro            = evento[ 'metro' ].split( '/' )
       numerador        = int( metro[ 0 ] ) 
       denominador      = int( math.log10( int( metro[ 1 ] ) ) / math.log10( 2 ) )
       relojes_por_tick = 12 * denominador
@@ -153,7 +157,6 @@ for pista in PISTAS:
         relojes_por_tick, 
         notas_por_pulso
       ])
-    clave = evento[ 'clave' ]
 
     if ( previo[ 'clave' ] != clave ):
       EVENTOS_MIDI.append([
@@ -164,7 +167,6 @@ for pista in PISTAS:
         1, # multiplica por el n de alteraciones
         clave[ 'modo' ]
       ])
-    programa = evento[ 'programa' ]
 
     if programa:
       if ( previo[ 'programa' ] != programa ):
@@ -177,7 +179,6 @@ for pista in PISTAS:
         ])
         #midi_bits.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
 
-    duracion_evento = evento[ 'duracion' ] 
 
     if ( evento[ 'orden' ] == 0 ):
       # al igual que revertir, es un modificador de unidad...
