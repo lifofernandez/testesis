@@ -188,7 +188,7 @@ class Pista:
             acorde += [ transportar +  intervalos[ voz % len( intervalos ) ]  ]
 
       evento = {
-        **unidad, # Pasa muchas cosas de mas aca...
+        **unidad, # Pasa algunas cosas de mas aca...
         'unidad'      : unidad[ 'nombre' ],
         'orden'       : paso,
         'altura'      : nota,

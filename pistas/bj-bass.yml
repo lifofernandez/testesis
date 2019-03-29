@@ -9,7 +9,7 @@ base: &base
   alturas: [ 1 ] 
   transportar: 35 #B
   duraciones: [ .5 ]
-  bpm: 100  
+  bpm: 104  
   metro: 4/4
   dinamicas: [ 1 ]
   canal: 2 

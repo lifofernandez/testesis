@@ -62,7 +62,6 @@ for pista in PISTAS:
     pista.nombre
   ])
 
-
   comienzo = datetime.strptime( 
     str( timedelta( seconds = 0 ) ),
     formato_tiempo 
