@@ -143,17 +143,17 @@ class Pista:
       if revertir in unidad:
         unidad[ revertir ].reverse() 
 
-    intervalos  = unidad[ 'intervalos' ]
-    alturas     = unidad[ 'alturas' ]
-    voces       = unidad[ 'voces' ]
-    duraciones  = unidad[ 'duraciones' ]
-    dinamicas   = unidad[ 'dinamicas' ]
-    controles   = unidad[ 'controles' ]
+    intervalos        = unidad[ 'intervalos' ]
+    alturas           = unidad[ 'alturas' ]
+    voces             = unidad[ 'voces' ]
+    duraciones        = unidad[ 'duraciones' ]
+    dinamicas         = unidad[ 'dinamicas' ]
+    capas             = unidad[ 'controles' ]
     candidatos = [ 
       dinamicas,
       duraciones,
       alturas,
-      controles,
+      #controles,
     ]
     ganador = max( candidatos, key = len )
     pasos = len( ganador )
@@ -188,12 +188,10 @@ class Pista:
             voz = ( altura + ( v[ paso % len( v ) ] ) - 1 ) + transponer
             acorde += [ transportar +  intervalos[ voz % len( intervalos ) ]  ]
 
-      # ctrls = controles[ paso % len( controles ) ]
-      control = []
-      if controles:
-        for capa in controles:
-          ctrl = capa[ paso % len( capa ) ]
-          control += [ctrl]
+      controles = []
+      if capas:
+        for capa in capas:
+          controles += [ capa[ paso % len( capa ) ] ]
 
       evento = {
         **unidad, # Pasa algunas cosas de mas aca...
@@ -203,7 +201,7 @@ class Pista:
         'acorde'      : acorde,
         'duracion'    : duracion,
         'dinamica'    : dinamica,
-        'control'   : control,
+        'controles'   : controles,
       }
       secuencia.append( evento )
     return secuencia 
