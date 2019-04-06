@@ -222,18 +222,22 @@ for pista in PISTAS:
         dinamica,
       ])
 
-    if evento[ 'controlador' ]:
-      for controlador, parametro in evento[ 'controlador' ].items():
-        EVENTOS_MIDI.append([
-         'addControllerEvent',
-          track, 
-          canal, 
-          momento, 
-          controlador, 
-          parametro, 
-        ])
+    if evento[ 'control' ]:
+      print(momento)
+      for control in evento[ 'control' ]:
+        #for control in controles:
+          print(control )
+          #for c, v in controles.items():
+          #  EVENTOS_MIDI.append([
+          #   'addControllerEvent',
+          #    track, 
+          #    canal, 
+          #    momento, 
+          #    c, 
+          #    v, 
+          #  ])
     momento += duracion_evento
-    duracion_parte += duracion_evento * ( 60 / bpm )
+    duracion_parte += momento * ( 60 / bpm ) 
 
   parte[ 'duracion' ] = datetime.strptime( 
     str( timedelta( seconds = duracion_parte ) ).split( '.' )[0],

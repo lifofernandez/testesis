@@ -21,7 +21,8 @@ class Pista:
     'fluctuacion'   : { 'min' : 1, 'max' : 1 },
     'transportar'   : 0,
     'transponer'    : 0,
-    'controladores' : [ None ],
+    #'controles'     : [ [ None ] ],
+    'controles'     : None,
     'reiterar'      : 1,
     'referente'     : None,
   }
@@ -142,17 +143,17 @@ class Pista:
       if revertir in unidad:
         unidad[ revertir ].reverse() 
 
-    intervalos    = unidad[ 'intervalos' ]
-    alturas       = unidad[ 'alturas' ]
-    voces         = unidad[ 'voces' ]
-    duraciones    = unidad[ 'duraciones' ]
-    dinamicas     = unidad[ 'dinamicas' ]
-    controladores = unidad[ 'controladores' ]
+    intervalos  = unidad[ 'intervalos' ]
+    alturas     = unidad[ 'alturas' ]
+    voces       = unidad[ 'voces' ]
+    duraciones  = unidad[ 'duraciones' ]
+    dinamicas   = unidad[ 'dinamicas' ]
+    controles   = unidad[ 'controles' ]
     candidatos = [ 
       dinamicas,
       duraciones,
       alturas,
-      controladores,
+      controles,
     ]
     ganador = max( candidatos, key = len )
     pasos = len( ganador )
@@ -170,7 +171,7 @@ class Pista:
          rand_max 
       ) if rand_min or rand_max else 1
       dinamica = dinamicas[ paso % len( dinamicas ) ] * fluctuacion
-      controlador = controladores[ paso % len( controladores ) ]
+
       altura = alturas[ paso % len( alturas ) ]
       acorde = []
       nota = 'S' # Silencio
@@ -187,6 +188,13 @@ class Pista:
             voz = ( altura + ( v[ paso % len( v ) ] ) - 1 ) + transponer
             acorde += [ transportar +  intervalos[ voz % len( intervalos ) ]  ]
 
+      # ctrls = controles[ paso % len( controles ) ]
+      control = []
+      if controles:
+        for capa in controles:
+          ctrl = capa[ paso % len( capa ) ]
+          control += [ctrl]
+
       evento = {
         **unidad, # Pasa algunas cosas de mas aca...
         'unidad'      : unidad[ 'nombre' ],
@@ -195,7 +203,7 @@ class Pista:
         'acorde'      : acorde,
         'duracion'    : duracion,
         'dinamica'    : dinamica,
-        'controlador' : controlador,
+        'control'   : control,
       }
       secuencia.append( evento )
     return secuencia 

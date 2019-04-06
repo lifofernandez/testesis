@@ -92,21 +92,17 @@ base: &base !!map
    #programa: !!int
    #  # Instrumento MIDI
    #  103
-   
-  # Cambio de Banco MIDI
-  # Los bancos MIDI se alternan através de cambios de control
-  # CC#0 numero de banco, CC#32 numero de programa 
-  # Ej: Programa 160 = 2do banco:32º instrumento/programa = CC#0:2,CC#32:32
-  # https://www.mutools.com/info/docs/mulab/using-bank-select-and-prog-changes.html
-  # http://www.andrelouis.com/qws/art/art009.htm
 
-  controladores: !!seq
-    # Secuencia de pares nº controlador : parametro
-    [
-      70 :  80,
-      70 :  90,
-      71 : 120,
-    ]
+  controles: !!seq
+    # Lista de listas de Cambios de control
+    # Los bancos MIDI se alternan através de cambios de control
+    # CC#0 numero de banco, CC#32 numero de programa 
+    # Ej: Programa 160 = 2do banco:32º instrumento/programa = CC#0:2,CC#32:32
+    # https://www.mutools.com/info/docs/mulab/using-bank-select-and-prog-changes.html
+    # http://www.andrelouis.com/qws/art/art009.htm
+    - [ 70 : 80,  71 : 90, 72 : 100 ]
+    - [ 33 : 121, 51 : 120 ]
+    - [ 10 : 80,  11 : 90, 12 : 100, 13 : 100 ]
 
 unidades: !!map
   # Paleta de unidades para secuenciar
@@ -131,7 +127,7 @@ unidades: !!map
     fluctuacion: 
       min: .1
       max: .4 
-     desplazar: -1
+    desplazar: -1
 
   b^: 
     <<: *b

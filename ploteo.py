@@ -11,7 +11,7 @@ for parte in PARTES:
   start = parte[ 'comienzo' ]
   track = parte[ 'orden' ]
   dimension = parte[ 'duracion' ]
-  stop  =  dimension
+  stop = dimension
   eje_x.plot( 
     ( start, stop ),
     ( 0, 0 ),
