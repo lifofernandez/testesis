@@ -180,7 +180,7 @@ for pista in PISTAS:
 
 
     if ( evento[ 'orden' ] == 0 ):
-      # al igual que revertir, es un modificador de unidad...
+      # Al igual que revertir, es un modificador de unidad...
       desplazar = evento[ 'desplazar' ] 
       momento += desplazar 
 
@@ -225,19 +225,19 @@ for pista in PISTAS:
     if evento[ 'controles' ]:
       for control in evento[ 'controles' ]:
         for c, v in control.items():
-          print(c,v)
           EVENTOS_MIDI.append([
            'addControllerEvent',
             track, 
             canal, 
             momento, 
-            c, v, 
+            c,
+            v, 
           ])
     momento += duracion_evento
-    duracion_parte += momento * ( 60 / bpm ) 
+    duracion_parte += duracion_evento  
 
   parte[ 'duracion' ] = datetime.strptime( 
-    str( timedelta( seconds = duracion_parte ) ).split( '.' )[0],
+    str( timedelta( seconds =( duracion_parte *  60 ) / bpm  ) ).split( '.' )[0],
     formato_tiempo
   ) 
   PARTES.append( parte )

@@ -56,7 +56,7 @@ for parte in PARTES:
 
   # Set the x ticks formatting
   # format x axis with 3 second intervals
-  eje_x.get_xaxis().set_major_locator( mdates.SecondLocator( interval = 3 ) )
+  eje_x.get_xaxis().set_major_locator( mdates.SecondLocator( interval = 1 ) )
   eje_x.get_xaxis().set_major_formatter( mdates.DateFormatter( "%M %S" ) )
   grafico.autofmt_xdate()
   # Remove components for a cleaner look
