@@ -234,10 +234,10 @@ for pista in PISTAS:
             v, 
           ])
     momento += duracion_evento
-    duracion_parte += duracion_evento  
+    duracion_parte += ( duracion_evento *  60 ) / bpm 
 
   parte[ 'duracion' ] = datetime.strptime( 
-    str( timedelta( seconds =( duracion_parte *  60 ) / bpm  ) ).split( '.' )[0],
+    str( timedelta( seconds = duracion_parte  )   ).split( '.' )[0],
     formato_tiempo
   ) 
   PARTES.append( parte )

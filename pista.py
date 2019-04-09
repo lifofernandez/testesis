@@ -104,10 +104,10 @@ class Pista:
           **herencia,
           **registro
         } 
-        reiterar = unidad_objeto[ 'reiterar' ] if 'reiterar' in unidad_objeto else 0
+        reiterar = unidad_objeto[ 'reiterar' ] if 'reiterar' in unidad_objeto else 1
         n = str( nivel ) + unidad + str( recurrencia )
 
-        for r in range( reiterar + 1 ):
+        for r in range( reiterar ):
           self.registros.setdefault( nivel , [] ).append( registro )
 
           if 'unidades' in unidad_objeto:

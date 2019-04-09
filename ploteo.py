@@ -52,7 +52,22 @@ for parte in PARTES:
        fontsize = 14,
        backgroundcolor = ( 1., 1., 1., .3 )
     )
-    # TODO: Agregar etiqueta al final dela parte
+  # Agregar etiqueta al final dela parte
+  eje_x.plot(
+    ( dimension,dimension ), 
+    ( -.5, .5), 
+    c = 'b', 
+    alpha = 1
+  )
+  #eje_x.text(
+  #   dimension,
+  #   0,
+  #   'final',
+  #   horizontalalignment = 'right',
+  #   verticalalignment = vert,
+  #   fontsize = 14,
+  #   backgroundcolor = ( 1., 1., 1., 0 )
+  #)
 
   # Set the x ticks formatting
   # format x axis with 3 second intervals

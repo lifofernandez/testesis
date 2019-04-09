@@ -25,10 +25,10 @@ base: &base !!map
   transportar: !!int 60 # C
   transponer: !!int 0
   duraciones: !!seq [ 1 ]
-  bpm: !!int 62
+  bpm: !!int 60
   metro: !!str 4/4
   desplazar: !!float 0
-  reiterar: !!int 0
+  #reiterar: !!int 0
   dinamicas: !!seq [ 1, .5, .4 ]
   #revertir: !!seq [ 'duraciones', 'dinamicas' ]
   canal: !!int 3
@@ -39,9 +39,10 @@ unidades: !!map
     duraciones: [ 1, 1, 1, 1 ]
   b: &b 
     <<: *base
-    duraciones: [ 1, 1, 1, 1 ]
+    duraciones: [  1, 1, 1, 1 ]
   A: 
     unidades: [ 'a','b' ] 
+    reiterar: 1
   estrofa: 
     unidades: [ 'A' ]
 macroforma: !!seq [ 'estrofa' ]
