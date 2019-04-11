@@ -9,7 +9,7 @@ base: &base
   alturas: [ 1 ] 
   transportar: 35 #B
   duraciones: [ .5 ]
-  bpm: 104  
+  bpm: 100  
   metro: 4/4
   dinamicas: [ 1 ]
   canal: 2 
@@ -21,13 +21,13 @@ unidades:
   b:
     <<: *base
     alturas: [ 7, 5, 4, 5 ] 
-  vuelta:
+  A:
     unidades: [
       'a', 'b',
     ]
 macroforma: [
-   'vuelta',
-   'vuelta',
-   'vuelta',
-   'vuelta',
+   'wdqwA',
+   'A',
+   'A',
+   'A',
 ]

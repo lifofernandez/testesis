@@ -20,7 +20,6 @@ for d in DEFS:
   """
   pista = Pista(
     d[ 'nombre' ],
-    #d[ 'base' ],
     d[ 'unidades' ],
     d[ 'macroforma' ],
   )
@@ -79,12 +78,11 @@ for pista in PISTAS:
     verboseprint( evento )
     previo = pista.secuencia[ index - 1 ]
     unidad = evento[ 'unidad' ]
-    previa = previo[ 'unidad' ]
+    #previa = previo[ 'unidad' ]
 
     canal = evento[ 'canal' ]
     bpm   = evento[ 'bpm' ]
     metro = evento['metro'].split( '/' )
-    #metro = evento[ 'metro' ]
     clave = evento[ 'clave' ]
     programa = evento[ 'programa' ]
     duracion_evento = evento[ 'duracion' ] 

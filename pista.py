@@ -1,5 +1,6 @@
 from argumentos import args, verboseprint
 import random
+import sys
 
 class Pista:
   """
@@ -30,14 +31,13 @@ class Pista:
   def __init__( 
     self,
     nombre,
-    #base,
     paleta,
     macroforma,
   ):
     self.nombre     = nombre
     self.orden      = Pista.cantidad 
     Pista.cantidad += 1
-    self.oid        = str( self.orden ) + self.nombre 
+    #self.oid        = str( self.orden ) + self.nombre 
     """
     Parametros defactos de unidadad llamados "base"
     """
@@ -78,39 +78,65 @@ class Pista:
     """
     forma = forma if forma is not None else self.macroforma
     nivel += 1
+    """
+    Limpiar parametros q no se heredan
+    """
     herencia.pop( 'unidades', None )
     herencia.pop( 'reiterar', None )
 
     for unidad in forma:  
       verboseprint( '-' * ( nivel - 1 ) +  unidad )
-
-      if unidad in self.paleta:
+      """
+      Si esta tratando de invocar una unidad que no disponible en la paleta de unidades
+      """
+      try:
+        #if unidad in self.paleta:
+        """
+        Carga unidad original 
+        """
         unidad_objeto = self.paleta[ unidad ]
-        # Cuenta recurrencias en este nivel
+        """
+        Cuenta recurrencias de esta unidad en este nivel
+        """
         recurrencia = sum( 
           [ 1 for r in self.registros[ nivel ] if r[ 'nombre' ] == unidad ]
         ) if nivel in self.registros else 0 
+        """
+        Dicionario para ingresar al arbol de registros
+        """
         registro = { 
           'nombre'      : unidad,
           'recurrencia' : recurrencia,
           'nivel'       : nivel,
         }
 
+        """
+        Si el referente esta herencia registrar refernete
+        """
         if 'referente' in herencia:
           registro[ 'referente' ] = herencia[ 'referente' ] 
 
+        """
+        Crea parametros de unidad combinando originales con herencia
+        Tambien agrega el registro de referentes
+        """
         sucesion = {
           **unidad_objeto,
           **herencia,
           **registro
         } 
+        """
+        Cantidad de repeticiones de la unidad
+        """
         reiterar = unidad_objeto[ 'reiterar' ] if 'reiterar' in unidad_objeto else 1
-        n = str( nivel ) + unidad + str( recurrencia )
-
+        # n = str( nivel ) + unidad + str( recurrencia )
         for r in range( reiterar ):
           self.registros.setdefault( nivel , [] ).append( registro )
 
           if 'unidades' in unidad_objeto:
+            """
+            Si esta refiere a otras pasar de vuelta por esta funcion
+            """
             sucesion[ 'referente' ] = registro 
             self.ordenar( 
               unidad_objeto[ 'unidades' ],
@@ -119,22 +145,38 @@ class Pista:
             ) 
 
           else: 
+            """
+            Si esta unidad no refiere a otra unidades:
+            """
             #self.registros.setdefault( 'copa' , [] ).append( registro )
+            """
+            Sobrescribir propiedas de unidad por "herencia"
+            """
             factura = {
               **Pista.defactos,
               **sucesion,
             }
+            """
+            Secuenciar articulaciones
+            """
             self.secuencia += self.secuenciar( factura ) 
+      except:
+        print("[NOTICE] No existe unidad: " + unidad )
 
   def secuenciar( 
     self,
     unidad
   ):
     """
-    Genera una secuencia de eventos a partir de unidades preprocesadas
+    Genera una secuencia de ariculaciones musicales 
+    a partir de relacion de unidades ya analizada.  
+    """
+
+    """
+    Revierte parametros del tipo lista
+    TODO: comvertir en lista, si es string
     """
     revertir = unidad[ 'revertir' ] if 'revertir' in unidad else None 
-
     if isinstance( revertir , list ): 
       for r in revertir:
         if r in unidad:
@@ -143,57 +185,87 @@ class Pista:
       if revertir in unidad:
         unidad[ revertir ].reverse() 
 
-    intervalos        = unidad[ 'intervalos' ]
-    alturas           = unidad[ 'alturas' ]
-    voces             = unidad[ 'voces' ]
-    duraciones        = unidad[ 'duraciones' ]
-    dinamicas         = unidad[ 'dinamicas' ]
-    capas             = unidad[ 'controles' ]
+    """
+    Carga parametros
+    """
+    intervalos = unidad[ 'intervalos' ]
+    alturas    = unidad[ 'alturas' ]
+    voces      = unidad[ 'voces' ]
+    duraciones = unidad[ 'duraciones' ]
+    dinamicas  = unidad[ 'dinamicas' ]
+    capas      = unidad[ 'controles' ]
+    """
+    Evalua que parametro es que mas valores tiene
+    TODO: q cuente cuantas voces/controles es el mas largo
+    """
     candidatos = [ 
       dinamicas,
       duraciones,
       alturas,
-      #controles,
+      #len(max(voces, key = len)),
+      #len(max(capas, key = len)),
     ]
     ganador = max( candidatos, key = len )
-    pasos = len( ganador )
-    secuencia = []
 
+    pasos = len( ganador )
+
+    secuencia = []
     for paso in range( pasos ):
       """
-      Combinar parametros: altura, duracion, dinamica, etc
+      Consolidad "articulacion" a partir de combinar parametros: altura, duracion, dinamica, etc
       """
       duracion = duraciones[ paso % len( duraciones ) ]
+      """
+      Variaciones de dinamica
+      """
       rand_min = unidad['fluctuacion']['min'] if 'min' in unidad[ 'fluctuacion' ] else None
       rand_max = unidad['fluctuacion']['max'] if 'max' in unidad[ 'fluctuacion' ] else None
       fluctuacion = random.uniform( 
          rand_min,
          rand_max 
       ) if rand_min or rand_max else 1
+      """
+      Asignar una dinámica
+      """
       dinamica = dinamicas[ paso % len( dinamicas ) ] * fluctuacion
-
+      """
+      Alturas y voces
+      """
       altura = alturas[ paso % len( alturas ) ]
       acorde = []
       nota = 'S' # Silencio
-
+      """
+      Si tiene una "altura"
+      """
       if altura != 0:
         """
-        altura / puntero intervalo
+        Relacion: altura > puntero en el set de intervalos
+        Trasponer dentro del set de intervalos despues de 
+        Transportar, sumar al intervalo 
         """
         transponer  = unidad[ 'transponer' ] 
         transportar = unidad[ 'transportar' ]
         nota = transportar + intervalos[ ( ( altura - 1 ) + transponer ) % len( intervalos ) ] 
+        """
+        Armar superposicion de voces
+        """
         if voces:
           for v in voces:
             voz = ( altura + ( v[ paso % len( v ) ] ) - 1 ) + transponer
             acorde += [ transportar +  intervalos[ voz % len( intervalos ) ]  ]
 
+      """
+      Cambios de control
+      """
       controles = []
       if capas:
         for capa in capas:
           controles += [ capa[ paso % len( capa ) ] ]
 
-      evento = {
+      """
+      Articulación a secuenciar
+      """
+      articulacion = {
         **unidad, # Pasa algunas cosas de mas aca...
         'unidad'      : unidad[ 'nombre' ],
         'orden'       : paso,
@@ -203,5 +275,15 @@ class Pista:
         'dinamica'    : dinamica,
         'controles'   : controles,
       }
-      secuencia.append( evento )
+      secuencia.append( articulacion )
     return secuencia 
+
+
+#def linux_interaction():
+#    assert ('linux' in sys.platform), "Function can only run on Linux systems."
+#    print('Doing something.')
+#
+#try:
+#    linux_interaction()
+#except:
+#    pass
