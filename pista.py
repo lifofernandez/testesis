@@ -4,7 +4,7 @@ import sys
 
 class Pista:
   """
-  Clase para cada 'track' a partir de archivos.yml
+  Clase para cada 'track MIDI' a partir de archivos .yml
   """
   cantidad = 0 
   defactos = {
@@ -37,24 +37,16 @@ class Pista:
     self.nombre     = nombre
     self.orden      = Pista.cantidad 
     Pista.cantidad += 1
-    #self.oid        = str( self.orden ) + self.nombre 
-    """
-    Parametros defactos de unidadad llamados "base"
-    """
-    #self.base       = base
-    #self.duracion   = 0
-    """
-    Principal Lista ordenada de unidades "macroforma"
-    """
-    self.macroforma = macroforma
-    """
-    A partir de esa lista busca en la "paleta de unidades"
-    """
-    self.paleta     = paleta
 
+    self.macroforma = macroforma
+    self.paleta     = paleta
     self.registros  = {}
     self.secuencia  = [] 
     self.ordenar()
+
+    #self.oid        = str( self.orden ) + self.nombre 
+    #self.duracion   = 0
+
     #self.secuencia = self.ordenar( macroforma )
     #pprint.pprint( self.registros )
 
@@ -67,42 +59,42 @@ class Pista:
       o += l + '\n'
     return o
 
+  """
+  Organiza unidades según relacion de referencia
+  """
   def ordenar( 
     self,
     forma    = None,
     nivel    = 0,
     herencia = {},
   ):
-    """
-    Organiza unidades según relacion de referencia
-    """
     forma = forma if forma is not None else self.macroforma
     nivel += 1
     """
-    Limpiar parametros q no se heredan
+    Limpiar parametros q no se heredan.
     """
     herencia.pop( 'unidades', None )
     herencia.pop( 'reiterar', None )
 
+    """
+    Recorre principal lista ordenadas unidades.
+    """
+    error =  "En la pista \"" + self.nombre + "\""
     for unidad in forma:  
       verboseprint( '-' * ( nivel - 1 ) +  unidad )
-      """
-      Si esta tratando de invocar una unidad que no disponible en la paleta de unidades
-      """
       try:
-        #if unidad in self.paleta:
-        """
-        Carga unidad original 
-        """
+        if unidad not in self.paleta:
+          error +=  " la unidad \"" + unidad + "\" no existe en la paleta de unidades."  
         unidad_objeto = self.paleta[ unidad ]
         """
-        Cuenta recurrencias de esta unidad en este nivel
+        Cuenta recurrencias de esta unidad en este nivel.
+        TODO: QUe los cuente en cualquier nivel.
         """
         recurrencia = sum( 
           [ 1 for r in self.registros[ nivel ] if r[ 'nombre' ] == unidad ]
         ) if nivel in self.registros else 0 
         """
-        Dicionario para ingresar al arbol de registros
+        Dicionario para ingresar al arbol de registros.
         """
         registro = { 
           'nombre'      : unidad,
@@ -111,7 +103,7 @@ class Pista:
         }
 
         """
-        Si el referente esta herencia registrar refernete
+        Si el referente está en el diccionario herencia registrar referente.
         """
         if 'referente' in herencia:
           registro[ 'referente' ] = herencia[ 'referente' ] 
@@ -126,16 +118,17 @@ class Pista:
           **registro
         } 
         """
-        Cantidad de repeticiones de la unidad
+        Cantidad de repeticiones de la unidad.
         """
         reiterar = unidad_objeto[ 'reiterar' ] if 'reiterar' in unidad_objeto else 1
-        # n = str( nivel ) + unidad + str( recurrencia )
+        # n = str( nivel ) + unidad + str( reiterar )
         for r in range( reiterar ):
           self.registros.setdefault( nivel , [] ).append( registro )
 
           if 'unidades' in unidad_objeto:
             """
-            Si esta refiere a otras pasar de vuelta por esta funcion
+            Si esta tiene parametro "unidades", refiere a otras unidades "hijas" 
+            recursión: pasar de vuelta por esta funcion.
             """
             sucesion[ 'referente' ] = registro 
             self.ordenar( 
@@ -146,11 +139,12 @@ class Pista:
 
           else: 
             """
-            Si esta unidad no refiere a otra unidades:
+            Si esta unidad no refiere a otra unidades, 
+            Unidad célula o "unidad seminal"
             """
             #self.registros.setdefault( 'copa' , [] ).append( registro )
             """
-            Sobrescribir propiedas de unidad por "herencia"
+            Combinar "defactos" con propiedas resultantes de unidad + "herencia" y registro.
             """
             factura = {
               **Pista.defactos,
@@ -161,20 +155,20 @@ class Pista:
             """
             self.secuencia += self.secuenciar( factura ) 
       except:
-        print("[NOTICE] No existe unidad: " + unidad )
+        print("[ ERROR ] " + error)
 
+  """
+  Genera una secuencia de ariculaciones musicales 
+  a partir de unidades preprocesadas. 
+  """
   def secuenciar( 
     self,
     unidad
   ):
-    """
-    Genera una secuencia de ariculaciones musicales 
-    a partir de relacion de unidades ya analizada.  
-    """
 
     """
-    Revierte parametros del tipo lista
-    TODO: comvertir en lista, si es string
+    Cambia el sentido de los parametros del tipo lista
+    TODO: ¿convertir cualquier string o int en lista?
     """
     revertir = unidad[ 'revertir' ] if 'revertir' in unidad else None 
     if isinstance( revertir , list ): 
@@ -188,35 +182,35 @@ class Pista:
     """
     Carga parametros
     """
-    intervalos = unidad[ 'intervalos' ]
-    alturas    = unidad[ 'alturas' ]
-    voces      = unidad[ 'voces' ]
-    duraciones = unidad[ 'duraciones' ]
-    dinamicas  = unidad[ 'dinamicas' ]
-    capas      = unidad[ 'controles' ]
+    intervalos    = unidad[ 'intervalos' ]
+    duraciones    = unidad[ 'duraciones' ]
+    dinamicas     = unidad[ 'dinamicas' ]
+    alturas       = unidad[ 'alturas' ]
+    voces         = unidad[ 'voces' ]
+    ganador_voces = max( voces, key = len) if voces else [ 0 ]
+    capas         = unidad[ 'controles' ]
+    ganador_capas = max( capas , key = len) if capas else [ 0 ]
     """
-    Evalua que parametro es que mas valores tiene
-    TODO: q cuente cuantas voces/controles es el mas largo
+    Evalua que parametro es que mas valores tiene.
     """
     candidatos = [ 
       dinamicas,
       duraciones,
       alturas,
-      #len(max(voces, key = len)),
-      #len(max(capas, key = len)),
+      ganador_voces,
+      ganador_capas,
     ]
     ganador = max( candidatos, key = len )
-
     pasos = len( ganador )
-
     secuencia = []
     for paso in range( pasos ):
       """
-      Consolidad "articulacion" a partir de combinar parametros: altura, duracion, dinamica, etc
+      Consolidad "articulacion" a partir de combinar parametros: altura,
+      duracion, dinamica, etc.
       """
       duracion = duraciones[ paso % len( duraciones ) ]
       """
-      Variaciones de dinamica
+      Variaciones de dinámica.
       """
       rand_min = unidad['fluctuacion']['min'] if 'min' in unidad[ 'fluctuacion' ] else None
       rand_max = unidad['fluctuacion']['max'] if 'max' in unidad[ 'fluctuacion' ] else None
@@ -225,29 +219,25 @@ class Pista:
          rand_max 
       ) if rand_min or rand_max else 1
       """
-      Asignar una dinámica
+      Asignar una dinámica.
       """
       dinamica = dinamicas[ paso % len( dinamicas ) ] * fluctuacion
       """
-      Alturas y voces
+      Alturas, voz y superposición voces.
       """
       altura = alturas[ paso % len( alturas ) ]
       acorde = []
       nota = 'S' # Silencio
-      """
-      Si tiene una "altura"
-      """
       if altura != 0:
         """
-        Relacion: altura > puntero en el set de intervalos
-        Trasponer dentro del set de intervalos despues de 
-        Transportar, sumar al intervalo 
+        Relacion: altura > puntero en el set de intervalos; Trasponer dentro
+        del set de intervalos, luego Transportar, sumar a la nota resultante.
         """
         transponer  = unidad[ 'transponer' ] 
         transportar = unidad[ 'transportar' ]
         nota = transportar + intervalos[ ( ( altura - 1 ) + transponer ) % len( intervalos ) ] 
         """
-        Armar superposicion de voces
+        Armar superposicion de voces.
         """
         if voces:
           for v in voces:
@@ -255,7 +245,7 @@ class Pista:
             acorde += [ transportar +  intervalos[ voz % len( intervalos ) ]  ]
 
       """
-      Cambios de control
+      Cambios de control.
       """
       controles = []
       if capas:
@@ -263,7 +253,7 @@ class Pista:
           controles += [ capa[ paso % len( capa ) ] ]
 
       """
-      Articulación a secuenciar
+      Articulación a secuenciar.
       """
       articulacion = {
         **unidad, # Pasa algunas cosas de mas aca...

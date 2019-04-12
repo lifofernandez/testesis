@@ -75,7 +75,7 @@ base: &base !!map
     # Catidad de veces q se toca esta unidad 
     # Reiterarse a si misma,
     # no es trasferible, no se hereda, caso contrario se reterarian los referidos
-    0
+    1
 
   dinamicas: !!seq 
    # Lista ordenada de dinámicas
@@ -89,9 +89,9 @@ base: &base !!map
    # Canal MIDI 
    3
 
-   #programa: !!int
-   #  # Instrumento MIDI
-   #  103
+  programa: !!int
+    # Instrumento MIDI
+    103
 
   controles: !!seq
     # Lista de listas de Cambios de control
@@ -111,8 +111,8 @@ unidades: !!map
     <<: *base
     bpm: 34
     metro: 2/4
-    alturas: [ 1, 3,0, 5, 7, 8 ]
-    duraciones: [ 1, .5, .5, 1, 1 ]
+    alturas: [ 1,  5 ]
+    duraciones: [  1, 1 ]
 
   b: &b 
     <<: *base
@@ -120,6 +120,7 @@ unidades: !!map
     duraciones: [ .5 ]
     alturas: [ 1, 2 ]
     voces: 0
+    controles: Null
     transponer: 3
     clave: 
       alteraciones: 2
@@ -128,6 +129,9 @@ unidades: !!map
       min: .1
       max: .4 
     desplazar: -1
+  programa: !!int
+    # Instrumento MIDI
+    3
 
   b^: 
     <<: *b
@@ -144,7 +148,7 @@ unidades: !!map
     #metro: 9/8
     unidades: [ 'a' , 'b^' ]
     #desplazar: -0.5
-    desplazar: -0.75
+    #desplazar: -0.75
 
   B^: 
     <<: *B
@@ -153,10 +157,14 @@ unidades: !!map
     unidades: [ 'b', 'a' ] 
     dinamicas: [ 1 ]
 
+  intro: 
+    unidades: [ 'B' ]
+
   estrofa: 
     unidades: [ 'A', 'B', 'B^' ]
 
-
+  inter: 
+    unidades: [ 'B^' ]
   estribo: 
     bpm: 100
     unidades: [ 'B', 'B^', 'a' ]
@@ -170,7 +178,7 @@ macroforma: !!seq
     'estrofa',
     'estribo',
     'estribo',
-    'inter',
+    'nter',
   ]
 
 

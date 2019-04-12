@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from argumentos import args
-from main import EVENTOS_MIDI, PARTES, formato_tiempo
+from main import EVENTOS, PARTES, formato_tiempo
+from midiutil import MIDIFile
 if args.plotear:
   import ploteo
 
@@ -8,11 +9,10 @@ if args.plotear:
  Salida MIDI
 """
 nombre_archivo = args.output
-from midiutil import MIDIFile
 #pistas_cantidad = Pista.cantidad 
 pistas_cantidad = len( PARTES ) 
 midi_tracks = MIDIFile( pistas_cantidad ) 
-for m in EVENTOS_MIDI:
+for m in EVENTOS:
     mu = getattr( midi_tracks, m[0] )( *m[1:] )
 with open( nombre_archivo + ".mid", "wb" ) as archivo_midi:
    midi_tracks.writeFile( archivo_midi )
