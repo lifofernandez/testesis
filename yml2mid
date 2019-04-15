@@ -18,7 +18,6 @@ with open( nombre_archivo + ".mid", "wb" ) as archivo_midi:
    midi_tracks.writeFile( archivo_midi )
 
 
-
 """
 TO DO:
     [ ] Error Hanglin, Rolando 

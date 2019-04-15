@@ -26,13 +26,13 @@ for d in DEFS:
   )
   PISTAS.append( pista )
 
+"""
+Extrae referentes recursivamente
+"""
 def referir(
   refs,
   o = None,
   ):
-  """
-  Extrae referentes recursivamente
-  """
   referente   = refs[ 'referente' ]   if 'referente'   in refs else None
   nombre      = refs[ 'nombre' ]      if 'nombre'      in refs else None
   recurrencia = refs[ 'recurrencia' ] if 'recurrencia' in refs else None
@@ -44,6 +44,7 @@ def referir(
   return output
 
 PARTES = []
+
 """
 Inicializar tracks MIDI a partir de cada pista
 """
@@ -73,12 +74,23 @@ for pista in PISTAS:
   """
   Loop principal:
   Convierte secuencia de articulaciones a eventos MIDI 
+  """
+
+  """
   TO DO: agregar funcciones de midiutil adicionales:
   https://midiutil.readthedocs.io/en/1.2.1/class.html#classref
+  addCopyright
+  addPitchWheelEvent
+  addSysEx
+  addUniversalSysEx
+  changeNoteTunig
+  changeTuningBank
+  changeTuningProgram
+  makeNRPNCall
   """
   for index, articulacion in enumerate( pista.secuencia ):
     verboseprint( articulacion )
-    precedente   = pista.secuencia[ index - 1 ]
+    precedente = pista.secuencia[ index - 1 ]
     unidad   = articulacion[ 'unidad' ]
     canal    = articulacion[ 'canal' ]
     bpm      = articulacion[ 'bpm' ]
@@ -88,7 +100,7 @@ for pista in PISTAS:
     duracion = articulacion[ 'duracion' ] 
 
     """
-    Primer articulación de la parte, agregar eventos fundamentales: Pulso,
+    Primer articulación de la parte, agregar eventos fundamentales: pulso,
     armadura de clave, compás y programa.
     """
     if ( index == 0 ):
