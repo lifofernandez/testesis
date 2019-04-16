@@ -18,7 +18,6 @@ base: &base !!map
     modo: 0 # Modo de la escala, 0 = Mayor o 1 = Menor
 
   intervalos: !!seq 
-    &intervalos
     # Secuencia de intervalos 
     # A ser recorrida por el punteros de altura
     [ 
@@ -95,14 +94,47 @@ base: &base !!map
 
   controles: !!seq
     # Lista de listas de Cambios de control
-    # Los bancos MIDI se alternan através de cambios de control
-    # CC#0 numero de banco, CC#32 numero de programa 
-    # Ej: Programa 160 = 2do banco:32º instrumento/programa = CC#0:2,CC#32:32
-    # https://www.mutools.com/info/docs/mulab/using-bank-select-and-prog-changes.html
-    # http://www.andrelouis.com/qws/art/art009.htm
     - [ 70 : 80,  71 : 90, 72 : 100 ]
     - [ 33 : 121, 51 : 120 ]
     - [ 10 : 80,  11 : 90, 12 : 100, 13 : 100 ]
+
+  RPN: !!map
+    control_msb: 0
+    control_lsb: 32
+    data_msb: 2 
+    data_lsb: 9
+    ordenar: True
+
+      #NRPN: !!map
+      #  # Numero de Parametro No Registrado 
+      #  # NRPN (Non Registered Parameter Number)
+      #  # https://midiutil.readthedocs.io/en/1.2.1/class.html#midiutil.MidiFile.MIDIFile.makeNRPNCall
+
+      #  # http://www.philrees.co.uk/nrpnq.htm
+      #  # https://en.wikipedia.org/wiki/NRPN
+
+      #  # alternar bancos MIDI através de NPRN
+      #  # https://www.mutools.com/info/docs/mulab/using-bank-select-and-prog-changes.html
+      #  # http://www.andrelouis.com/qws/art/art009.htm
+      #  control_msb: !!int
+      #  # The Most significant byte of the controller.
+      #  # In common usage this will usually be 0
+      #  0
+      #  control_lsb: !!int
+      #  # The Least significant Byte for the controller message.
+      #  # For example, for a fine-tuning change this would be 01.
+      #  3
+      #  data_msb: !!int
+      #  # The Most Significant Byte of the controller’s parameter.
+      #  0
+      #  data_lsb: !!int
+      #  # The Least Significant Byte of the controller’s parameter.
+      #  # If not needed this should be set to None
+      #  1
+      #  ordenar: !!bool
+      #  # Order the control events in time. 
+      #  False
+
 
 unidades: !!map
   # Paleta de unidades para secuenciar
@@ -147,7 +179,6 @@ unidades: !!map
   B: &B 
     #metro: 9/8
     unidades: [ 'a' , 'b^' ]
-    #desplazar: -0.5
     #desplazar: -0.75
 
   B^: 
@@ -169,8 +200,8 @@ unidades: !!map
     bpm: 100
     unidades: [ 'B', 'B^', 'a' ]
 
+# Lista de unidades a ser sequenciadas 
 macroforma: !!seq 
-  # Lista de unidades a ser sequenciadas 
   [
     'intro',
     'estrofa',

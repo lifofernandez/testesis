@@ -22,10 +22,11 @@ class Pista:
     'fluctuacion'   : { 'min' : 1, 'max' : 1 },
     'transportar'   : 0,
     'transponer'    : 0,
-    #'controles'     : [ [ None ] ],
     'controles'     : None,
     'reiterar'      : 1,
     'referente'     : None,
+    'NRPN'          : None,
+    'RPN'           : None,
   }
  
   def __init__( 
@@ -84,7 +85,7 @@ class Pista:
       verboseprint( '-' * ( nivel - 1 ) +  unidad )
       try:
         if unidad not in self.paleta:
-          error +=  " la unidad \"" + unidad + "\" no existe en la paleta de unidades."  
+          error +=  " la unidad \"" + unidad + "\"  "  
         unidad_objeto = self.paleta[ unidad ]
         """
         Cuenta recurrencias de esta unidad en este nivel.
@@ -154,8 +155,12 @@ class Pista:
             Secuenciar articulaciones
             """
             self.secuencia += self.secuenciar( factura ) 
-      except:
-        print("[ ERROR ] " + error)
+      except Exception as e:
+          msg = "[ ERROR ] " + error
+          print( msg  + "=" * (80 - int( len( msg ) )) ) 
+          print( e )
+          print( "="*80 )
+          #error(e, msg)
 
   """
   Genera una secuencia de ariculaciones musicales 
@@ -253,10 +258,19 @@ class Pista:
           controles += [ capa[ paso % len( capa ) ] ]
 
       """
+      TO DO: en vez de pasar toda la unidad: 
+      extraer solo los paramtros de la articulacion:
+
+      desplazar
+      NPR ( Numeroe Parametros No Registrados )
+      NRPN: Numero de Parametro No Registrado 
+      """
+
+      """
       Articulación a secuenciar.
       """
       articulacion = {
-        **unidad, # Pasa algunas cosas de mas aca...
+        **unidad, # TO DO: Limpiar, pasa algunas cosas de mas aca...
         'unidad'      : unidad[ 'nombre' ],
         'orden'       : paso,
         'altura'      : nota,

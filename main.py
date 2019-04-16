@@ -6,13 +6,28 @@ import math
 
 formato_tiempo =  '%H:%M:%S'
 
+def error(
+      e,
+      info = ''
+    ):    
+    msg = "[ ERROR ] " + info + " "
+    print( msg  + "=" * (80 - int( len( msg ) )) ) 
+    print(e)
+    print("="*80)
+
 """
 Lee ficheros YAML declarados argumentos posicionales 
 """
 DEFS = []
 for archivo in args.archivos:
-  data = open( archivo.name, 'r' )
-  DEFS.append( yaml.load( data ) )
+  #data = open( archivo.name, 'r' )
+  #a = DEFS.append( yaml.load( data ) )
+  try:
+    data = open( archivo.name, 'r' )
+    DEFS.append( yaml.load( data ))
+  except Exception as e:
+    msg = "al leer" +  archivo.name 
+    error(e, msg)
 
 """
 A partir de cada definicion agrega una "Pista" 
@@ -59,6 +74,7 @@ for pista in PISTAS:
     pista.nombre
   ])
 
+  # Ploteo
   comienzo = datetime.strptime( 
     str( timedelta( seconds = 0 ) ),
     formato_tiempo 
@@ -73,7 +89,7 @@ for pista in PISTAS:
 
   """
   Loop principal:
-  Convierte secuencia de articulaciones a eventos MIDI 
+  Genera una secuencia de eventos MIDI lista de articulaciones.
   """
 
   """
@@ -86,7 +102,8 @@ for pista in PISTAS:
   changeNoteTunig
   changeTuningBank
   changeTuningProgram
-  makeNRPNCall
+  - makeNRPNCall
+  - makeRPNCall
   """
   for index, articulacion in enumerate( pista.secuencia ):
     verboseprint( articulacion )
@@ -94,7 +111,7 @@ for pista in PISTAS:
     unidad   = articulacion[ 'unidad' ]
     canal    = articulacion[ 'canal' ]
     bpm      = articulacion[ 'bpm' ]
-    metro    = articulacion['metro'].split( '/' )
+    metro    = articulacion[ 'metro' ].split( '/' )
     clave    = articulacion[ 'clave' ]
     programa = articulacion[ 'programa' ]
     duracion = articulacion[ 'duracion' ] 
@@ -150,6 +167,72 @@ for pista in PISTAS:
       ])
 
     """
+    Primer articulacion de la Unidad,
+    inserta etiquetas y modificadores de unidad (desplazar).
+    """
+    if ( articulacion[ 'orden' ] == 0 ):
+      desplazar = articulacion[ 'desplazar' ]
+      # TODO raise error si desplazar + duracion es negativo
+      momento += desplazar 
+
+      """
+      Compone texto de la etiqueta a partir de nombre de unidad, numero de
+      iteración y referentes
+      """ 
+      texto = ''
+      ers = referir( articulacion[ 'referente' ] ) if articulacion[ 'referente' ] != None else [ ( 0, 0 ) ]
+      prs = referir( precedente[ 'referente' ] ) if precedente[ 'referente' ] != None else [ ( 0, 0 ) ]
+      for er, pr in zip( ers , prs ):
+        if er != pr: 
+          texto += str( er[ 0 ] ) + ' #' + str( er[ 1 ] ) + '\n' 
+      texto += unidad 
+      EVENTOS.append([
+       'addText',
+        track,
+        momento,
+        texto 
+      ])
+      """
+      Numero de Parametro No Registrado
+      """
+      if articulacion[ 'NRPN' ]:
+        EVENTOS.append([
+         'makeNRPNCall',
+          track, 
+          canal, 
+          momento, 
+          articulacion[ 'NRPN' ][ 'control_msb' ],
+          articulacion[ 'NRPN' ][ 'control_lsb' ],
+          articulacion[ 'NRPN' ][ 'data_msb' ],
+          articulacion[ 'NRPN' ][ 'data_lsb' ],
+          articulacion[ 'NRPN' ][ 'ordenar' ],
+        ])
+
+      """
+      Numero de Parametro Registrado
+      """
+      if articulacion[ 'RPN' ]:
+        EVENTOS.append([
+         'makeRPNCall',
+          track, 
+          canal, 
+          momento, 
+          articulacion[ 'RPN' ][ 'control_msb' ],
+          articulacion[ 'RPN' ][ 'control_lsb' ],
+          articulacion[ 'RPN' ][ 'data_msb' ],
+          articulacion[ 'RPN' ][ 'data_lsb' ],
+          articulacion[ 'RPN' ][ 'ordenar' ],
+        ])
+      
+      # Ploteo
+      etiqueta = {
+        'texto'  : texto,
+        'cuando' : momento,
+        #'hasta' : duracion_unidad,
+      }
+      parte[ 'etiquetas' ].append( etiqueta ) 
+
+    """
     Agrega cualquier cambio de parametro, 
     comparar cada uno con la articulacion previa.
     """
@@ -197,43 +280,10 @@ for pista in PISTAS:
       ])
     #midi_bits.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
 
-    """
-    Primer articulacion de la Unidad,
-    inserta etiquetas y modificadores de unidad (desplazar).
-    """
-    if ( articulacion[ 'orden' ] == 0 ):
-      desplazar = articulacion[ 'desplazar' ]
-      # TODO raise error si desplazar + duracion es negativo
-      momento += desplazar 
-
-      """
-      Compone texto de la etiqueta a partir de nombre de unidad, numero de
-      iteración y referentes
-      """ 
-      texto = ''
-      ers = referir( articulacion[ 'referente' ] ) if articulacion[ 'referente' ] != None else [ ( 0, 0 ) ]
-      prs = referir( precedente[ 'referente' ] ) if precedente[ 'referente' ] != None else [ ( 0, 0 ) ]
-      for er, pr in zip( ers , prs ):
-        if er != pr: 
-          texto += str( er[ 0 ] ) + ' #' + str( er[ 1 ] ) + '\n' 
-      texto += unidad 
-      EVENTOS.append([
-       'addText',
-        track,
-        momento,
-        texto 
-      ])
-      
-      etiqueta = {
-        'texto'  : texto,
-        'cuando' : momento,
-        #'hasta' : duracion_unidad,
-      }
-      parte[ 'etiquetas' ].append( etiqueta ) 
 
     """
     Agregar nota/s (altura, duracion, dinamica).
-    Si existe acorde en la articulación armar una lista con cada voces 
+    Si existe acorde en la articulación armar una lista con cada voz superpuesta. 
     o una lista de solamente un elemento.
     """
     voces = articulacion[ 'acorde' ] if articulacion[ 'acorde' ] else [ articulacion[ 'altura' ] ]
@@ -256,23 +306,27 @@ for pista in PISTAS:
         dinamica,
       ])
 
+
     """
     Agregar cambios de control
     """
     if articulacion[ 'controles' ]:
       for control in articulacion[ 'controles' ]:
-        for c, v in control.items():
+        for control, valor in control.items():
           EVENTOS.append([
            'addControllerEvent',
             track, 
             canal, 
             momento, 
-            c,
-            v, 
+            control,
+            valor, 
           ])
+
+
     momento += duracion
     duracion_parte += ( duracion *  60 ) / bpm 
 
+  # Ploteo
   parte[ 'duracion' ] = datetime.strptime( 
     str( timedelta( seconds = duracion_parte  )   ).split( '.' )[0],
     formato_tiempo
