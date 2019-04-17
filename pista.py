@@ -1,4 +1,4 @@
-from argumentos import args, verboseprint
+from argumentos import args, verboseprint, Pifie
 import random
 import sys
 
@@ -80,12 +80,13 @@ class Pista:
     """
     Recorre principal lista ordenadas unidades.
     """
-    error =  "En la pista \"" + self.nombre + "\""
+    error =  "PISTA \"" + self.nombre + "\""
     for unidad in forma:  
       verboseprint( '-' * ( nivel - 1 ) +  unidad )
       try:
         if unidad not in self.paleta:
-          error +=  " la unidad \"" + unidad + "\"  "  
+          error +=  " NO ENCUENTRO \"" + unidad + "\"  "  
+          raise Pifie( unidad, error )
         unidad_objeto = self.paleta[ unidad ]
         """
         Cuenta recurrencias de esta unidad en este nivel.
@@ -155,13 +156,10 @@ class Pista:
             Secuenciar articulaciones
             """
             self.secuencia += self.secuenciar( factura ) 
-      except Exception as e:
-          msg = "[ ERROR ] " + error
-          ##error(e, msg)
-          print( msg  + "=" * (80 - int( len( msg ) )) ) 
-          print( e )
-          print( "="*80 )
-          #error(e, msg)
+      except Pifie as e:
+          print(e)
+          print(e.o)
+          # TODO: cambiar str de unidad a arbol
 
   """
   Genera una secuencia de ariculaciones musicales 

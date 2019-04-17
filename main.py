@@ -1,4 +1,4 @@
-from argumentos import args, verboseprint, error
+from argumentos import args, verboseprint, Pifie
 import yaml
 from pista import Pista
 from datetime import datetime, timedelta
@@ -10,16 +10,25 @@ formato_tiempo =  '%H:%M:%S'
 """
 Lee ficheros YAML declarados argumentos posicionales 
 """
-DEFS = []
-for archivo in args.archivos:
-  #data = open( archivo.name, 'r' )
-  #a = DEFS.append( yaml.load( data ) )
-  try:
+#for archivo in args.archivos:
+#  #data = open( archivo.name, 'r' )
+#  #a = DEFS.append( yaml.load( data ) )
+#  data = open( archivo.name, 'r' )
+#  try:
+#    DEFS.append( yaml.load( data ) )
+def leer_yamls():
+  defs = []
+  for archivo in args.archivos:
     data = open( archivo.name, 'r' )
-    DEFS.append( yaml.load( data ))
-  except Exception as e:
-    msg = "al leer" +  archivo.name 
-    error(e, msg)
+    try:
+      defs.append( yaml.load( data ) )
+    except Exception as e:
+      #raise Pifie( archivo, "NO PUEDO LEER " + archivo.name )
+      print(e)
+      #print(e.o)
+  return defs
+
+DEFS = leer_yamls()
 
 """
 A partir de cada definicion agrega una "Pista" 
@@ -37,8 +46,8 @@ for d in DEFS:
 Extrae referentes recursivamente
 """
 def referir(
-  refs,
-  o = None,
+    refs,
+    o = None,
   ):
   referente   = refs[ 'referente' ]   if 'referente'   in refs else None
   nombre      = refs[ 'nombre' ]      if 'nombre'      in refs else None
