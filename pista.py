@@ -157,6 +157,7 @@ class Pista:
             self.secuencia += self.secuenciar( factura ) 
       except Exception as e:
           msg = "[ ERROR ] " + error
+          ##error(e, msg)
           print( msg  + "=" * (80 - int( len( msg ) )) ) 
           print( e )
           print( "="*80 )

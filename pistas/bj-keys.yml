@@ -20,7 +20,7 @@ base: &base
     - [ -5 ]
 unidades: 
   a:
-    <<: *base
+    <<: *ase
     alturas: [ 8, 9 ] 
   b:
     <<: *base

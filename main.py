@@ -1,4 +1,4 @@
-from argumentos import args, verboseprint
+from argumentos import args, verboseprint, error
 import yaml
 from pista import Pista
 from datetime import datetime, timedelta
@@ -6,14 +6,6 @@ import math
 
 formato_tiempo =  '%H:%M:%S'
 
-def error(
-      e,
-      info = ''
-    ):    
-    msg = "[ ERROR ] " + info + " "
-    print( msg  + "=" * (80 - int( len( msg ) )) ) 
-    print(e)
-    print("="*80)
 
 """
 Lee ficheros YAML declarados argumentos posicionales 

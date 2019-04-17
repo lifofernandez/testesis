@@ -27,4 +27,14 @@ parser.add_argument(
  help = 'Ploteo del arbol de relaciones entre unidades (dot ó png)',
 )
 args = parser.parse_args()
+
 verboseprint = pprint.pprint if args.verbosity else lambda *a, **k: None
+
+def error(
+      e = '',
+      info = ''
+    ):    
+    msg = "[ ERROR ] " + info + " "
+    print( msg  + "=" * ( 80 - int( len( msg ) ) ) ) 
+    print( e )
+    print( "=" * 80 )
