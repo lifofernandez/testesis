@@ -26,6 +26,8 @@ class Pista:
     'controles'   : None,
     'reiterar'    : 1,
     'referente'   : None,
+    'SysEx'       : None,
+    'UniSysEx'    : None,
     'NRPN'        : None,
     'RPN'         : None,
   }
@@ -50,7 +52,6 @@ class Pista:
     #self.duracion   = 0
 
     #self.secuencia = self.ordenar( macroforma )
-    #pprint.pprint( self.registros )
 
     verboseprint( '\n#### ' + self.nombre + ' ####' )
 
@@ -79,7 +80,7 @@ class Pista:
     herencia.pop( 'reiterar', None )
 
     """
-    Recorre principal lista ordenadas unidades.
+    Recorre lista ordenada unidades principales.
     """
     error =  "PISTA \"" + self.nombre + "\""
     for unidad in forma:  
@@ -92,7 +93,7 @@ class Pista:
         unidad_objeto = self.paleta[ unidad ]
         """
         Cuenta recurrencias de esta unidad en este nivel.
-        TODO: QUe los cuente en cualquier nivel.
+        TODO: Que los cuente en cualquier nivel.
         """
         recurrencia = sum( 
           [ 1 for r in self.registros[ nivel ] if r[ 'nombre' ] == unidad ]
@@ -264,6 +265,8 @@ class Pista:
       extraer solo los paramtros de la articulacion:
 
       desplazar
+      SysEx
+      UniSysEx
       NPR ( Numeroe Parametros No Registrados )
       NRPN: Numero de Parametro No Registrado 
       """

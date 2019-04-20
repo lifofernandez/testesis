@@ -98,12 +98,12 @@ for pista in PISTAS:
     TO DO: agregar funcciones de midiutil adicionales:
     https://midiutil.readthedocs.io/en/1.2.1/class.html#classref
     [x] addCopyright
-    [ ] addPitchWheelEvent
-    [ ] addSysEx
-    [ ] addUniversalSysEx
+    [x] addPitchWheelEvent
     [ ] changeNoteTunig
     [ ] changeTuningBank
     [ ] changeTuningProgram
+    [ ] addSysEx
+    [ ] addUniversalSysEx
     [x] makeNRPNCall
     [x] makeRPNCall
     """
@@ -195,6 +195,32 @@ for pista in PISTAS:
         momento,
         texto 
       ])
+      """
+      SysEx 
+      """
+      if articulacion[ 'SysEx' ]:
+        EVENTOS.append([
+         'addSysEx',
+          track, 
+          momento, 
+          articulacion[ 'SysEx' ][ 'fabricante' ],
+          articulacion[ 'SysEx' ][ 'playload' ],
+        ])
+      """
+      UniversalSysEx 
+      """
+      if articulacion[ 'UniSysEx' ]:
+        EVENTOS.append([
+         'addUniversalSysEx',
+          track, 
+          momento, 
+          articulacion[ 'UniSysEx' ][ 'codigo' ],
+          articulacion[ 'UniSysEx' ][ 'subCodigo' ],
+          articulacion[ 'UniSysEx' ][ 'playload' ],
+          articulacion[ 'UniSysEx' ][ 'canal' ],
+          articulacion[ 'UniSysEx' ][ 'tiempoReal' ],
+          #articulacion[ 'UniSysEx' ][ 'manID' ],
+        ])
       """
       Numero de Parametro No Registrado
       """

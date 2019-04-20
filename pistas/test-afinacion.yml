@@ -37,7 +37,7 @@ unidades: !!map
   a: &a 
     <<: *base
     duraciones: [ 1, 1, 1, 1 ]
-    afinaciones: [ 666,777,888 ]
+    afinaciones: [ 666, 777, 888 ]
   b: &b 
     <<: *base
     duraciones: [  1, 1, 1, 1 ]
