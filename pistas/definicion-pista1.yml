@@ -80,6 +80,16 @@ base: &base !!map
    # Lista ordenada de dinámicas
    [ 1, .5, .4 ]
 
+  controles: !!seq
+    # Lista de listas de Cambios de control
+    - [ 70 : 80,  71 : 90, 72 : 100 ]
+    - [ 33 : 121, 51 : 120 ]
+    - [ 10 : 80,  11 : 90, 12 : 100, 13 : 100 ]
+
+  tonos: !!seq
+    # Curva de entonaciones (Pitch-bend / Pitch-wheel)
+    [ 666, 777 ]
+
   revertir: !!seq
     # Revierte parametros del tipo !!seq
     [ 'duraciones', 'dinamicas' ]
@@ -92,11 +102,12 @@ base: &base !!map
     # Instrumento MIDI
     103
 
-  controles: !!seq
-    # Lista de listas de Cambios de control
-    - [ 70 : 80,  71 : 90, 72 : 100 ]
-    - [ 33 : 121, 51 : 120 ]
-    - [ 10 : 80,  11 : 90, 12 : 100, 13 : 100 ]
+  afinacionNota: !!map
+    # Actualizar afinacion MIDI en tiempo real
+    afinaciones: !!seq [ [69, 50],[79,60]]
+    canalSysEx: !!int 127
+    tiempoReal: !!bool true
+    programa: !!int 0
 
   NRPN: !!map
     # Numero de Parametro No Registrado 
@@ -135,13 +146,11 @@ base: &base !!map
     data_lsb: 9
     ordenar: True
 
-  afinaciones: [666,777]
-
-  SysEx: !!map
+  sysEx: !!map
     fabricante: 0
     playload:  !!binary ''
 
-  UniSysEx: !!map
+  uniSysEx: !!map
     codigo: !!int 0
     subCodigo: !!int 0
     playload:  !!binary ''

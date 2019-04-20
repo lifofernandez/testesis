@@ -117,7 +117,7 @@ for pista in PISTAS:
     clave      = articulacion[ 'clave' ]
     programa   = articulacion[ 'programa' ]
     duracion   = articulacion[ 'duracion' ] 
-    afinacion  = articulacion[ 'afinacion' ] 
+    tono       = articulacion[ 'tono' ] 
 
     """
     Primer articulación de la parte, agregar eventos fundamentales: pulso,
@@ -196,30 +196,42 @@ for pista in PISTAS:
         texto 
       ])
       """
+      changeNoteTuning
+      """
+      if articulacion[ 'afinacionNota' ]:
+        print( articulacion[ 'afinacionNota' ][ 'afinaciones' ])
+        EVENTOS.append([
+         'changeNoteTuning',
+          track, 
+          articulacion[ 'afinacionNota' ][ 'afinaciones' ],
+          articulacion[ 'afinacionNota' ][ 'canalSysEx' ],
+          articulacion[ 'afinacionNota' ][ 'tiempoReal' ],
+          articulacion[ 'afinacionNota' ][ 'programa' ],
+        ])
+      """
       SysEx 
       """
-      if articulacion[ 'SysEx' ]:
+      if articulacion[ 'sysEx' ]:
         EVENTOS.append([
          'addSysEx',
           track, 
           momento, 
-          articulacion[ 'SysEx' ][ 'fabricante' ],
-          articulacion[ 'SysEx' ][ 'playload' ],
+          articulacion[ 'sysEx' ][ 'fabricante' ],
+          articulacion[ 'sysEx' ][ 'playload' ],
         ])
       """
       UniversalSysEx 
       """
-      if articulacion[ 'UniSysEx' ]:
+      if articulacion[ 'uniSysEx' ]:
         EVENTOS.append([
          'addUniversalSysEx',
           track, 
           momento, 
-          articulacion[ 'UniSysEx' ][ 'codigo' ],
-          articulacion[ 'UniSysEx' ][ 'subCodigo' ],
-          articulacion[ 'UniSysEx' ][ 'playload' ],
-          articulacion[ 'UniSysEx' ][ 'canal' ],
-          articulacion[ 'UniSysEx' ][ 'tiempoReal' ],
-          #articulacion[ 'UniSysEx' ][ 'manID' ],
+          articulacion[ 'uniSysEx' ][ 'codigo' ],
+          articulacion[ 'uniSysEx' ][ 'subCodigo' ],
+          articulacion[ 'uniSysEx' ][ 'playload' ],
+          articulacion[ 'uniSysEx' ][ 'canal' ],
+          articulacion[ 'uniSysEx' ][ 'tiempoReal' ],
         ])
       """
       Numero de Parametro No Registrado
@@ -309,13 +321,13 @@ for pista in PISTAS:
       ])
     #midi_bits.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
 
-    if ( precedente[ 'afinacion' ] != afinacion ):
+    if ( precedente[ 'tono' ] != tono ):
       EVENTOS.append([
          'addPitchWheelEvent',
          track,
          canal, 
          momento, 
-         afinacion
+         tono
       ])
 
 

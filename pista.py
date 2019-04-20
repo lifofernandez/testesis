@@ -8,28 +8,29 @@ class Pista:
   """
   cantidad = 0 
   defactos = {
-    'bpm'         : 60,
-    'canal'       : 1,
-    'programa'    : 1,
-    'metro'       : '4/4',
-    'alturas'     : [ 1 ],
-    'afinaciones' : [ 0 ],
-    'clave'       : { 'alteraciones' : 0, 'modo' : 0 },
-    'intervalos'  : [ 1 ],
-    'voces'       : None,
-    'duraciones'  : [ 1 ],
-    'desplazar'   : 0,
-    'dinamicas'   : [ 1 ],
-    'fluctuacion' : { 'min' : 1, 'max' : 1 },
-    'transportar' : 0,
-    'transponer'  : 0,
-    'controles'   : None,
-    'reiterar'    : 1,
-    'referente'   : None,
-    'SysEx'       : None,
-    'UniSysEx'    : None,
-    'NRPN'        : None,
-    'RPN'         : None,
+    'bpm'           : 60,
+    'canal'         : 1,
+    'programa'      : 1,
+    'metro'         : '4/4',
+    'alturas'       : [ 1 ],
+    'tonos'         : [ 0 ],
+    'clave'         : { 'alteraciones' : 0, 'modo' : 0 },
+    'intervalos'    : [ 1 ],
+    'voces'         : None,
+    'duraciones'    : [ 1 ],
+    'desplazar'     : 0,
+    'dinamicas'     : [ 1 ],
+    'fluctuacion'   : { 'min' : 1, 'max' : 1 },
+    'transportar'   : 0,
+    'transponer'    : 0,
+    'controles'     : None,
+    'reiterar'      : 1,
+    'referente'     : None,
+    'afinacionNota' : None,
+    'sysEx'         : None,
+    'uniSysEx'      : None,
+    'NRPN'          : None,
+    'RPN'           : None,
   }
  
   def __init__( 
@@ -183,14 +184,11 @@ class Pista:
       if revertir in unidad:
         unidad[ revertir ].reverse() 
 
-    """
-    Carga parametros
-    """
     intervalos    = unidad[ 'intervalos' ]
     duraciones    = unidad[ 'duraciones' ]
     dinamicas     = unidad[ 'dinamicas' ]
     alturas       = unidad[ 'alturas' ]
-    afinaciones   = unidad[ 'afinaciones' ]
+    tonos         = unidad[ 'tonos' ]
     voces         = unidad[ 'voces' ]
     ganador_voces = max( voces, key = len) if voces else [ 0 ]
     capas         = unidad[ 'controles' ]
@@ -205,7 +203,7 @@ class Pista:
       alturas,
       ganador_voces,
       ganador_capas,
-      afinaciones,
+      tonos,
     ]
     ganador = max( candidatos, key = len )
     pasos = len( ganador )
@@ -233,7 +231,7 @@ class Pista:
       Alturas, voz y superposición voces.
       """
       altura = alturas[ paso % len( alturas ) ]
-      afinacion = afinaciones[ paso % len( afinaciones ) ]
+      tono   = tonos[ paso % len( tonos ) ]
       acorde = []
       nota = 'S' # Silencio
       if altura != 0:
@@ -265,8 +263,11 @@ class Pista:
       extraer solo los paramtros de la articulacion:
 
       desplazar
-      SysEx
-      UniSysEx
+      changeNoteTuning
+      changeTuningBank
+      changeTuningProgram
+      sysEx
+      uniSysEx
       NPR ( Numeroe Parametros No Registrados )
       NRPN: Numero de Parametro No Registrado 
       """
@@ -281,7 +282,7 @@ class Pista:
         'unidad'      : unidad[ 'nombre' ],
         'orden'       : paso,
         'altura'      : nota,
-        'afinacion'   : afinacion,
+        'tono'        : tono,
         'acorde'      : acorde,
         'duracion'    : duracion,
         'dinamica'    : dinamica,
