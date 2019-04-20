@@ -98,42 +98,43 @@ base: &base !!map
     - [ 33 : 121, 51 : 120 ]
     - [ 10 : 80,  11 : 90, 12 : 100, 13 : 100 ]
 
-  RPN: !!map
-    control_msb: 0
-    control_lsb: 32
-    data_msb: 2 
-    data_lsb: 9
-    ordenar: True
+  #NRPN: !!map
+  #  # Numero de Parametro No Registrado 
+  #  # NRPN (Non Registered Parameter Number)
+  #  # https://midiutil.readthedocs.io/en/1.2.1/class.html#midiutil.MidiFile.MIDIFile.makeNRPNCall
+  #  # http://www.philrees.co.uk/nrpnq.htm
+  #  # https://en.wikipedia.org/wiki/NRPN
 
-      #NRPN: !!map
-      #  # Numero de Parametro No Registrado 
-      #  # NRPN (Non Registered Parameter Number)
-      #  # https://midiutil.readthedocs.io/en/1.2.1/class.html#midiutil.MidiFile.MIDIFile.makeNRPNCall
+  #  control_msb: !!int
+  #    # The Most significant byte of the controller.
+  #    # In common usage this will usually be 0
+  #    0
+  #  control_lsb: !!int
+  #    # The Least significant Byte for the controller message.
+  #    # For example, for a fine-tuning change this would be 01.
+  #    3
+  #  data_msb: !!int
+  #    # The Most Significant Byte of the controller’s parameter.
+  #    0
+  #  data_lsb: !!int
+  #    # The Least Significant Byte of the controller’s parameter.
+  #    # If not needed this should be set to None
+  #    1
+  #  ordenar: !!bool
+  #    # Order the control events in time. 
+  #    False
+  #  # alternar bancos MIDI através de NPRN
+  #  # https://www.mutools.com/info/docs/mulab/using-bank-select-and-prog-changes.html
+  #  # http://www.andrelouis.com/qws/art/art009.htm
 
-      #  # http://www.philrees.co.uk/nrpnq.htm
-      #  # https://en.wikipedia.org/wiki/NRPN
+  #RPN: !!map
+  #  control_msb: 0
+  #  control_lsb: 32
+  #  data_msb: 2 
+  #  data_lsb: 9
+  #  ordenar: True
 
-      #  # alternar bancos MIDI através de NPRN
-      #  # https://www.mutools.com/info/docs/mulab/using-bank-select-and-prog-changes.html
-      #  # http://www.andrelouis.com/qws/art/art009.htm
-      #  control_msb: !!int
-      #  # The Most significant byte of the controller.
-      #  # In common usage this will usually be 0
-      #  0
-      #  control_lsb: !!int
-      #  # The Least significant Byte for the controller message.
-      #  # For example, for a fine-tuning change this would be 01.
-      #  3
-      #  data_msb: !!int
-      #  # The Most Significant Byte of the controller’s parameter.
-      #  0
-      #  data_lsb: !!int
-      #  # The Least Significant Byte of the controller’s parameter.
-      #  # If not needed this should be set to None
-      #  1
-      #  ordenar: !!bool
-      #  # Order the control events in time. 
-      #  False
+  afinaciones: [666,777]
 
 
 unidades: !!map
@@ -180,6 +181,9 @@ unidades: !!map
     #metro: 9/8
     unidades: [ 'a' , 'b^' ]
     #desplazar: -0.75
+    NRPN: null 
+    RPN: null 
+    afinaciones: null
 
   B^: 
     <<: *B
@@ -209,7 +213,7 @@ macroforma: !!seq
     'estrofa',
     'estribo',
     'estribo',
-    'nter',
+    'inter',
   ]
 
 

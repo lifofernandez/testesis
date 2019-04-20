@@ -8,25 +8,26 @@ class Pista:
   """
   cantidad = 0 
   defactos = {
-    'bpm'           : 60,
-    'canal'         : 1,
-    'programa'      : 1,
-    'metro'         : '4/4',
-    'alturas'       : [ 1 ],
-    'clave'         : { 'alteraciones' : 0, 'modo' : 0 },
-    'intervalos'    : [ 1 ],
-    'voces'         : None,
-    'duraciones'    : [ 1 ],
-    'desplazar'     : 0,
-    'dinamicas'     : [ 1 ],
-    'fluctuacion'   : { 'min' : 1, 'max' : 1 },
-    'transportar'   : 0,
-    'transponer'    : 0,
-    'controles'     : None,
-    'reiterar'      : 1,
-    'referente'     : None,
-    'NRPN'          : None,
-    'RPN'           : None,
+    'bpm'         : 60,
+    'canal'       : 1,
+    'programa'    : 1,
+    'metro'       : '4/4',
+    'alturas'     : [ 1 ],
+    'afinaciones' : [ 0 ],
+    'clave'       : { 'alteraciones' : 0, 'modo' : 0 },
+    'intervalos'  : [ 1 ],
+    'voces'       : None,
+    'duraciones'  : [ 1 ],
+    'desplazar'   : 0,
+    'dinamicas'   : [ 1 ],
+    'fluctuacion' : { 'min' : 1, 'max' : 1 },
+    'transportar' : 0,
+    'transponer'  : 0,
+    'controles'   : None,
+    'reiterar'    : 1,
+    'referente'   : None,
+    'NRPN'        : None,
+    'RPN'         : None,
   }
  
   def __init__( 
@@ -87,6 +88,7 @@ class Pista:
         if unidad not in self.paleta:
           error +=  " NO ENCUENTRO \"" + unidad + "\"  "  
           raise Pifie( unidad, error )
+          pass
         unidad_objeto = self.paleta[ unidad ]
         """
         Cuenta recurrencias de esta unidad en este nivel.
@@ -144,7 +146,6 @@ class Pista:
             Si esta unidad no refiere a otra unidades, 
             Unidad célula o "unidad seminal"
             """
-            #self.registros.setdefault( 'copa' , [] ).append( registro )
             """
             Combinar "defactos" con propiedas resultantes de unidad + "herencia" y registro.
             """
@@ -158,8 +159,6 @@ class Pista:
             self.secuencia += self.secuenciar( factura ) 
       except Pifie as e:
           print(e)
-          print(e.o)
-          # TODO: cambiar str de unidad a arbol
 
   """
   Genera una secuencia de ariculaciones musicales 
@@ -190,12 +189,14 @@ class Pista:
     duraciones    = unidad[ 'duraciones' ]
     dinamicas     = unidad[ 'dinamicas' ]
     alturas       = unidad[ 'alturas' ]
+    afinaciones   = unidad[ 'afinaciones' ]
     voces         = unidad[ 'voces' ]
     ganador_voces = max( voces, key = len) if voces else [ 0 ]
     capas         = unidad[ 'controles' ]
     ganador_capas = max( capas , key = len) if capas else [ 0 ]
+
     """
-    Evalua que parametro es que mas valores tiene.
+    Evaluar que parametro lista es el que mas valores tiene.
     """
     candidatos = [ 
       dinamicas,
@@ -203,6 +204,7 @@ class Pista:
       alturas,
       ganador_voces,
       ganador_capas,
+      afinaciones,
     ]
     ganador = max( candidatos, key = len )
     pasos = len( ganador )
@@ -223,13 +225,14 @@ class Pista:
          rand_max 
       ) if rand_min or rand_max else 1
       """
-      Asignar una dinámica.
+      Asignar dinámica.
       """
       dinamica = dinamicas[ paso % len( dinamicas ) ] * fluctuacion
       """
       Alturas, voz y superposición voces.
       """
       altura = alturas[ paso % len( alturas ) ]
+      afinacion = afinaciones[ paso % len( afinaciones ) ]
       acorde = []
       nota = 'S' # Silencio
       if altura != 0:
@@ -270,9 +273,12 @@ class Pista:
       """
       articulacion = {
         **unidad, # TO DO: Limpiar, pasa algunas cosas de mas aca...
+        # extraer parametros de unidad y agregarlos si es (1er articulacion de
+        # la unidad) o no segun corresponda 
         'unidad'      : unidad[ 'nombre' ],
         'orden'       : paso,
         'altura'      : nota,
+        'afinacion'   : afinacion,
         'acorde'      : acorde,
         'duracion'    : duracion,
         'dinamica'    : dinamica,
@@ -282,11 +288,3 @@ class Pista:
     return secuencia 
 
 
-#def linux_interaction():
-#    assert ('linux' in sys.platform), "Function can only run on Linux systems."
-#    print('Doing something.')
-#
-#try:
-#    linux_interaction()
-#except:
-#    pass

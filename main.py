@@ -10,25 +10,19 @@ formato_tiempo =  '%H:%M:%S'
 """
 Lee ficheros YAML declarados argumentos posicionales 
 """
-#for archivo in args.archivos:
-#  #data = open( archivo.name, 'r' )
-#  #a = DEFS.append( yaml.load( data ) )
-#  data = open( archivo.name, 'r' )
-#  try:
-#    DEFS.append( yaml.load( data ) )
 def leer_yamls():
   defs = []
   for archivo in args.archivos:
     data = open( archivo.name, 'r' )
     try:
-      defs.append( yaml.load( data ) )
+      y = yaml.load( data ) 
+      defs.append( y )
     except Exception as e:
-      #raise Pifie( archivo, "NO PUEDO LEER " + archivo.name )
       print(e)
-      #print(e.o)
+      print( "=" * 80)
   return defs
-
 DEFS = leer_yamls()
+
 
 """
 A partir de cada definicion agrega una "Pista" 
@@ -60,7 +54,6 @@ def referir(
   return output
 
 PARTES = []
-
 """
 Inicializar tracks MIDI a partir de cada pista
 """
@@ -73,6 +66,13 @@ for pista in PISTAS:
     track,
     momento,
     pista.nombre
+  ])
+
+  EVENTOS.append([
+    'addCopyright',
+    track,
+    momento,
+    args.copyright
   ])
 
   # Ploteo
@@ -92,30 +92,32 @@ for pista in PISTAS:
   Loop principal:
   Genera una secuencia de eventos MIDI lista de articulaciones.
   """
-
-  """
-  TO DO: agregar funcciones de midiutil adicionales:
-  https://midiutil.readthedocs.io/en/1.2.1/class.html#classref
-  addCopyright
-  addPitchWheelEvent
-  addSysEx
-  addUniversalSysEx
-  changeNoteTunig
-  changeTuningBank
-  changeTuningProgram
-  - makeNRPNCall
-  - makeRPNCall
-  """
   for index, articulacion in enumerate( pista.secuencia ):
+
+    """
+    TO DO: agregar funcciones de midiutil adicionales:
+    https://midiutil.readthedocs.io/en/1.2.1/class.html#classref
+    [x] addCopyright
+    [ ] addPitchWheelEvent
+    [ ] addSysEx
+    [ ] addUniversalSysEx
+    [ ] changeNoteTunig
+    [ ] changeTuningBank
+    [ ] changeTuningProgram
+    [x] makeNRPNCall
+    [x] makeRPNCall
+    """
+
     verboseprint( articulacion )
     precedente = pista.secuencia[ index - 1 ]
-    unidad   = articulacion[ 'unidad' ]
-    canal    = articulacion[ 'canal' ]
-    bpm      = articulacion[ 'bpm' ]
-    metro    = articulacion[ 'metro' ].split( '/' )
-    clave    = articulacion[ 'clave' ]
-    programa = articulacion[ 'programa' ]
-    duracion = articulacion[ 'duracion' ] 
+    unidad     = articulacion[ 'unidad' ]
+    canal      = articulacion[ 'canal' ]
+    bpm        = articulacion[ 'bpm' ]
+    metro      = articulacion[ 'metro' ].split( '/' )
+    clave      = articulacion[ 'clave' ]
+    programa   = articulacion[ 'programa' ]
+    duracion   = articulacion[ 'duracion' ] 
+    afinacion  = articulacion[ 'afinacion' ] 
 
     """
     Primer articulación de la parte, agregar eventos fundamentales: pulso,
@@ -280,6 +282,15 @@ for pista in PISTAS:
          programa
       ])
     #midi_bits.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
+
+    if ( precedente[ 'afinacion' ] != afinacion ):
+      EVENTOS.append([
+         'addPitchWheelEvent',
+         track,
+         canal, 
+         momento, 
+         afinacion
+      ])
 
 
     """
