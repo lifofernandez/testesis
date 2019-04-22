@@ -2,6 +2,9 @@
 from argumentos import args
 from main import EVENTOS, PARTES, formato_tiempo
 from midiutil import MIDIFile
+
+
+# Ploteo
 if args.plotear:
   import ploteo
 
@@ -20,11 +23,6 @@ with open( nombre_archivo + ".mid", "wb" ) as archivo_midi:
 
 """
 TO DO:
-    [ ] Error Hanglin, Rolando 
     [ ] YAML validation 
-    [ ] YAML Debug output
-
-TEMITAS:
-    [x] Revisar transportar
     [ ] Revisar diferentes tempos en diferentes traks
 """

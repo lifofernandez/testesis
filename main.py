@@ -6,7 +6,6 @@ import math
 
 formato_tiempo =  '%H:%M:%S'
 
-
 """
 Lee ficheros YAML declarados argumentos posicionales 
 """
@@ -22,7 +21,6 @@ def leer_yamls():
       print( "=" * 80)
   return defs
 DEFS = leer_yamls()
-
 
 """
 A partir de cada definicion agrega una "Pista" 
@@ -54,6 +52,7 @@ def referir(
   return output
 
 PARTES = []
+
 """
 Inicializar tracks MIDI a partir de cada pista
 """
@@ -170,6 +169,10 @@ for pista in PISTAS:
       ])
 
     """
+    TO DO: Crear estructura superiores a articulacion llamada segmento
+    parametros de que ahora son relativios a la aritulacion #0
+    """
+    """
     Primer articulacion de la Unidad,
     inserta etiquetas y modificadores de unidad (desplazar).
     """
@@ -199,7 +202,6 @@ for pista in PISTAS:
       changeNoteTuning
       """
       if articulacion[ 'afinacionNota' ]:
-        print( articulacion[ 'afinacionNota' ][ 'afinaciones' ])
         EVENTOS.append([
          'changeNoteTuning',
           track, 
@@ -272,6 +274,7 @@ for pista in PISTAS:
         #'hasta' : duracion_unidad,
       }
       parte[ 'etiquetas' ].append( etiqueta ) 
+      # Termina articulacion 0, estos van a ser parametros de Segmento
 
     """
     Agrega cualquier cambio de parametro, 

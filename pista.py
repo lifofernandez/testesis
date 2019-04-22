@@ -4,7 +4,8 @@ import sys
 
 class Pista:
   """
-  Clase para cada 'track MIDI' a partir de archivos .yml
+  Clase para cada definicion de a partir de archivos .yml
+  YAML => Pista => Canal 
   """
   cantidad = 0 
   defactos = {

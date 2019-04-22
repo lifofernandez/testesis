@@ -45,15 +45,17 @@ unidades:
   a```: 
     <<: *a
     alturas: [ 11, 11, 10, 8 ] 
+
   A: 
     unidades: [ 'a', 'b' ] 
   A`: 
     unidades: [ 'a' , 'b`' ]
   B: 
-    desplazar: -0.5
+    #desplazar: -0.5
     unidades: [ 'a`', 'a``' ] 
   A``: 
     unidades: [ 'a```', 'b`' ] 
+
   estrofa: 
     unidades: [
     'A',
@@ -65,7 +67,8 @@ unidades:
     'B',
     'A``',
   ]
-macroforma: !!seq [
+
+macroforma: [
   'espera',
   'estrofa',
   'estribillo',
