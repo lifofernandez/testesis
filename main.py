@@ -54,7 +54,7 @@ def referir(
 PARTES = []
 
 """
-Inicializar tracks MIDI a partir de cada pista
+Generar canal MIDI a partir de cada pista
 """
 EVENTOS = []
 for pista in PISTAS:
@@ -98,11 +98,11 @@ for pista in PISTAS:
     https://midiutil.readthedocs.io/en/1.2.1/class.html#classref
     [x] addCopyright
     [x] addPitchWheelEvent
-    [ ] changeNoteTunig
+    [x] changeNoteTunig
     [ ] changeTuningBank
     [ ] changeTuningProgram
-    [ ] addSysEx
-    [ ] addUniversalSysEx
+    [x] addSysEx
+    [x] addUniversalSysEx
     [x] makeNRPNCall
     [x] makeRPNCall
     """
