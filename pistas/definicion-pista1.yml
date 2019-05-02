@@ -86,9 +86,6 @@ base: &base !!map
     - [ 33 : 121, 51 : 120 ]
     - [ 10 : 80,  11 : 90, 12 : 100, 13 : 100 ]
 
-  tonos: !!seq
-    # Curva de entonaciones (Pitch-bend / Pitch-wheel)
-    [ 666, 777 ]
 
   revertir: !!seq
     # Revierte parametros del tipo !!seq
@@ -102,12 +99,26 @@ base: &base !!map
     # Instrumento MIDI
     103
 
+  tonos: !!seq
+    # Curva de entonaciones (Pitch-bend / Pitch-wheel)
+    [ 666, 777 ]
+
   afinacionNota: !!map
     # Actualizar afinacion MIDI en tiempo real
     afinaciones: !!seq [ [69, 50],[79,60]]
     canalSysEx: !!int 127
     tiempoReal: !!bool true
     programa: !!int 0
+
+  afinacionBanco: !!map
+    # Actualizar afinacion banco MIDI
+    banco: !!int 0
+    ordenar: !!bool false
+
+  afinacionPrograma: !!map
+    # Actualizar afinacion Programa MIDI
+    programa: !!int 0
+    ordenar: !!bool false
 
   NRPN: !!map
     # Numero de Parametro No Registrado 
@@ -157,7 +168,6 @@ base: &base !!map
     canal: !!int 14
     tiempoReal: !!bool False
 
-
 unidades: !!map
   # Paleta de unidades para secuenciar
 
@@ -184,7 +194,6 @@ unidades: !!map
       max: .4 
     desplazar: -1
   programa: !!int
-    # Instrumento MIDI
     3
 
   b^: 
@@ -206,7 +215,10 @@ unidades: !!map
     UniSysEx: null 
     NRPN: null 
     RPN: null 
-    afinaciones: [ 0 ]
+    tonos: [ 0 ]
+    afinacionNota: null
+    afinacionBanco: null
+    afinacionPrograma: null
 
   B^: 
     <<: *B

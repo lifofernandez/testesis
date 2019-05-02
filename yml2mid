@@ -1,19 +1,14 @@
 #!/usr/bin/env python
 from argumentos import args
-from main import EVENTOS, PARTES, formato_tiempo
+from main import EVENTOS, formato_tiempo
+from pista import Pista
 from midiutil import MIDIFile
-
-
-# Ploteo
-if args.plotear:
-  import ploteo
 
 """
  Salida MIDI
 """
 nombre_archivo = args.output
-#pistas_cantidad = Pista.cantidad 
-pistas_cantidad = len( PARTES ) 
+pistas_cantidad = Pista.cantidad 
 midi_tracks = MIDIFile( pistas_cantidad ) 
 for m in EVENTOS:
     mu = getattr( midi_tracks, m[0] )( *m[1:] )
@@ -23,6 +18,11 @@ with open( nombre_archivo + ".mid", "wb" ) as archivo_midi:
 
 """
 TO DO:
+    [ ] terminar midiUTIL 
+    [ ] Agregar: Segmento (grupo de articulaciones) 
+       [ ] parametros de Segmento = art#0 de la unidad
+    [ ] Excepciones main
+    [ ] Agregar: Registro 
     [ ] YAML validation 
     [ ] Revisar diferentes tempos en diferentes traks
 """

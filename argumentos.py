@@ -29,26 +29,21 @@ parser.add_argument(
  default = str(ahora.year),
  help = 'Información de autoría',
 )
-parser.add_argument( 
- '-p',
- '--plotear',
- help = 'Ploteo del arbol de relaciones entre unidades (dot ó png)',
-)
 args = parser.parse_args()
 
 verboseprint = pprint.pprint if args.verbosity else lambda *a, **k: None
 
-class Pifie( Exception ):
-    """Excepción basica para Pifies invocados por """
-    def __init__( self, o, msg = None ):
-        if msg is None:
-          msg = "Un error ocurrio con %s" % o
-        msg += "\n" + "=" * 80
-        super( 
-          Pifie,
-          self
-        ).__init__( "[ ERROR ] " + msg )
-        self.o = o
+class Excepcion( Exception ):
+  """Excepción basica para Pifies invocados por """
+  def __init__( self, o, msg = None ):
+    if msg is None:
+      msg = "Un error ocurrio con %s" % o
+    msg += "\n" + "=" * 80
+    super( 
+      Pifie,
+      self
+    ).__init__( "[ ERROR ] " + msg )
+    self.o = o
 
 #class CarCrashError(CarError):
 #    """When you drive too fast"""

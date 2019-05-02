@@ -1,4 +1,4 @@
-from argumentos import args, verboseprint, Pifie
+from argumentos import args, verboseprint, Excepcion
 import yaml
 from pista import Pista
 from datetime import datetime, timedelta
@@ -51,7 +51,6 @@ def referir(
     referir( referente, output )
   return output
 
-PARTES = []
 
 """
 Generar canal MIDI a partir de cada pista
@@ -74,18 +73,7 @@ for pista in PISTAS:
     args.copyright
   ])
 
-  # Ploteo
-  comienzo = datetime.strptime( 
-    str( timedelta( seconds = 0 ) ),
-    formato_tiempo 
-  ) 
-  parte = {
-     'orden'     : track,
-     'nombre'    : pista.nombre,
-     'comienzo'  : comienzo, 
-     'etiquetas' : [],
-  }
-  duracion_parte = 0
+  #duracion_parte = 0
 
   """
   Loop principal:
@@ -99,8 +87,8 @@ for pista in PISTAS:
     [x] addCopyright
     [x] addPitchWheelEvent
     [x] changeNoteTunig
-    [ ] changeTuningBank
-    [ ] changeTuningProgram
+    [x] changeTuningBank
+    [x] changeTuningProgram
     [x] addSysEx
     [x] addUniversalSysEx
     [x] makeNRPNCall
@@ -211,6 +199,30 @@ for pista in PISTAS:
           articulacion[ 'afinacionNota' ][ 'programa' ],
         ])
       """
+      changeTuningBank
+      """
+      if articulacion[ 'afinacionBanco' ]:
+        EVENTOS.append([
+          'changeTuningBank',
+          track, 
+          canal,
+          momento,
+          articulacion[ 'afinacionBanco' ][ 'banco' ],
+          articulacion[ 'afinacionBanco' ][ 'ordenar' ],
+        ])
+      """
+      changeTuningProgram
+      """
+      if articulacion[ 'afinacionPrograma' ]:
+        EVENTOS.append([ 
+          'changeTuningProgram',
+          track, 
+          canal,
+          momento,
+          articulacion[ 'afinacionPrograma' ][ 'programa' ],
+          articulacion[ 'afinacionPrograma' ][ 'ordenar' ],
+        ])
+      """
       SysEx 
       """
       if articulacion[ 'sysEx' ]:
@@ -266,14 +278,6 @@ for pista in PISTAS:
           articulacion[ 'RPN' ][ 'data_lsb' ],
           articulacion[ 'RPN' ][ 'ordenar' ],
         ])
-      
-      # Ploteo
-      etiqueta = {
-        'texto'  : texto,
-        'cuando' : momento,
-        #'hasta' : duracion_unidad,
-      }
-      parte[ 'etiquetas' ].append( etiqueta ) 
       # Termina articulacion 0, estos van a ser parametros de Segmento
 
     """
@@ -333,7 +337,6 @@ for pista in PISTAS:
          tono
       ])
 
-
     """
     Agregar nota/s (altura, duracion, dinamica).
     Si existe acorde en la articulación armar una lista con cada voz superpuesta. 
@@ -375,13 +378,6 @@ for pista in PISTAS:
             valor, 
           ])
 
-
     momento += duracion
-    duracion_parte += ( duracion *  60 ) / bpm 
+    #duracion_parte += ( duracion *  60 ) / bpm 
 
-  # Ploteo
-  parte[ 'duracion' ] = datetime.strptime( 
-    str( timedelta( seconds = duracion_parte  )   ).split( '.' )[0],
-    formato_tiempo
-  ) 
-  PARTES.append( parte )

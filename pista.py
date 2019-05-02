@@ -1,4 +1,4 @@
-from argumentos import args, verboseprint, Pifie
+from argumentos import args, verboseprint, Excepcion
 import random
 import sys
 
@@ -52,8 +52,7 @@ class Pista:
 
     #self.oid        = str( self.orden ) + self.nombre 
     #self.duracion   = 0
-
-    #self.secuencia = self.ordenar( macroforma )
+    #self.secuencia  = self.ordenar( macroforma )
 
     verboseprint( '\n#### ' + self.nombre + ' ####' )
 
