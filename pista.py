@@ -1,4 +1,5 @@
 from argumentos import args, verboseprint, Excepcion
+from segmento import Segmento
 import random
 import sys
 
@@ -9,29 +10,33 @@ class Pista:
   """
   cantidad = 0 
   defactos = {
-    'bpm'           : 60,
-    'canal'         : 1,
-    'programa'      : 1,
-    'metro'         : '4/4',
-    'alturas'       : [ 1 ],
-    'tonos'         : [ 0 ],
-    'clave'         : { 'alteraciones' : 0, 'modo' : 0 },
-    'intervalos'    : [ 1 ],
-    'voces'         : None,
-    'duraciones'    : [ 1 ],
-    'desplazar'     : 0,
-    'dinamicas'     : [ 1 ],
-    'fluctuacion'   : { 'min' : 1, 'max' : 1 },
-    'transportar'   : 0,
-    'transponer'    : 0,
-    'controles'     : None,
-    'reiterar'      : 1,
-    'referente'     : None,
-    'afinacionNota' : None,
-    'sysEx'         : None,
-    'uniSysEx'      : None,
-    'NRPN'          : None,
-    'RPN'           : None,
+    'bpm'               : 60,
+    'canal'             : 1,
+    'programa'          : 1,
+    'metro'             : '4/4',
+    'alturas'           : [ 1 ],
+    'tonos'             : [ 0 ],
+    'clave'             : { 'alteraciones' : 0, 'modo' : 0 },
+    'intervalos'        : [ 1 ],
+    'voces'             : None,
+    'duraciones'        : [ 1 ],
+    'desplazar'         : 0,
+    'dinamicas'         : [ 1 ],
+    'fluctuacion'       : { 'min' : 1, 'max' : 1 },
+    'transportar'       : 0,
+    'transponer'        : 0,
+    'controles'         : None,
+
+    'reiterar'          : 1,
+    'referente'         : None,
+    'revertir'          : None,
+    'afinacionNota'     : None,
+    'afinacionBanco'    : None,
+    'afinacionPrograma' : None,
+    'sysEx'             : None,
+    'uniSysEx'          : None,
+    'NRPN'              : None,
+    'RPN'               : None,
   }
  
   def __init__( 
@@ -48,6 +53,7 @@ class Pista:
     self.paleta     = paleta
     self.registros  = {}
     self.secuencia  = [] 
+    self.SECUENCIA  = [] 
     self.ordenar()
 
     #self.oid        = str( self.orden ) + self.nombre 
@@ -89,7 +95,7 @@ class Pista:
       try:
         if unidad not in self.paleta:
           error +=  " NO ENCUENTRO \"" + unidad + "\"  "  
-          raise Pifie( unidad, error )
+          raise Excepcion( unidad, error )
           pass
         unidad_objeto = self.paleta[ unidad ]
         """
@@ -134,7 +140,7 @@ class Pista:
           if 'unidades' in unidad_objeto:
             """
             Si esta tiene parametro "unidades", refiere a otras unidades "hijas" 
-            recursión: pasar de vuelta por esta funcion.
+            pasa de vuelta por esta metodo.
             """
             sucesion[ 'referente' ] = registro 
             self.ordenar( 
@@ -142,11 +148,10 @@ class Pista:
               nivel,
               sucesion,
             ) 
-
           else: 
             """
             Si esta unidad no refiere a otra unidades, 
-            Unidad célula o "unidad seminal"
+            Unidad célula 
             """
             """
             Combinar "defactos" con propiedas resultantes de unidad + "herencia" y registro.
@@ -159,8 +164,9 @@ class Pista:
             Secuenciar articulaciones
             """
             self.secuencia += self.secuenciar( factura ) 
-      except Pifie as e:
+      except Excepcion as e:
           print(e)
+
 
   """
   Genera una secuencia de ariculaciones musicales 
@@ -171,18 +177,45 @@ class Pista:
     unidad
   ):
 
+
+    SECUENCIA = []
+    ARTICULACIONES = []
+
+    ## ARMAR SEGMENTO
+    segmento = Segmento(
+      unidad[ 'nombre' ],
+    )
+
+    segmento.reiterar = unidad[ 'reiterar' ]
+    segmento.revertir = unidad[ 'revertir' ]
+    segmento.desplazar = unidad[ 'desplazar' ]
+    segmento.referente = unidad[ 'referente' ]
+    segmento.afinacionNota = unidad[ 'afinacionNota' ]
+    segmento.afinacionBanco = unidad[ 'afinacionBanco' ]
+    segmento.afinacionPrograma = unidad[ 'afinacionPrograma' ]
+    segmento.sysEx = unidad[ 'sysEx' ]
+    segmento.uniSysEx = unidad[ 'uniSysEx' ]
+    segmento.NRPN = unidad[ 'NRPN' ]
+    segmento.RPN = unidad[ 'RPN' ]
+
+    ## AGREGAR PROPS DE SEGMENTO
+
+    ## ENCHUFAR ARTICULACIONES AL SEGUNEMTO
+    ## AGREGAR 
+
     """
     Cambia el sentido de los parametros del tipo lista
     TODO: ¿convertir cualquier string o int en lista?
     """
-    revertir = unidad[ 'revertir' ] if 'revertir' in unidad else None 
-    if isinstance( revertir , list ): 
-      for r in revertir:
-        if r in unidad:
-          unidad[ r ].reverse() 
-    elif isinstance( revertir , str ):
-      if revertir in unidad:
-        unidad[ revertir ].reverse() 
+    if 'revertir' in unidad:
+      revertir = unidad[ 'revertir' ] 
+      if isinstance( revertir , list ): 
+        for r in revertir:
+          if r in unidad:
+            unidad[ r ].reverse() 
+      elif isinstance( revertir , str ):
+        if revertir in unidad:
+          unidad[ revertir ].reverse() 
 
     intervalos    = unidad[ 'intervalos' ]
     duraciones    = unidad[ 'duraciones' ]
@@ -208,17 +241,20 @@ class Pista:
     ganador = max( candidatos, key = len )
     pasos = len( ganador )
     secuencia = []
+
+    """
+    Consolidad "articulacion" 
+    combinar parametros: altura, duracion, dinamica, etc.
+    """
     for paso in range( pasos ):
-      """
-      Consolidad "articulacion" a partir de combinar parametros: altura,
-      duracion, dinamica, etc.
-      """
       duracion = duraciones[ paso % len( duraciones ) ]
       """
       Variaciones de dinámica.
       """
-      rand_min = unidad['fluctuacion']['min'] if 'min' in unidad[ 'fluctuacion' ] else None
-      rand_max = unidad['fluctuacion']['max'] if 'max' in unidad[ 'fluctuacion' ] else None
+      if 'min' in unidad[ 'fluctuacion' ]:
+        rand_min = unidad['fluctuacion']['min'] 
+      if 'max' in unidad[ 'fluctuacion' ]:
+        rand_max = unidad['fluctuacion']['max']
       fluctuacion = random.uniform( 
          rand_min,
          rand_max 
@@ -241,7 +277,8 @@ class Pista:
         """
         transponer  = unidad[ 'transponer' ] 
         transportar = unidad[ 'transportar' ]
-        nota = transportar + intervalos[ ( ( altura - 1 ) + transponer ) % len( intervalos ) ] 
+        n = intervalos[ ( ( altura - 1 ) + transponer ) % len( intervalos ) ] 
+        nota = transportar + n
         """
         Armar superposicion de voces.
         """
@@ -258,37 +295,40 @@ class Pista:
         for capa in capas:
           controles += [ capa[ paso % len( capa ) ] ]
 
-      """
-      TO DO: en vez de pasar toda la unidad: 
-      extraer solo los paramtros de la articulacion:
-
-      desplazar
-      changeNoteTuning
-      changeTuningBank
-      changeTuningProgram
-      sysEx
-      uniSysEx
-      NPR ( Numeroe Parametros No Registrados )
-      NRPN: Numero de Parametro No Registrado 
-      """
 
       """
       Articulación a secuenciar.
       """
       articulacion = {
-        **unidad, # TO DO: Limpiar, pasa algunas cosas de mas aca...
-        # extraer parametros de unidad y agregarlos si es (1er articulacion de
-        # la unidad) o no segun corresponda 
-        'unidad'      : unidad[ 'nombre' ],
-        'orden'       : paso,
-        'altura'      : nota,
-        'tono'        : tono,
-        'acorde'      : acorde,
-        'duracion'    : duracion,
-        'dinamica'    : dinamica,
-        'controles'   : controles,
+        'desplazar'         : unidad[ 'desplazar' ],
+        'referente'         : unidad[ 'referente' ],
+        'afinacionNota'     : unidad[ 'afinacionNota' ],
+        'afinacionBanco'    : unidad[ 'afinacionBanco' ],
+        'afinacionPrograma' : unidad[ 'afinacionPrograma' ],
+        'sysEx'             : unidad[ 'sysEx' ],
+        'uniSysEx'          : unidad[ 'uniSysEx' ],
+        'NRPN'              : unidad[ 'NRPN' ],
+        'RPN'               : unidad[ 'RPN' ],
+
+        'unidad'            : unidad[ 'nombre' ],
+        'canal'             : unidad[ 'canal' ],
+        'bpm'               : unidad[ 'bpm' ],
+        'metro'             : unidad[ 'metro' ],
+        'clave'             : unidad[ 'clave' ],
+        'programa'          : unidad[ 'programa' ],
+        'orden'             : paso,
+        'altura'            : nota,
+        'tono'              : tono,
+        'acorde'            : acorde,
+        'duracion'          : duracion,
+        'dinamica'          : dinamica,
+        'controles'         : controles,
       }
       secuencia.append( articulacion )
-    return secuencia 
+      ARTICULACIONES.append( articulacion )
 
+    segmento.articulaciones = ARTICULACIONES
+    print(segmento)
+    SECUENCIA.append( segmento )
 
+    return secuencia
