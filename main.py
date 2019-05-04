@@ -59,6 +59,7 @@ EVENTOS = []
 for pista in PISTAS:
   momento = 0
   track = pista.orden
+
   EVENTOS.append([
     'addTrackName',
     track,
@@ -74,31 +75,180 @@ for pista in PISTAS:
   ])
 
   #duracion_parte = 0
+  segmentoP =  pista.secuencia[0] 
+  articulacionP = segmentoP.articulaciones[0]
+
+  """
+  parametros de Parte /pista
+  Primer articulación de la parte, agregar eventos fundamentales: pulso,
+  armadura de clave, compás y programa.
+  """
+  EVENTOS.append([
+    'addTempo',
+    track,
+    momento,
+    articulacionP['bpm'],
+  ])
+
+  """
+  Clave de compás
+  https://midiutil.readthedocs.io/en/1.2.1/class.html#midiutil.MidiFile.MIDIFile.addTimeSignature
+  denominator  = potencia negativa de 2: log10( X ) / log10( 2 ) 
+  2 representa  una negra, 3 una corchea, etc.
+  primer_metro = articulacion2['metro'],
+  """
+  primer_metro = articulacionP[ 'metro' ].split( '/' )
+  numerador        = int( primer_metro[0] ) 
+  denominador      = int( math.log10( int( primer_metro[1] ) ) / math.log10( 2 ) )
+  relojes_por_tick = 12 * denominador
+  notas_por_pulso = 8
+  EVENTOS.append([
+    'addTimeSignature',
+    track,
+    momento,
+    numerador,
+    denominador,
+    relojes_por_tick, 
+    notas_por_pulso
+  ])
+
+  primer_clave = articulacionP['clave']
+  EVENTOS.append([
+    'addKeySignature',
+    track,
+    momento,
+    primer_clave[ 'alteraciones' ],
+    # multiplica por el n de alteraciones
+    1, 
+    primer_clave[ 'modo' ]
+  ])
+
+  EVENTOS.append([
+    'addProgramChange',
+    track,
+    articulacionP['canal'],
+    momento,  
+    articulacionP['programa']
+  ])
 
   """
   Loop principal:
   Genera una secuencia de eventos MIDI lista de articulaciones.
   """
   for segmento in ( pista.secuencia ):
-    #print( segmento.articulaciones)
+    """
+    Primer articulacion de la Unidad,
+    inserta etiquetas y modificadores de unidad (desplazar).
+    """
+
+    momento += segmento.desplazar
+    if momento < 0 :
+     raise ValueError( 'No se puede desplazar antes q el inicio' ) 
+     pass
+
+    #"""
+    #Compone texto de la etiqueta a partir de nombre de unidad, numero de
+    #iteración y referentes
+    #""" 
+    #texto = ''
+    #ers = [ ( 0, 0 ) ]
+    #if articulacion[ 'referente' ]:
+    #  ers = referir( articulacion[ 'referente' ] ) 
+    #prs = [ ( 0, 0 ) ]
+    #if precedente[ 'referente' ]:
+    #  prs = referir( precedente[ 'referente' ] )
+
+    #for er, pr in zip( ers , prs ):
+    #  if er != pr: 
+    #    texto += str( er[ 0 ] ) + ' #' + str( er[ 1 ] ) + '\n' 
+    #texto += unidad 
+    #if  segmento.referente:
+    EVENTOS.append([
+     'addText',
+      track,
+      momento,
+      segmento.nombre
+    ])
+    if segmento.afinacionNota:
+      EVENTOS.append([
+       'changeNoteTuning',
+        track, 
+        segmento.afinacionNota[ 'afinaciones' ],
+        segmento.afinacionNota[ 'canalSysEx' ],
+        segmento.afinacionNota[ 'tiempoReal' ],
+        segmento.afinacionNota[ 'programa' ],
+      ])
+    if segmento.afinacionBanco:
+      EVENTOS.append([
+        'changeTuningBank',
+        track, 
+        canal,
+        momento,
+        segmento.afinacionBanco[ 'banco' ],
+        segmento.afinacionBanco[ 'ordenar' ],
+      ])
+    if segmento.afinacionPrograma:
+      EVENTOS.append([ 
+        'changeTuningProgram',
+        track, 
+        canal,
+        momento,
+        segmento.afinacionPrograma[ 'programa' ],
+        segmento.afinacionPrograma[ 'ordenar' ],
+      ])
+    if segmento.sysEx:
+      EVENTOS.append([
+       'addSysEx',
+        track, 
+        momento, 
+        segmento.sysEx[ 'fabricante' ],
+        segmento.sysEx[ 'playload' ],
+      ])
+    if segmento.uniSysEx:
+      EVENTOS.append([
+       'addUniversalSysEx',
+        track, 
+        momento, 
+        segmento.uniSysEx[ 'codigo' ],
+        segmento.uniSysEx[ 'subCodigo' ],
+        segmento.uniSysEx[ 'playload' ],
+        segmento.uniSysEx[ 'canal' ],
+        segmento.uniSysEx[ 'tiempoReal' ],
+      ])
+    if segmento.NRPN:
+      EVENTOS.append([
+       'makeNRPNCall',
+        track, 
+        canal, 
+        momento, 
+        segmento.NRPN[ 'control_msb' ],
+        segmento.NRPN[ 'control_lsb' ],
+        segmento.NRPN[ 'data_msb' ],
+        segmento.NRPN[ 'data_lsb' ],
+        segmento.NRPN[ 'ordenar' ],
+      ])
+    if segmento.RPN:
+      EVENTOS.append([
+       'makeRPNCall',
+        track, 
+        canal, 
+        momento, 
+        segmento.RPN[ 'control_msb' ],
+        segmento.RPN[ 'control_lsb' ],
+        segmento.RPN[ 'data_msb' ],
+        segmento.RPN[ 'data_lsb' ],
+        segmento.RPN[ 'ordenar' ],
+      ])
+
+    #REVISAR
+
+    precedente = articulacionP 
     for index, articulacion in enumerate( segmento.articulaciones ):
 
-      """
-      TO DO: agregar funcciones de midiutil adicionales:
-      https://midiutil.readthedocs.io/en/1.2.1/class.html#classref
-      [x] addCopyright
-      [x] addPitchWheelEvent
-      [x] changeNoteTunig
-      [x] changeTuningBank
-      [x] changeTuningProgram
-      [x] addSysEx
-      [x] addUniversalSysEx
-      [x] makeNRPNCall
-      [x] makeRPNCall
-      """
-
+      #precedente = segmento.articulaciones[ index - 1 ]
+      #articulacion = segmento.articulaciones[ index ]
       verboseprint( articulacion )
-      precedente = segmento.articulaciones[ index - 1 ]
+      #print(precedente)
       unidad     = articulacion[ 'unidad' ]
       canal      = articulacion[ 'canal' ]
       bpm        = articulacion[ 'bpm' ]
@@ -109,190 +259,10 @@ for pista in PISTAS:
       tono       = articulacion[ 'tono' ] 
 
       """
-      Primer articulación de la parte, agregar eventos fundamentales: pulso,
-      armadura de clave, compás y programa.
-      """
-      if ( index == 0 ):
-        EVENTOS.append([
-          'addTempo',
-          track,
-          momento,
-          bpm
-        ])
-
-        """
-        Clave de compás
-        https://midiutil.readthedocs.io/en/1.2.1/class.html#midiutil.MidiFile.MIDIFile.addTimeSignature
-        denominator  = potencia negativa de 2: log10( X ) / log10( 2 ) 
-        2 representa  una negra, 3 una corchea, etc.
-        """
-        numerador        = int( metro[0] ) 
-        denominador      = int( math.log10( int( metro[1] ) ) / math.log10( 2 ) )
-        relojes_por_tick = 12 * denominador
-        notas_por_pulso = 8
-        EVENTOS.append([
-          'addTimeSignature',
-          track,
-          momento,
-          numerador,
-          denominador,
-          relojes_por_tick, 
-          notas_por_pulso
-        ])
-
-        EVENTOS.append([
-          'addKeySignature',
-          track,
-          momento,
-          clave[ 'alteraciones' ],
-          # multiplica por el n de alteraciones
-          1, 
-          clave[ 'modo' ]
-        ])
-
-        EVENTOS.append([
-          'addProgramChange',
-          track,
-          canal,
-          momento,  
-          programa
-        ])
-
-      """
-      TO DO: Crear estructura superiores a articulacion llamada segmento
-      parametros de que ahora son relativios a la aritulacion #0
-      """
-      """
-      Primer articulacion de la Unidad,
-      inserta etiquetas y modificadores de unidad (desplazar).
-      """
-      if ( articulacion[ 'orden' ] == 0 ):
-        desplazar = articulacion[ 'desplazar' ]
-
-        # TODO raise error si desplazar + duracion es negativo
-        momento += desplazar 
-        #if ValueError( 
-
-        """
-        Compone texto de la etiqueta a partir de nombre de unidad, numero de
-        iteración y referentes
-        """ 
-        texto = ''
-        ers = [ ( 0, 0 ) ]
-        if articulacion[ 'referente' ]:
-          ers = referir( articulacion[ 'referente' ] ) 
-        prs = [ ( 0, 0 ) ]
-        if precedente[ 'referente' ]:
-          prs = referir( precedente[ 'referente' ] )
-
-        for er, pr in zip( ers , prs ):
-          if er != pr: 
-            texto += str( er[ 0 ] ) + ' #' + str( er[ 1 ] ) + '\n' 
-        texto += unidad 
-        EVENTOS.append([
-         'addText',
-          track,
-          momento,
-          texto 
-        ])
-        """
-        changeNoteTuning
-        """
-        if articulacion[ 'afinacionNota' ]:
-          EVENTOS.append([
-           'changeNoteTuning',
-            track, 
-            articulacion[ 'afinacionNota' ][ 'afinaciones' ],
-            articulacion[ 'afinacionNota' ][ 'canalSysEx' ],
-            articulacion[ 'afinacionNota' ][ 'tiempoReal' ],
-            articulacion[ 'afinacionNota' ][ 'programa' ],
-          ])
-        """
-        changeTuningBank
-        """
-        if articulacion[ 'afinacionBanco' ]:
-          EVENTOS.append([
-            'changeTuningBank',
-            track, 
-            canal,
-            momento,
-            articulacion[ 'afinacionBanco' ][ 'banco' ],
-            articulacion[ 'afinacionBanco' ][ 'ordenar' ],
-          ])
-        """
-        changeTuningProgram
-        """
-        if articulacion[ 'afinacionPrograma' ]:
-          EVENTOS.append([ 
-            'changeTuningProgram',
-            track, 
-            canal,
-            momento,
-            articulacion[ 'afinacionPrograma' ][ 'programa' ],
-            articulacion[ 'afinacionPrograma' ][ 'ordenar' ],
-          ])
-        """
-        SysEx 
-        """
-        if articulacion[ 'sysEx' ]:
-          EVENTOS.append([
-           'addSysEx',
-            track, 
-            momento, 
-            articulacion[ 'sysEx' ][ 'fabricante' ],
-            articulacion[ 'sysEx' ][ 'playload' ],
-          ])
-        """
-        UniversalSysEx 
-        """
-        if articulacion[ 'uniSysEx' ]:
-          EVENTOS.append([
-           'addUniversalSysEx',
-            track, 
-            momento, 
-            articulacion[ 'uniSysEx' ][ 'codigo' ],
-            articulacion[ 'uniSysEx' ][ 'subCodigo' ],
-            articulacion[ 'uniSysEx' ][ 'playload' ],
-            articulacion[ 'uniSysEx' ][ 'canal' ],
-            articulacion[ 'uniSysEx' ][ 'tiempoReal' ],
-          ])
-        """
-        Numero de Parametro No Registrado
-        """
-        if articulacion[ 'NRPN' ]:
-          EVENTOS.append([
-           'makeNRPNCall',
-            track, 
-            canal, 
-            momento, 
-            articulacion[ 'NRPN' ][ 'control_msb' ],
-            articulacion[ 'NRPN' ][ 'control_lsb' ],
-            articulacion[ 'NRPN' ][ 'data_msb' ],
-            articulacion[ 'NRPN' ][ 'data_lsb' ],
-            articulacion[ 'NRPN' ][ 'ordenar' ],
-          ])
-
-        """
-        Numero de Parametro Registrado
-        """
-        if articulacion[ 'RPN' ]:
-          EVENTOS.append([
-           'makeRPNCall',
-            track, 
-            canal, 
-            momento, 
-            articulacion[ 'RPN' ][ 'control_msb' ],
-            articulacion[ 'RPN' ][ 'control_lsb' ],
-            articulacion[ 'RPN' ][ 'data_msb' ],
-            articulacion[ 'RPN' ][ 'data_lsb' ],
-            articulacion[ 'RPN' ][ 'ordenar' ],
-          ])
-        # Termina articulacion 0, estos van a ser parametros de Segmento
-
-      """
       Agrega cualquier cambio de parametro, 
       comparar cada uno con la articulacion previa.
       """
+      #TO DO: no esta funcionando chekear cambios de parametros
       if ( precedente['bpm'] != bpm ):
         EVENTOS.append([
           'addTempo',
@@ -301,7 +271,7 @@ for pista in PISTAS:
           bpm,
         ])
 
-      if ( precedente[ 'metro' ] != metro ):
+      if ( precedente['metro'].split( '/' ) != metro):
         numerador        = int( metro[ 0 ] ) 
         denominador      = int( math.log10( int( metro[ 1 ] ) ) / math.log10( 2 ) )
         relojes_por_tick = 12 * denominador
@@ -317,6 +287,7 @@ for pista in PISTAS:
         ])
 
       if ( precedente[ 'clave' ] != clave ):
+        #print( precedente['clave'] , articulacion['clave'] )
         EVENTOS.append([
           'addKeySignature',
           track,
@@ -335,7 +306,7 @@ for pista in PISTAS:
            momento, 
            programa
         ])
-      #midi_bits.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
+        #midi_bits.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
 
       if ( precedente[ 'tono' ] != tono ):
         EVENTOS.append([
@@ -388,5 +359,6 @@ for pista in PISTAS:
             ])
 
       momento += duracion
+      precedente = articulacion 
       #duracion_parte += ( duracion *  60 ) / bpm 
 

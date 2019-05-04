@@ -170,11 +170,9 @@ class Pista:
             """
             Secuenciar articulaciones
             """
-            #self.secuencia += self.procesar_unidad( resultante ) 
-            sequ += self.generar_segmento( resultante ) 
+            self.secuencia += self.generar_segmento( resultante ) 
       except Excepcion as e:
           print( e )
-      self.secuencia = sequ 
 
   """
   Genera una secuencia de ariculaciones musicales 
@@ -187,7 +185,6 @@ class Pista:
   ):
     ARTICULACIONES = []
     SECUENCIA = []
-    _secuencia = []
 
     """
     PRE PROCESO DE UNIDAD
@@ -221,6 +218,14 @@ class Pista:
     segmento.uniSysEx = unidad[ 'uniSysEx' ]
     segmento.NRPN = unidad[ 'NRPN' ]
     segmento.RPN = unidad[ 'RPN' ]
+    
+    #segmento.canal= unidad[ 'canal' ]
+    ##segmento.bpm = unidad[ 'bpm' ]
+    ##segmento.metro = unidad[ 'metro' ]
+    ##segmento.clave = unidad[ 'clave' ]
+    ##segmento.programa = unidad[ 'programa' ]
+    ##segmento.unidad = unidad[ 'nombre' ]
+
 
     ## ENCHUFAR ARTICULACIONES AL SEGUNEMTO
     ## AGREGAR 
@@ -307,22 +312,23 @@ class Pista:
       Articulación a secuenciar.
       """
       articulacion = {
-        'desplazar'         : unidad[ 'desplazar' ],
-        'referente'         : unidad[ 'referente' ],
-        'afinacionNota'     : unidad[ 'afinacionNota' ],
-        'afinacionBanco'    : unidad[ 'afinacionBanco' ],
-        'afinacionPrograma' : unidad[ 'afinacionPrograma' ],
-        'sysEx'             : unidad[ 'sysEx' ],
-        'uniSysEx'          : unidad[ 'uniSysEx' ],
-        'NRPN'              : unidad[ 'NRPN' ],
-        'RPN'               : unidad[ 'RPN' ],
+        #'desplazar'         : unidad[ 'desplazar' ],
+        #'referente'         : unidad[ 'referente' ],
+        #'afinacionNota'     : unidad[ 'afinacionNota' ],
+        #'afinacionBanco'    : unidad[ 'afinacionBanco' ],
+        #'afinacionPrograma' : unidad[ 'afinacionPrograma' ],
+        #'sysEx'             : unidad[ 'sysEx' ],
+        #'uniSysEx'          : unidad[ 'uniSysEx' ],
+        #'NRPN'              : unidad[ 'NRPN' ],
+        #'RPN'               : unidad[ 'RPN' ],
 
-        'unidad'            : unidad[ 'nombre' ],
         'canal'             : unidad[ 'canal' ],
         'bpm'               : unidad[ 'bpm' ],
         'metro'             : unidad[ 'metro' ],
         'clave'             : unidad[ 'clave' ],
         'programa'          : unidad[ 'programa' ],
+        'unidad'            : unidad[ 'nombre' ],
+
         'orden'             : paso,
         'altura'            : nota,
         'tono'              : tono,
@@ -331,10 +337,7 @@ class Pista:
         'dinamica'          : dinamica,
         'controles'         : controles,
       }
-      _secuencia.append( articulacion )
-
       ARTICULACIONES.append( articulacion )
     segmento.articulaciones = ARTICULACIONES
     SECUENCIA.append( segmento )
-    #print(_secuencia)
     return SECUENCIA

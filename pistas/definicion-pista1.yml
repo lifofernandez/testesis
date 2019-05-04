@@ -86,7 +86,6 @@ base: &base !!map
     - [ 33 : 121, 51 : 120 ]
     - [ 10 : 80,  11 : 90, 12 : 100, 13 : 100 ]
 
-
   revertir: !!seq
     # Revierte parametros del tipo !!seq
     [ 'duraciones', 'dinamicas' ]
@@ -97,7 +96,7 @@ base: &base !!map
 
   programa: !!int
     # Instrumento MIDI
-    103
+    102
 
   tonos: !!seq
     # Curva de entonaciones (Pitch-bend / Pitch-wheel)
@@ -193,8 +192,7 @@ unidades: !!map
       min: .1
       max: .4 
     desplazar: -1
-  programa: !!int
-    3
+    programa: 3
 
   b^: 
     <<: *b
