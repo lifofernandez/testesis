@@ -40,7 +40,7 @@ class Excepcion( Exception ):
       msg = "Un error ocurrio con %s" % o
     msg += "\n" + "=" * 80
     super( 
-      Pifie,
+      Excepcion,
       self
     ).__init__( "[ ERROR ] " + msg )
     self.o = o

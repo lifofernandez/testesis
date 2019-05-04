@@ -23,5 +23,6 @@ class Segmento:
     self.nombre     = nombre
     self.orden      = Segmento.cantidad 
     Segmento.cantidad += 1
-    self.articulaciones = [] 
+    #self.articulaciones = [] 
+    #print( self.articulaciones )
 

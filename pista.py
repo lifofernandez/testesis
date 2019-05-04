@@ -43,22 +43,17 @@ class Pista:
     self,
     nombre,
     paleta,
-    macroforma,
+    forma,
   ):
     self.nombre     = nombre
     self.orden      = Pista.cantidad 
     Pista.cantidad += 1
 
-    self.macroforma = macroforma
     self.paleta     = paleta
     self.registros  = {}
     self.secuencia  = [] 
-    self.SECUENCIA  = [] 
-    self.ordenar()
+    self.generar_secuencia( forma )
 
-    #self.oid        = str( self.orden ) + self.nombre 
-    #self.duracion   = 0
-    #self.secuencia  = self.ordenar( macroforma )
 
     verboseprint( '\n#### ' + self.nombre + ' ####' )
 
@@ -72,13 +67,17 @@ class Pista:
   """
   Organiza unidades según relacion de referencia
   """
-  def ordenar( 
+  def generar_secuencia( 
     self,
     forma    = None,
     nivel    = 0,
     herencia = {},
+    sequ = [],
   ):
-    forma = forma if forma is not None else self.macroforma
+    #forma = forma if forma is not None else self._macroforma
+    #if not forma:
+    #  forma = self._macroforma
+
     nivel += 1
     """
     Limpiar parametros q no se heredan.
@@ -100,24 +99,27 @@ class Pista:
         unidad_objeto = self.paleta[ unidad ]
         """
         Cuenta recurrencias de esta unidad en este nivel.
-        TODO: Que los cuente en cualquier nivel.
         """
-        recurrencia = sum( 
-          [ 1 for r in self.registros[ nivel ] if r[ 'nombre' ] == unidad ]
-        ) if nivel in self.registros else 0 
+        recurrencia = 0
+        if nivel in self.registros:
+          #TODO Revisar
+          # Que los cuente en cualquier nivel.
+          # puede revisar valor del anterior
+          recurrencia = sum( 
+            [ 1 for r in self.registros[ nivel ] if r[ 'nombre' ] == unidad ]
+          ) 
         """
         Dicionario para ingresar al arbol de registros.
+        Si el referente está en el diccionario herencia registrar
+        referente.
         """
         registro = { 
           'nombre'      : unidad,
           'recurrencia' : recurrencia,
           'nivel'       : nivel,
         }
-
-        """
-        Si el referente está en el diccionario herencia registrar referente.
-        """
         if 'referente' in herencia:
+          #aca registrar solo nombre? 
           registro[ 'referente' ] = herencia[ 'referente' ] 
 
         """
@@ -127,83 +129,68 @@ class Pista:
         sucesion = {
           **unidad_objeto,
           **herencia,
-          **registro
+          **registro # separar esto
         } 
         """
         Cantidad de repeticiones de la unidad.
         """
-        reiterar = unidad_objeto[ 'reiterar' ] if 'reiterar' in unidad_objeto else 1
+        reiterar = 1
+        if 'reiterar' in unidad_objeto:
+          reiterar = unidad_objeto[ 'reiterar' ]
         # n = str( nivel ) + unidad + str( reiterar )
+
         for r in range( reiterar ):
+
+          # REGISTRO
           self.registros.setdefault( nivel , [] ).append( registro )
 
           if 'unidades' in unidad_objeto:
             """
-            Si esta tiene parametro "unidades", refiere a otras unidades "hijas" 
-            pasa de vuelta por esta metodo.
+            Si esta tiene parametro "unidades", refiere a otras unidades
+            "hijas" pasa de vuelta por esta metodo.
             """
             sucesion[ 'referente' ] = registro 
-            self.ordenar( 
+            self.generar_secuencia( 
               unidad_objeto[ 'unidades' ],
               nivel,
               sucesion,
+              sequ,
             ) 
           else: 
             """
             Si esta unidad no refiere a otra unidades, 
             Unidad célula 
+            Combinar "defactos" con propiedas resultantes de unidad +
+            "herencia" y registro.
             """
-            """
-            Combinar "defactos" con propiedas resultantes de unidad + "herencia" y registro.
-            """
-            factura = {
+            resultante = {
               **Pista.defactos,
               **sucesion,
             }
             """
             Secuenciar articulaciones
             """
-            self.secuencia += self.secuenciar( factura ) 
+            #self.secuencia += self.procesar_unidad( resultante ) 
+            sequ += self.generar_segmento( resultante ) 
       except Excepcion as e:
-          print(e)
-
+          print( e )
+      self.secuencia = sequ 
 
   """
   Genera una secuencia de ariculaciones musicales 
   a partir de unidades preprocesadas. 
   """
-  def secuenciar( 
+  # metodo de segmento?
+  def generar_segmento( 
     self,
     unidad
   ):
-
-
-    SECUENCIA = []
     ARTICULACIONES = []
-
-    ## ARMAR SEGMENTO
-    segmento = Segmento(
-      unidad[ 'nombre' ],
-    )
-
-    segmento.reiterar = unidad[ 'reiterar' ]
-    segmento.revertir = unidad[ 'revertir' ]
-    segmento.desplazar = unidad[ 'desplazar' ]
-    segmento.referente = unidad[ 'referente' ]
-    segmento.afinacionNota = unidad[ 'afinacionNota' ]
-    segmento.afinacionBanco = unidad[ 'afinacionBanco' ]
-    segmento.afinacionPrograma = unidad[ 'afinacionPrograma' ]
-    segmento.sysEx = unidad[ 'sysEx' ]
-    segmento.uniSysEx = unidad[ 'uniSysEx' ]
-    segmento.NRPN = unidad[ 'NRPN' ]
-    segmento.RPN = unidad[ 'RPN' ]
-
-    ## AGREGAR PROPS DE SEGMENTO
-
-    ## ENCHUFAR ARTICULACIONES AL SEGUNEMTO
-    ## AGREGAR 
+    SECUENCIA = []
+    _secuencia = []
 
     """
+    PRE PROCESO DE UNIDAD
     Cambia el sentido de los parametros del tipo lista
     TODO: ¿convertir cualquier string o int en lista?
     """
@@ -216,6 +203,27 @@ class Pista:
       elif isinstance( revertir , str ):
         if revertir in unidad:
           unidad[ revertir ].reverse() 
+
+    ## CREAR SEGMENTO
+    segmento = Segmento(
+      unidad[ 'nombre' ],
+    )
+
+    ## AGREGAR PROPS DE SEGMENTO
+    segmento.reiterar = unidad[ 'reiterar' ]
+    segmento.revertir = unidad[ 'revertir' ]
+    segmento.desplazar = unidad[ 'desplazar' ]
+    segmento.referente = unidad[ 'referente' ]
+    segmento.afinacionNota = unidad[ 'afinacionNota' ]
+    segmento.afinacionBanco = unidad[ 'afinacionBanco' ]
+    segmento.afinacionPrograma = unidad[ 'afinacionPrograma' ]
+    segmento.sysEx = unidad[ 'sysEx' ]
+    segmento.uniSysEx = unidad[ 'uniSysEx' ]
+    segmento.NRPN = unidad[ 'NRPN' ]
+    segmento.RPN = unidad[ 'RPN' ]
+
+    ## ENCHUFAR ARTICULACIONES AL SEGUNEMTO
+    ## AGREGAR 
 
     intervalos    = unidad[ 'intervalos' ]
     duraciones    = unidad[ 'duraciones' ]
@@ -240,7 +248,6 @@ class Pista:
     ]
     ganador = max( candidatos, key = len )
     pasos = len( ganador )
-    secuencia = []
 
     """
     Consolidad "articulacion" 
@@ -272,8 +279,9 @@ class Pista:
       nota = 'S' # Silencio
       if altura != 0:
         """
-        Relacion: altura > puntero en el set de intervalos; Trasponer dentro
-        del set de intervalos, luego Transportar, sumar a la nota resultante.
+        Relacion: altura > puntero en el set de intervalos; Trasponer
+        dentro del set de intervalos, luego Transportar, sumar a la nota
+        resultante.
         """
         transponer  = unidad[ 'transponer' ] 
         transportar = unidad[ 'transportar' ]
@@ -294,7 +302,6 @@ class Pista:
       if capas:
         for capa in capas:
           controles += [ capa[ paso % len( capa ) ] ]
-
 
       """
       Articulación a secuenciar.
@@ -324,11 +331,10 @@ class Pista:
         'dinamica'          : dinamica,
         'controles'         : controles,
       }
-      secuencia.append( articulacion )
+      _secuencia.append( articulacion )
+
       ARTICULACIONES.append( articulacion )
-
     segmento.articulaciones = ARTICULACIONES
-    print(segmento)
     SECUENCIA.append( segmento )
-
-    return secuencia
+    #print(_secuencia)
+    return SECUENCIA
