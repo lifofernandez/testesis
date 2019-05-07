@@ -4,11 +4,11 @@ base: &base
   alturas: [ 1 ] 
   transportar: 0 
   duraciones: [ .5 ]
-  bpm: 100  
+  BPMs: [ 100 ]
   metro: 4/4
   dinamicas: [ 1 ]
-  canal: 9 
-  prgorama: 12
+  canales: [ 9 ] 
+  programas: [ 12 ]
 unidades: 
   a:
     <<: *base

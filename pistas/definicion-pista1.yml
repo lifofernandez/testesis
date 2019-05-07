@@ -53,9 +53,9 @@ base: &base !!map
     # Lista ordenada de duraciones
     [ 1 ]
 
-  bpm: !!int 
+  bpm: !!seq
    # Tempo, Pulsos Por Minuto
-   62
+   [62]
 
   metro: !!str 
     # Clave de compás
@@ -90,13 +90,13 @@ base: &base !!map
     # Revierte parametros del tipo !!seq
     [ 'duraciones', 'dinamicas' ]
 
-  canal: !!int
+  canales: !!seq
    # Canal MIDI 
-   3
+    [ 3 ]
 
-  programa: !!int
+  programas: !!seq
     # Instrumento MIDI
-    102
+    [ 102 ]
 
   tonos: !!seq
     # Curva de entonaciones (Pitch-bend / Pitch-wheel)
@@ -172,7 +172,7 @@ unidades: !!map
 
   a: &a 
     <<: *base
-    bpm: 34
+    BPMs: [35]
     metro: 2/4
     alturas: [ 1,  5 ]
     duraciones: [  1, 1 ]
@@ -192,7 +192,7 @@ unidades: !!map
       min: .1
       max: .4 
     desplazar: -1
-    programa: 3
+    programa: [ 3 ]
 
   b^: 
     <<: *b
@@ -221,7 +221,7 @@ unidades: !!map
   B^: 
     <<: *B
     voces: 0 
-    bmp: 89
+    BPMs: [89,37]
     unidades: [ 'b', 'a' ] 
     dinamicas: [ 1 ]
 
@@ -234,7 +234,7 @@ unidades: !!map
   inter: 
     unidades: [ 'B^' ]
   estribo: 
-    bpm: 100
+    BPMs: [ 100 ]
     unidades: [ 'B', 'B^', 'a' ]
 
 # Lista de unidades a ser sequenciadas 

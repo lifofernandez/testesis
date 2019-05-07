@@ -10,23 +10,25 @@ class Pista:
   """
   cantidad = 0 
   defactos = {
-    'bpm'               : 60,
-    'canal'             : 1,
-    'programa'          : 1,
-    'metro'             : '4/4',
-    'alturas'           : [ 1 ],
-    'tonos'             : [ 0 ],
-    'clave'             : { 'alteraciones' : 0, 'modo' : 0 },
-    'intervalos'        : [ 1 ],
-    'voces'             : None,
-    'duraciones'        : [ 1 ],
+    # Propiedades de Articulacion
+    'BPMs'         : [ 60 ],
+    'canales'      : [ 1 ],
+    'instrumentos' : [ 1 ],
+    'duraciones'   : [ 1 ],
+    'dinamicas'    : [ 1 ],
+    'intervalos'   : [ 1 ],
+    'alturas'      : [ 1 ],
+    'tonos'        : [ 0 ],
+    'voces'        : None,
+    'controles'    : None,
+
+    # Propiedades de Segmento
     'desplazar'         : 0,
-    'dinamicas'         : [ 1 ],
+    'metro'             : '4/4',
+    'clave'             : { 'alteraciones' : 0, 'modo' : 0 },
     'fluctuacion'       : { 'min' : 1, 'max' : 1 },
     'transportar'       : 0,
     'transponer'        : 0,
-    'controles'         : None,
-
     'reiterar'          : 1,
     'referente'         : None,
     'revertir'          : None,
@@ -96,7 +98,8 @@ class Pista:
           error +=  " NO ENCUENTRO \"" + unidad + "\"  "  
           raise Excepcion( unidad, error )
           pass
-        unidad_objeto = self.paleta[ unidad ]
+        original = self.paleta[ unidad ]
+
         """
         Cuenta recurrencias de esta unidad en este nivel.
         """
@@ -118,16 +121,16 @@ class Pista:
           'recurrencia' : recurrencia,
           'nivel'       : nivel,
         }
-        if 'referente' in herencia:
-          #aca registrar solo nombre? 
-          registro[ 'referente' ] = herencia[ 'referente' ] 
+        #if 'referente' in herencia:
+        #  #aca registrar solo nombre? 
+        #  registro[ 'referente' ] = herencia[ 'referente' ] 
 
         """
         Crea parametros de unidad combinando originales con herencia
         Tambien agrega el registro de referentes
         """
         sucesion = {
-          **unidad_objeto,
+          **original,
           **herencia,
           **registro # separar esto
         } 
@@ -135,23 +138,23 @@ class Pista:
         Cantidad de repeticiones de la unidad.
         """
         reiterar = 1
-        if 'reiterar' in unidad_objeto:
-          reiterar = unidad_objeto[ 'reiterar' ]
+        if 'reiterar' in original:
+          reiterar = original[ 'reiterar' ]
         # n = str( nivel ) + unidad + str( reiterar )
 
         for r in range( reiterar ):
 
-          # REGISTRO
+          """ Agregar a los registros """
           self.registros.setdefault( nivel , [] ).append( registro )
 
-          if 'unidades' in unidad_objeto:
+          if 'unidades' in original:
             """
             Si esta tiene parametro "unidades", refiere a otras unidades
             "hijas" pasa de vuelta por esta metodo.
             """
             sucesion[ 'referente' ] = registro 
             self.generar_secuencia( 
-              unidad_objeto[ 'unidades' ],
+              original[ 'unidades' ],
               nivel,
               sucesion,
               sequ,
@@ -188,6 +191,7 @@ class Pista:
 
     """
     PRE PROCESO DE UNIDAD
+    REVERTIR
     Cambia el sentido de los parametros del tipo lista
     TODO: ¿convertir cualquier string o int en lista?
     """
@@ -220,18 +224,21 @@ class Pista:
     segmento.RPN = unidad[ 'RPN' ]
     
     #segmento.canal= unidad[ 'canal' ]
-    ##segmento.bpm = unidad[ 'bpm' ]
-    ##segmento.metro = unidad[ 'metro' ]
-    ##segmento.clave = unidad[ 'clave' ]
-    ##segmento.programa = unidad[ 'programa' ]
-    ##segmento.unidad = unidad[ 'nombre' ]
+    #segmento.bpm = unidad[ 'bpm' ]
+    #segmento.metro = unidad[ 'metro' ]
+    #segmento.clave = unidad[ 'clave' ]
+    #segmento.programa = unidad[ 'programa' ]
+    #segmento.unidad = unidad[ 'nombre' ]
 
 
     ## ENCHUFAR ARTICULACIONES AL SEGUNEMTO
     ## AGREGAR 
 
+    canales       = unidad[ 'canales' ]
+    programas     = unidad[ 'programas' ]
     intervalos    = unidad[ 'intervalos' ]
     duraciones    = unidad[ 'duraciones' ]
+    BPMs          = unidad[ 'BPMs' ]
     dinamicas     = unidad[ 'dinamicas' ]
     alturas       = unidad[ 'alturas' ]
     tonos         = unidad[ 'tonos' ]
@@ -250,6 +257,9 @@ class Pista:
       ganador_voces,
       ganador_capas,
       tonos,
+      BPMs,
+      canales,
+      programas,
     ]
     ganador = max( candidatos, key = len )
     pasos = len( ganador )
@@ -259,6 +269,9 @@ class Pista:
     combinar parametros: altura, duracion, dinamica, etc.
     """
     for paso in range( pasos ):
+      bpm = BPMs[ paso % len( BPMs ) ]
+      canal = canales[ paso % len( canales ) ]
+      programa = programas[ paso % len( programas ) ]
       duracion = duraciones[ paso % len( duraciones ) ]
       """
       Variaciones de dinámica.
@@ -321,23 +334,25 @@ class Pista:
         #'uniSysEx'          : unidad[ 'uniSysEx' ],
         #'NRPN'              : unidad[ 'NRPN' ],
         #'RPN'               : unidad[ 'RPN' ],
-
-        'canal'             : unidad[ 'canal' ],
-        'bpm'               : unidad[ 'bpm' ],
         'metro'             : unidad[ 'metro' ],
         'clave'             : unidad[ 'clave' ],
-        'programa'          : unidad[ 'programa' ],
         'unidad'            : unidad[ 'nombre' ],
+        #'canal'             : unidad[ 'canal' ],
+        #'programa'          : unidad[ 'programa' ],
 
         'orden'             : paso,
-        'altura'            : nota,
-        'tono'              : tono,
-        'acorde'            : acorde,
+        'bpm'               : bpm,
+        'canal'             : canal,
+        'programa'          : programa,
         'duracion'          : duracion,
         'dinamica'          : dinamica,
         'controles'         : controles,
+        'altura'            : nota,
+        'tono'              : tono,
+        'acorde'            : acorde,
       }
       ARTICULACIONES.append( articulacion )
     segmento.articulaciones = ARTICULACIONES
     SECUENCIA.append( segmento )
     return SECUENCIA
+

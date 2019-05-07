@@ -9,11 +9,11 @@ base: &base
   alturas: [ 1 ] 
   transportar: 35 #B
   duraciones: [ .5 ]
-  bpm: 100  
+  BPMs: [ 100 ]
   metro: 4/4
   dinamicas: [ 1 ]
-  canal: 2 
-  programa: 33
+  canales: [ 2 ]
+  programas: [ 33 ]
 unidades: 
   a:
     <<: *base
@@ -27,6 +27,7 @@ unidades:
     ]
 macroforma: [
         #'wdqwA',
+   'A',
    'A',
    'A',
    'A',

@@ -135,11 +135,9 @@ for pista in PISTAS:
   Loop principal:
   Genera una secuencia de eventos MIDI lista de articulaciones.
   """
-  for segmento in ( pista.secuencia ):
-    """
-    Primer articulacion de la Unidad,
-    inserta etiquetas y modificadores de unidad (desplazar).
-    """
+  for numero_segmento, segmento in enumerate( pista.secuencia ):
+    segmento_precedente = pista.secuencia[  numero_segmento - 1 ]
+
 
     momento += segmento.desplazar
     if momento < 0 :
@@ -163,12 +161,18 @@ for pista in PISTAS:
     #    texto += str( er[ 0 ] ) + ' #' + str( er[ 1 ] ) + '\n' 
     #texto += unidad 
     #if  segmento.referente:
+
+    """
+    Agregar propiedades de segmento
+    inserta etiquetas y modificadores de unidad (desplazar).
+    """
     EVENTOS.append([
      'addText',
       track,
       momento,
       segmento.nombre
     ])
+
     if segmento.afinacionNota:
       EVENTOS.append([
        'changeNoteTuning',
@@ -242,19 +246,22 @@ for pista in PISTAS:
 
     #REVISAR
 
-    precedente = articulacionP 
-    for index, articulacion in enumerate( segmento.articulaciones ):
+    for numero_articulacion, articulacion in enumerate( segmento.articulaciones ):
 
-      #precedente = segmento.articulaciones[ index - 1 ]
-      #articulacion = segmento.articulaciones[ index ]
+      articulacion_precedente = segmento.articulaciones[  numero_articulacion - 1 ]
+      if  numero_articulacion == 0:
+        articulacion_precedente = segmento_precedente.articulaciones[ - 1 ]
+
       verboseprint( articulacion )
-      #print(precedente)
+
       unidad     = articulacion[ 'unidad' ]
-      canal      = articulacion[ 'canal' ]
-      bpm        = articulacion[ 'bpm' ]
       metro      = articulacion[ 'metro' ].split( '/' )
       clave      = articulacion[ 'clave' ]
+
+      bpm        = articulacion[ 'bpm' ]
+      canal      = articulacion[ 'canal' ]
       programa   = articulacion[ 'programa' ]
+
       duracion   = articulacion[ 'duracion' ] 
       tono       = articulacion[ 'tono' ] 
 
@@ -263,7 +270,8 @@ for pista in PISTAS:
       comparar cada uno con la articulacion previa.
       """
       #TO DO: no esta funcionando chekear cambios de parametros
-      if ( precedente['bpm'] != bpm ):
+      if ( articulacion_precedente['bpm'] != bpm ):
+        print(articulacion_precedente['bpm'] , bpm )
         EVENTOS.append([
           'addTempo',
           track,
@@ -271,7 +279,7 @@ for pista in PISTAS:
           bpm,
         ])
 
-      if ( precedente['metro'].split( '/' ) != metro):
+      if ( articulacion_precedente['metro'].split( '/' ) != metro):
         numerador        = int( metro[ 0 ] ) 
         denominador      = int( math.log10( int( metro[ 1 ] ) ) / math.log10( 2 ) )
         relojes_por_tick = 12 * denominador
@@ -286,8 +294,7 @@ for pista in PISTAS:
           notas_por_pulso
         ])
 
-      if ( precedente[ 'clave' ] != clave ):
-        #print( precedente['clave'] , articulacion['clave'] )
+      if ( articulacion_precedente[ 'clave' ] != clave ):
         EVENTOS.append([
           'addKeySignature',
           track,
@@ -298,7 +305,7 @@ for pista in PISTAS:
         ])
 
       #if programa:
-      if ( precedente[ 'programa' ] != programa ):
+      if ( articulacion_precedente[ 'programa' ] != programa ):
         EVENTOS.append([
            'addProgramChange',
            track,
@@ -308,7 +315,7 @@ for pista in PISTAS:
         ])
         #midi_bits.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
 
-      if ( precedente[ 'tono' ] != tono ):
+      if ( articulacion_precedente[ 'tono' ] != tono ):
         EVENTOS.append([
            'addPitchWheelEvent',
            track,
