@@ -10,19 +10,9 @@ class Pista:
   """
   cantidad = 0 
   defactos = {
-    # Propiedades de Articulacion
-    'BPMs'         : [ 60 ],
-    'canales'      : [ 1 ],
-    'instrumentos' : [ 1 ],
-    'duraciones'   : [ 1 ],
-    'dinamicas'    : [ 1 ],
-    'intervalos'   : [ 1 ],
-    'alturas'      : [ 1 ],
-    'tonos'        : [ 0 ],
-    'voces'        : None,
-    'controles'    : None,
 
     # Propiedades de Segmento
+    'canal'             :  1 ,
     'desplazar'         : 0,
     'metro'             : '4/4',
     'clave'             : { 'alteraciones' : 0, 'modo' : 0 },
@@ -39,7 +29,31 @@ class Pista:
     'uniSysEx'          : None,
     'NRPN'              : None,
     'RPN'               : None,
+
+    # Propiedades de Articulacion
+    'BPMs'         : [ 60 ],
+    'instrumentos' : [ 1 ],
+    'duraciones'   : [ 1 ],
+    'dinamicas'    : [ 1 ],
+    'intervalos'   : [ 1 ],
+    'alturas'      : [ 1 ],
+    'tonos'        : [ 0 ],
+    'voces'        : None,
+    'controles'    : None,
   }
+
+  """ TO DO 
+  Agrupar/Revisar/Avisar propiedades "Globales" 
+  que NO refieren a un canal en particualr
+  'addTrackName',
+  'addCopyright',
+  'addTempo',
+  'addTimeSignature',
+  'addKeySignature',
+  'changeNoteTuning',
+  'addSysEx',
+  'addUniversalSysEx',
+  """
  
   def __init__( 
     self,
@@ -215,6 +229,8 @@ class Pista:
     segmento.revertir = unidad[ 'revertir' ]
     segmento.desplazar = unidad[ 'desplazar' ]
     segmento.referente = unidad[ 'referente' ]
+    segmento.clave = unidad[ 'clave' ]
+    segmento.metro = unidad[ 'metro' ]
     segmento.afinacionNota = unidad[ 'afinacionNota' ]
     segmento.afinacionBanco = unidad[ 'afinacionBanco' ]
     segmento.afinacionPrograma = unidad[ 'afinacionPrograma' ]
@@ -223,18 +239,12 @@ class Pista:
     segmento.NRPN = unidad[ 'NRPN' ]
     segmento.RPN = unidad[ 'RPN' ]
     
-    #segmento.canal= unidad[ 'canal' ]
-    #segmento.bpm = unidad[ 'bpm' ]
-    #segmento.metro = unidad[ 'metro' ]
-    #segmento.clave = unidad[ 'clave' ]
-    #segmento.programa = unidad[ 'programa' ]
-    #segmento.unidad = unidad[ 'nombre' ]
-
+    segmento.canal= unidad[ 'canal' ]
 
     ## ENCHUFAR ARTICULACIONES AL SEGUNEMTO
     ## AGREGAR 
 
-    canales       = unidad[ 'canales' ]
+
     programas     = unidad[ 'programas' ]
     intervalos    = unidad[ 'intervalos' ]
     duraciones    = unidad[ 'duraciones' ]
@@ -258,7 +268,7 @@ class Pista:
       ganador_capas,
       tonos,
       BPMs,
-      canales,
+      #canales,
       programas,
     ]
     ganador = max( candidatos, key = len )
@@ -270,7 +280,6 @@ class Pista:
     """
     for paso in range( pasos ):
       bpm = BPMs[ paso % len( BPMs ) ]
-      canal = canales[ paso % len( canales ) ]
       programa = programas[ paso % len( programas ) ]
       duracion = duraciones[ paso % len( duraciones ) ]
       """
@@ -325,24 +334,12 @@ class Pista:
       Articulación a secuenciar.
       """
       articulacion = {
-        #'desplazar'         : unidad[ 'desplazar' ],
-        #'referente'         : unidad[ 'referente' ],
-        #'afinacionNota'     : unidad[ 'afinacionNota' ],
-        #'afinacionBanco'    : unidad[ 'afinacionBanco' ],
-        #'afinacionPrograma' : unidad[ 'afinacionPrograma' ],
-        #'sysEx'             : unidad[ 'sysEx' ],
-        #'uniSysEx'          : unidad[ 'uniSysEx' ],
-        #'NRPN'              : unidad[ 'NRPN' ],
-        #'RPN'               : unidad[ 'RPN' ],
         'metro'             : unidad[ 'metro' ],
         'clave'             : unidad[ 'clave' ],
         'unidad'            : unidad[ 'nombre' ],
-        #'canal'             : unidad[ 'canal' ],
-        #'programa'          : unidad[ 'programa' ],
 
         'orden'             : paso,
         'bpm'               : bpm,
-        'canal'             : canal,
         'programa'          : programa,
         'duracion'          : duracion,
         'dinamica'          : dinamica,

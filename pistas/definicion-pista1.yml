@@ -53,7 +53,7 @@ base: &base !!map
     # Lista ordenada de duraciones
     [ 1 ]
 
-  bpm: !!seq
+  BPMs: !!seq
    # Tempo, Pulsos Por Minuto
    [62]
 
@@ -90,9 +90,9 @@ base: &base !!map
     # Revierte parametros del tipo !!seq
     [ 'duraciones', 'dinamicas' ]
 
-  canales: !!seq
-   # Canal MIDI 
-    [ 3 ]
+  canal: !!int
+    # Canal MIDI 
+    3
 
   programas: !!seq
     # Instrumento MIDI
@@ -186,7 +186,7 @@ unidades: !!map
     controles: Null
     transponer: 3
     clave: 
-      alteraciones: 2
+      alteraciones: 3
       modo: 1 
     fluctuacion: 
       min: .1

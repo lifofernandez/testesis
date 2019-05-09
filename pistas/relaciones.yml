@@ -1,5 +1,6 @@
 nombre: 'Prueba Relaciones'
 base: &base 
+  canal: 1
   intervalos: [ 
     -12, -10, -8, -7, -5, -3, -1,
       0,   2,  4,  5,  7,  9, 11,
@@ -9,11 +10,10 @@ base: &base
   alturas: [ 1 ] 
   transportar: 72 
   duraciones: [ 1.5 ]
-  bpm: 60
+  BPMs: !!seq [ 103 ]
   metro: 3/4
   dinamicas: [ 1 ]
-  canal: 1
-  programa: 1
+  programas: !!seq [ 103 ]
 unidades: 
   a: &a 
     <<: *base

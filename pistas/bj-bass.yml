@@ -12,7 +12,7 @@ base: &base
   BPMs: [ 100 ]
   metro: 4/4
   dinamicas: [ 1 ]
-  canales: [ 2 ]
+  canal:  2 
   programas: [ 33 ]
 unidades: 
   a:

@@ -25,14 +25,14 @@ base: &base !!map
   transportar: !!int 60 # C
   transponer: !!int 0
   duraciones: !!seq [ 1 ]
-  bpm: !!int 60
+  BPMs: [ 60 ]
   metro: !!str 4/4
   desplazar: !!float 0
   #reiterar: !!int 0
   dinamicas: !!seq [ 1, .5, .4 ]
   #revertir: !!seq [ 'duraciones', 'dinamicas' ]
   canal: !!int 3
-  programa: !!int 103
+  programas: !!seq [ 103 ]
 unidades: !!map
   a: &a 
     <<: *base

@@ -97,36 +97,37 @@ for pista in PISTAS:
   2 representa  una negra, 3 una corchea, etc.
   primer_metro = articulacion2['metro'],
   """
-  primer_metro = articulacionP[ 'metro' ].split( '/' )
-  numerador        = int( primer_metro[0] ) 
-  denominador      = int( math.log10( int( primer_metro[1] ) ) / math.log10( 2 ) )
-  relojes_por_tick = 12 * denominador
-  notas_por_pulso = 8
-  EVENTOS.append([
-    'addTimeSignature',
-    track,
-    momento,
-    numerador,
-    denominador,
-    relojes_por_tick, 
-    notas_por_pulso
-  ])
+  ##primer_metro = articulacionP[ 'metro' ].split( '/' )
+  #numerador        = int( primer_metro[0] ) 
+  #denominador      = int( math.log10( int( primer_metro[1] ) ) / math.log10( 2 ) )
+  #relojes_por_tick = 12 * denominador
+  #notas_por_pulso = 8
+  #EVENTOS.append([
+  #  'addTimeSignature',
+  #  track,
+  #  momento,
+  #  numerador,
+  #  denominador,
+  #  relojes_por_tick, 
+  #  notas_por_pulso
+  #])
 
-  primer_clave = articulacionP['clave']
-  EVENTOS.append([
-    'addKeySignature',
-    track,
-    momento,
-    primer_clave[ 'alteraciones' ],
-    # multiplica por el n de alteraciones
-    1, 
-    primer_clave[ 'modo' ]
-  ])
+  #primer_clave = articulacionP['clave']
+  #EVENTOS.append([
+  #  'addKeySignature',
+  #  track,
+  #  momento,
+  #  primer_clave[ 'alteraciones' ],
+  #  # multiplica por el n de alteraciones
+  #  1, 
+  #  primer_clave[ 'modo' ]
+  #])
 
   EVENTOS.append([
     'addProgramChange',
     track,
-    articulacionP['canal'],
+    #articulacionP['canal'],
+    segmentoP.canal,
     momento,  
     articulacionP['programa']
   ])
@@ -137,6 +138,7 @@ for pista in PISTAS:
   """
   for numero_segmento, segmento in enumerate( pista.secuencia ):
     segmento_precedente = pista.secuencia[  numero_segmento - 1 ]
+    canal = segmento.canal
 
 
     momento += segmento.desplazar
@@ -172,6 +174,33 @@ for pista in PISTAS:
       momento,
       segmento.nombre
     ])
+    metro = segmento.metro.split( '/' ) 
+    if ( segmento_precedente.metro.split( '/' ) != metro):
+      numerador        = int( metro[ 0 ] ) 
+      denominador      = int( math.log10( int( metro[ 1 ] ) ) / math.log10( 2 ) )
+      relojes_por_tick = 12 * denominador
+      notas_por_pulso = 8
+      EVENTOS.append([
+        'addTimeSignature',
+        track,
+        momento,
+        numerador,
+        denominador,
+        relojes_por_tick, 
+        notas_por_pulso
+      ])
+
+    if ( segmento_precedente.clave != segmento.clave ):
+      print('ee')
+      EVENTOS.append([
+        'addKeySignature',
+        track,
+        momento,
+        segmento.clave[ 'alteraciones' ],
+        1, # multiplica por el n de alteraciones
+        segmento.clave[ 'modo' ]
+      ])
+
 
     if segmento.afinacionNota:
       EVENTOS.append([
@@ -255,11 +284,10 @@ for pista in PISTAS:
       verboseprint( articulacion )
 
       unidad     = articulacion[ 'unidad' ]
-      metro      = articulacion[ 'metro' ].split( '/' )
+      #metro      = articulacion[ 'metro' ].split( '/' )
       clave      = articulacion[ 'clave' ]
 
       bpm        = articulacion[ 'bpm' ]
-      canal      = articulacion[ 'canal' ]
       programa   = articulacion[ 'programa' ]
 
       duracion   = articulacion[ 'duracion' ] 
@@ -271,7 +299,7 @@ for pista in PISTAS:
       """
       #TO DO: no esta funcionando chekear cambios de parametros
       if ( articulacion_precedente['bpm'] != bpm ):
-        print(articulacion_precedente['bpm'] , bpm )
+        #print( articulacion_precedente['bpm'], bpm )
         EVENTOS.append([
           'addTempo',
           track,
@@ -279,30 +307,30 @@ for pista in PISTAS:
           bpm,
         ])
 
-      if ( articulacion_precedente['metro'].split( '/' ) != metro):
-        numerador        = int( metro[ 0 ] ) 
-        denominador      = int( math.log10( int( metro[ 1 ] ) ) / math.log10( 2 ) )
-        relojes_por_tick = 12 * denominador
-        notas_por_pulso = 8
-        EVENTOS.append([
-          'addTimeSignature',
-          track,
-          momento,
-          numerador,
-          denominador,
-          relojes_por_tick, 
-          notas_por_pulso
-        ])
+      #if ( articulacion_precedente['metro'].split( '/' ) != metro):
+      #  numerador        = int( metro[ 0 ] ) 
+      #  denominador      = int( math.log10( int( metro[ 1 ] ) ) / math.log10( 2 ) )
+      #  relojes_por_tick = 12 * denominador
+      #  notas_por_pulso = 8
+      #  EVENTOS.append([
+      #    'addTimeSignature',
+      #    track,
+      #    momento,
+      #    numerador,
+      #    denominador,
+      #    relojes_por_tick, 
+      #    notas_por_pulso
+      #  ])
 
-      if ( articulacion_precedente[ 'clave' ] != clave ):
-        EVENTOS.append([
-          'addKeySignature',
-          track,
-          momento,
-          clave[ 'alteraciones' ],
-          1, # multiplica por el n de alteraciones
-          clave[ 'modo' ]
-        ])
+      #if ( articulacion_precedente[ 'clave' ] != clave ):
+      #  EVENTOS.append([
+      #    'addKeySignature',
+      #    track,
+      #    momento,
+      #    clave[ 'alteraciones' ],
+      #    1, # multiplica por el n de alteraciones
+      #    clave[ 'modo' ]
+      #  ])
 
       #if programa:
       if ( articulacion_precedente[ 'programa' ] != programa ):
