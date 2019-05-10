@@ -87,7 +87,7 @@ for pista in PISTAS:
     'addTempo',
     track,
     momento,
-    articulacionP['bpm'],
+    articulacionP.bpm,
   ])
 
   """
@@ -129,7 +129,7 @@ for pista in PISTAS:
     #articulacionP['canal'],
     segmentoP.canal,
     momento,  
-    articulacionP['programa']
+    articulacionP.programa
   ])
 
   """
@@ -174,6 +174,8 @@ for pista in PISTAS:
       momento,
       segmento.nombre
     ])
+
+    # REVISAR
     metro = segmento.metro.split( '/' ) 
     if ( segmento_precedente.metro.split( '/' ) != metro):
       numerador        = int( metro[ 0 ] ) 
@@ -191,7 +193,6 @@ for pista in PISTAS:
       ])
 
     if ( segmento_precedente.clave != segmento.clave ):
-      print('ee')
       EVENTOS.append([
         'addKeySignature',
         track,
@@ -275,81 +276,55 @@ for pista in PISTAS:
 
     #REVISAR
 
+    unidad = segmento.nombre
+    metro  = segmento.metro.split( '/' )
+    clave  = segmento.clave
     for numero_articulacion, articulacion in enumerate( segmento.articulaciones ):
-
       articulacion_precedente = segmento.articulaciones[  numero_articulacion - 1 ]
+
       if  numero_articulacion == 0:
         articulacion_precedente = segmento_precedente.articulaciones[ - 1 ]
 
       verboseprint( articulacion )
 
-      unidad     = articulacion[ 'unidad' ]
-      #metro      = articulacion[ 'metro' ].split( '/' )
-      clave      = articulacion[ 'clave' ]
 
-      bpm        = articulacion[ 'bpm' ]
-      programa   = articulacion[ 'programa' ]
+      #bpm        = articulacion[ 'bpm' ]
+      #programa   = articulacion[ 'programa' ]
 
-      duracion   = articulacion[ 'duracion' ] 
-      tono       = articulacion[ 'tono' ] 
+      #duracion   = articulacion[ 'duracion' ] 
+      #tono       = articulacion[ 'tono' ] 
 
       """
       Agrega cualquier cambio de parametro, 
       comparar cada uno con la articulacion previa.
       """
       #TO DO: no esta funcionando chekear cambios de parametros
-      if ( articulacion_precedente['bpm'] != bpm ):
-        #print( articulacion_precedente['bpm'], bpm )
+      if ( articulacion_precedente.bpm != articulacion.bpm ):
+        print( articulacion_precedente.bpm, articulacion.bpm )
         EVENTOS.append([
           'addTempo',
           track,
           momento,
-          bpm,
+          articulacion.bpm,
         ])
 
-      #if ( articulacion_precedente['metro'].split( '/' ) != metro):
-      #  numerador        = int( metro[ 0 ] ) 
-      #  denominador      = int( math.log10( int( metro[ 1 ] ) ) / math.log10( 2 ) )
-      #  relojes_por_tick = 12 * denominador
-      #  notas_por_pulso = 8
-      #  EVENTOS.append([
-      #    'addTimeSignature',
-      #    track,
-      #    momento,
-      #    numerador,
-      #    denominador,
-      #    relojes_por_tick, 
-      #    notas_por_pulso
-      #  ])
-
-      #if ( articulacion_precedente[ 'clave' ] != clave ):
-      #  EVENTOS.append([
-      #    'addKeySignature',
-      #    track,
-      #    momento,
-      #    clave[ 'alteraciones' ],
-      #    1, # multiplica por el n de alteraciones
-      #    clave[ 'modo' ]
-      #  ])
-
-      #if programa:
-      if ( articulacion_precedente[ 'programa' ] != programa ):
+      if ( articulacion_precedente.programa != articulacion.programa ):
         EVENTOS.append([
            'addProgramChange',
            track,
            canal, 
            momento, 
-           programa
+           articulacion.programa
         ])
         #midi_bits.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
 
-      if ( articulacion_precedente[ 'tono' ] != tono ):
+      if ( articulacion_precedente.tono != articulacion.tono ):
         EVENTOS.append([
            'addPitchWheelEvent',
            track,
            canal, 
            momento, 
-           tono
+           articulacion.tono
         ])
 
       """
@@ -357,8 +332,10 @@ for pista in PISTAS:
       Si existe acorde en la articulación armar una lista con cada voz superpuesta. 
       o una lista de solamente un elemento.
       """
-      voces = articulacion[ 'acorde' ] if articulacion[ 'acorde' ] else [ articulacion[ 'altura' ] ]
-      dinamica = int( articulacion[ 'dinamica' ] * 126 )
+      voces = [ articulacion.altura ]
+      if articulacion.acorde:
+        voces = articulacion.acorde 
+
       for voz in voces:
         altura = voz 
         """
@@ -373,16 +350,16 @@ for pista in PISTAS:
           canal, 
           altura, 
           momento, 
-          duracion, 
-          dinamica,
+          articulacion.duracion, 
+          int( articulacion.dinamica * 126 ),
         ])
 
 
       """
       Agregar cambios de control
       """
-      if articulacion[ 'controles' ]:
-        for control in articulacion[ 'controles' ]:
+      if articulacion.controles:
+        for control in articulacion.controles:
           for control, valor in control.items():
             EVENTOS.append([
              'addControllerEvent',
@@ -393,7 +370,6 @@ for pista in PISTAS:
               valor, 
             ])
 
-      momento += duracion
-      precedente = articulacion 
+      momento += articulacion.duracion
       #duracion_parte += ( duracion *  60 ) / bpm 
 

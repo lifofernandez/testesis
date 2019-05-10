@@ -1,5 +1,6 @@
 from argumentos import args, verboseprint, Excepcion
 from segmento import Segmento
+from articulacion import Articulacion
 import random
 import sys
 
@@ -333,21 +334,20 @@ class Pista:
       """
       Articulación a secuenciar.
       """
-      articulacion = {
-        'metro'             : unidad[ 'metro' ],
-        'clave'             : unidad[ 'clave' ],
-        'unidad'            : unidad[ 'nombre' ],
+      articulacion = Articulacion(
+         str(segmento.orden) + unidad[ 'nombre' ] + str(paso)
+      )
 
-        'orden'             : paso,
-        'bpm'               : bpm,
-        'programa'          : programa,
-        'duracion'          : duracion,
-        'dinamica'          : dinamica,
-        'controles'         : controles,
-        'altura'            : nota,
-        'tono'              : tono,
-        'acorde'            : acorde,
-      }
+      articulacion.numero    = paso
+      articulacion.bpm       = bpm
+      articulacion.programa  = programa
+      articulacion.duracion  = duracion
+      articulacion.dinamica  = dinamica
+      articulacion.controles = controles
+      articulacion.altura    = nota
+      articulacion.tono      = tono
+      articulacion.acorde    = acorde
+
       ARTICULACIONES.append( articulacion )
     segmento.articulaciones = ARTICULACIONES
     SECUENCIA.append( segmento )
