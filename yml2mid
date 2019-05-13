@@ -18,13 +18,14 @@ with open( nombre_archivo + ".mid", "wb" ) as archivo_midi:
 
 """
 TO DO:
-    [ ] revisar metro
     [ ] pasar intervalos a propiedad de segmento/unidad
-    [x] terminar midiUTIL 
-    [x] Agregar: Segmento (grupo de articulaciones) 
-       [ ] parametros de Segmento = art#0 de la unidad
+    [ ] parametros de Segmento = art#0 de la unidad
+    [ ] Parar tempo a canal global, propiedad de  no canal specifico
+    [ ] Agregar Letra (texo)
     [ ] Excepciones main
     [ ] Agregar: Registro 
     [ ] YAML validation 
-    [ ] Revisar diferentes tempos en diferentes traks
+    [x] revisar metro
+    [x] terminar midiUTIL 
+    [x] Agregar: Segmento (grupo de articulaciones) 
 """

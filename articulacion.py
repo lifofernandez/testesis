@@ -1,8 +1,5 @@
 from argumentos import args, verboseprint, Excepcion
 
-#import random
-#import sys
-
 class Articulacion:
   """
   Pista > Secuencia > Segmentos > ARTICULACIONES
@@ -19,8 +16,27 @@ class Articulacion:
   def __init__( 
     self,
     nombre,
+    paso,
+    bpm,
+    programa,
+    duracion,
+    dinamica,
+    nota,
+    acorde,
+    tono,
+    controles,
   ):
-    self.nombre     = nombre
-    self.orden      = Articulacion.cantidad 
+    self.orden = Articulacion.cantidad 
     Articulacion.cantidad += 1
+
+    self.nombre    = nombre
+    self.posicion  = paso
+    self.bpm       = bpm
+    self.programa  = programa
+    self.duracion  = duracion
+    self.dinamica  = dinamica
+    self.controles = controles
+    self.altura    = nota
+    self.tono      = tono
+    self.acorde    = acorde
 

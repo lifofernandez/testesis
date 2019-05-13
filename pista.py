@@ -220,32 +220,25 @@ class Pista:
         if revertir in unidad:
           unidad[ revertir ].reverse() 
 
-    ## CREAR SEGMENTO
     segmento = Segmento(
       unidad[ 'nombre' ],
+      unidad[ 'canal' ],
+      unidad[ 'reiterar' ],
+      unidad[ 'revertir' ],
+      unidad[ 'desplazar' ],
+      unidad[ 'referente' ],
+      unidad[ 'clave' ],
+      unidad[ 'metro' ],
+      unidad[ 'afinacionNota' ],
+      unidad[ 'afinacionBanco' ],
+      unidad[ 'afinacionPrograma' ],
+      unidad[ 'sysEx' ],
+      unidad[ 'uniSysEx' ],
+      unidad[ 'NRPN' ],
+      unidad[ 'RPN' ],
     )
 
-    ## AGREGAR PROPS DE SEGMENTO
-    segmento.reiterar = unidad[ 'reiterar' ]
-    segmento.revertir = unidad[ 'revertir' ]
-    segmento.desplazar = unidad[ 'desplazar' ]
-    segmento.referente = unidad[ 'referente' ]
-    segmento.clave = unidad[ 'clave' ]
-    segmento.metro = unidad[ 'metro' ]
-    segmento.afinacionNota = unidad[ 'afinacionNota' ]
-    segmento.afinacionBanco = unidad[ 'afinacionBanco' ]
-    segmento.afinacionPrograma = unidad[ 'afinacionPrograma' ]
-    segmento.sysEx = unidad[ 'sysEx' ]
-    segmento.uniSysEx = unidad[ 'uniSysEx' ]
-    segmento.NRPN = unidad[ 'NRPN' ]
-    segmento.RPN = unidad[ 'RPN' ]
-    
-    segmento.canal= unidad[ 'canal' ]
-
-    ## ENCHUFAR ARTICULACIONES AL SEGUNEMTO
-    ## AGREGAR 
-
-
+    ### A SEG
     programas     = unidad[ 'programas' ]
     intervalos    = unidad[ 'intervalos' ]
     duraciones    = unidad[ 'duraciones' ]
@@ -254,8 +247,9 @@ class Pista:
     alturas       = unidad[ 'alturas' ]
     tonos         = unidad[ 'tonos' ]
     voces         = unidad[ 'voces' ]
-    ganador_voces = max( voces, key = len) if voces else [ 0 ]
     capas         = unidad[ 'controles' ]
+
+    ganador_voces = max( voces, key = len) if voces else [ 0 ]
     ganador_capas = max( capas , key = len) if capas else [ 0 ]
 
     """
@@ -269,7 +263,6 @@ class Pista:
       ganador_capas,
       tonos,
       BPMs,
-      #canales,
       programas,
     ]
     ganador = max( candidatos, key = len )
@@ -335,21 +328,21 @@ class Pista:
       Articulación a secuenciar.
       """
       articulacion = Articulacion(
-         str(segmento.orden) + unidad[ 'nombre' ] + str(paso)
+         str( segmento.orden ) + unidad[ 'nombre' ] + str( paso ),
+         paso,
+         bpm,
+         programa,
+         duracion,
+         dinamica,
+         nota,
+         acorde,
+         tono,
+         controles,
       )
-
-      articulacion.numero    = paso
-      articulacion.bpm       = bpm
-      articulacion.programa  = programa
-      articulacion.duracion  = duracion
-      articulacion.dinamica  = dinamica
-      articulacion.controles = controles
-      articulacion.altura    = nota
-      articulacion.tono      = tono
-      articulacion.acorde    = acorde
-
       ARTICULACIONES.append( articulacion )
     segmento.articulaciones = ARTICULACIONES
+    ### A SEG
+
     SECUENCIA.append( segmento )
     return SECUENCIA
 

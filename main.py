@@ -175,7 +175,6 @@ for pista in PISTAS:
       segmento.nombre
     ])
 
-    # REVISAR
     metro = segmento.metro.split( '/' ) 
     if ( segmento_precedente.metro.split( '/' ) != metro):
       numerador        = int( metro[ 0 ] ) 
@@ -287,20 +286,12 @@ for pista in PISTAS:
 
       verboseprint( articulacion )
 
-
-      #bpm        = articulacion[ 'bpm' ]
-      #programa   = articulacion[ 'programa' ]
-
-      #duracion   = articulacion[ 'duracion' ] 
-      #tono       = articulacion[ 'tono' ] 
-
       """
       Agrega cualquier cambio de parametro, 
       comparar cada uno con la articulacion previa.
       """
-      #TO DO: no esta funcionando chekear cambios de parametros
       if ( articulacion_precedente.bpm != articulacion.bpm ):
-        print( articulacion_precedente.bpm, articulacion.bpm )
+        #print( articulacion_precedente.bpm, articulacion.bpm )
         EVENTOS.append([
           'addTempo',
           track,

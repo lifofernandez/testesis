@@ -19,10 +19,40 @@ class Segmento:
   def __init__( 
     self,
     nombre,
+    canal,
+    reiterar,
+    revertir,
+    desplazar,
+    referente,
+    clave,
+    metro,
+    afinacionNota,
+    afinacionBanco,
+    afinacionPrograma,
+    sysEx,
+    uniSysEx,
+    NRPN,
+    RPN,
   ):
-    self.nombre     = nombre
-    self.orden      = Segmento.cantidad 
+    self.orden = Segmento.cantidad 
     Segmento.cantidad += 1
+
+    self.nombre     = nombre
+    self.canal = canal
+    self.reiterar = reiterar
+    self.revertir = revertir
+    self.desplazar = desplazar
+    self.referente = referente
+    self.clave = clave
+    self.metro = metro
+    self.afinacionNota = afinacionNota
+    self.afinacionBanco = afinacionBanco
+    self.afinacionPrograma = afinacionPrograma
+    self.sysEx = sysEx
+    self.uniSysEx = uniSysEx
+    self.NRPN = NRPN
+    self.RPN = RPN
+
     #self.articulaciones = [] 
     #print( self.articulaciones )
 
