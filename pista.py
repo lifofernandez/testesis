@@ -1,6 +1,5 @@
 from argumentos import args, verboseprint, Excepcion
 from segmento import Segmento
-from articulacion import Articulacion
 import random
 import sys
 
@@ -201,7 +200,7 @@ class Pista:
     self,
     unidad
   ):
-    ARTICULACIONES = []
+    #ARTICULACIONES = []
     SECUENCIA = []
 
     """
@@ -221,126 +220,140 @@ class Pista:
           unidad[ revertir ].reverse() 
 
     segmento = Segmento(
-      unidad[ 'nombre' ],
-      unidad[ 'canal' ],
-      unidad[ 'reiterar' ],
-      unidad[ 'revertir' ],
-      unidad[ 'desplazar' ],
-      unidad[ 'referente' ],
-      unidad[ 'clave' ],
-      unidad[ 'metro' ],
-      unidad[ 'afinacionNota' ],
-      unidad[ 'afinacionBanco' ],
-      unidad[ 'afinacionPrograma' ],
-      unidad[ 'sysEx' ],
-      unidad[ 'uniSysEx' ],
-      unidad[ 'NRPN' ],
-      unidad[ 'RPN' ],
+      nombre            = unidad[ 'nombre' ],
+      canal             = unidad[ 'canal' ],
+      reiterar          = unidad[ 'reiterar' ],
+      revertir          = unidad[ 'revertir' ],
+      desplazar         = unidad[ 'desplazar' ],
+      transponer        = unidad[ 'transponer' ],
+      transportar       = unidad[ 'transportar' ],
+      referente         = unidad[ 'referente' ],
+      clave             = unidad[ 'clave' ],
+      metro             = unidad[ 'metro' ],
+      afinacionNota     = unidad[ 'afinacionNota' ],
+      afinacionBanco    = unidad[ 'afinacionBanco' ],
+      afinacionPrograma = unidad[ 'afinacionPrograma' ],
+      sysEx             = unidad[ 'sysEx' ],
+      uniSysEx          = unidad[ 'uniSysEx' ],
+      NRPN              = unidad[ 'NRPN' ],
+      RPN               = unidad[ 'RPN' ],
+      intervalos        = unidad[ 'intervalos' ],
+      programas         = unidad[ 'programas' ],
+      duraciones        = unidad[ 'duraciones' ],
+      BPMs              = unidad[ 'BPMs' ],
+      dinamicas         = unidad[ 'dinamicas' ],
+      fluctuacion       = unidad[ 'fluctuacion' ],
+      alturas           = unidad[ 'alturas' ],
+      tonos             = unidad[ 'tonos' ],
+      voces             = unidad[ 'voces' ],
+      capas             = unidad[ 'controles' ],
+      #controles = None,
     )
 
     ### A SEG
-    programas     = unidad[ 'programas' ]
-    intervalos    = unidad[ 'intervalos' ]
-    duraciones    = unidad[ 'duraciones' ]
-    BPMs          = unidad[ 'BPMs' ]
-    dinamicas     = unidad[ 'dinamicas' ]
-    alturas       = unidad[ 'alturas' ]
-    tonos         = unidad[ 'tonos' ]
-    voces         = unidad[ 'voces' ]
-    capas         = unidad[ 'controles' ]
 
-    ganador_voces = max( voces, key = len) if voces else [ 0 ]
-    ganador_capas = max( capas , key = len) if capas else [ 0 ]
+    #programas     = unidad[ 'programas' ]
+    #intervalos    = unidad[ 'intervalos' ]
+    #duraciones    = unidad[ 'duraciones' ]
+    #BPMs          = unidad[ 'BPMs' ]
+    #dinamicas     = unidad[ 'dinamicas' ]
+    #alturas       = unidad[ 'alturas' ]
+    #tonos         = unidad[ 'tonos' ]
+    #voces         = unidad[ 'voces' ]
+    #capas         = unidad[ 'controles' ]
 
-    """
-    Evaluar que parametro lista es el que mas valores tiene.
-    """
-    candidatos = [ 
-      dinamicas,
-      duraciones,
-      alturas,
-      ganador_voces,
-      ganador_capas,
-      tonos,
-      BPMs,
-      programas,
-    ]
-    ganador = max( candidatos, key = len )
-    pasos = len( ganador )
+    #ganador_voces = max( voces, key = len) if voces else [ 0 ]
+    #ganador_capas = max( capas , key = len) if capas else [ 0 ]
 
-    """
-    Consolidad "articulacion" 
-    combinar parametros: altura, duracion, dinamica, etc.
-    """
-    for paso in range( pasos ):
-      bpm = BPMs[ paso % len( BPMs ) ]
-      programa = programas[ paso % len( programas ) ]
-      duracion = duraciones[ paso % len( duraciones ) ]
-      """
-      Variaciones de dinámica.
-      """
-      if 'min' in unidad[ 'fluctuacion' ]:
-        rand_min = unidad['fluctuacion']['min'] 
-      if 'max' in unidad[ 'fluctuacion' ]:
-        rand_max = unidad['fluctuacion']['max']
-      fluctuacion = random.uniform( 
-         rand_min,
-         rand_max 
-      ) if rand_min or rand_max else 1
-      """
-      Asignar dinámica.
-      """
-      dinamica = dinamicas[ paso % len( dinamicas ) ] * fluctuacion
-      """
-      Alturas, voz y superposición voces.
-      """
-      altura = alturas[ paso % len( alturas ) ]
-      tono   = tonos[ paso % len( tonos ) ]
-      acorde = []
-      nota = 'S' # Silencio
-      if altura != 0:
-        """
-        Relacion: altura > puntero en el set de intervalos; Trasponer
-        dentro del set de intervalos, luego Transportar, sumar a la nota
-        resultante.
-        """
-        transponer  = unidad[ 'transponer' ] 
-        transportar = unidad[ 'transportar' ]
-        n = intervalos[ ( ( altura - 1 ) + transponer ) % len( intervalos ) ] 
-        nota = transportar + n
-        """
-        Armar superposicion de voces.
-        """
-        if voces:
-          for v in voces:
-            voz = ( altura + ( v[ paso % len( v ) ] ) - 1 ) + transponer
-            acorde += [ transportar +  intervalos[ voz % len( intervalos ) ]  ]
+    #"""
+    #Evaluar que parametro lista es el que mas valores tiene.
+    #"""
+    #candidatos = [ 
+    #  dinamicas,
+    #  duraciones,
+    #  alturas,
+    #  ganador_voces,
+    #  ganador_capas,
+    #  tonos,
+    #  BPMs,
+    #  programas,
+    #]
+    #ganador = max( candidatos, key = len )
+    #pasos = len( ganador )
 
-      """
-      Cambios de control.
-      """
-      controles = []
-      if capas:
-        for capa in capas:
-          controles += [ capa[ paso % len( capa ) ] ]
+    #"""
+    #Consolidad "articulacion" 
+    #combinar parametros: altura, duracion, dinamica, etc.
+    #"""
+    #for paso in range( pasos ):
+    #  bpm = BPMs[ paso % len( BPMs ) ]
+    #  programa = programas[ paso % len( programas ) ]
+    #  duracion = duraciones[ paso % len( duraciones ) ]
+    #  """
+    #  Variaciones de dinámica.
+    #  """
+    #  if 'min' in unidad[ 'fluctuacion' ]:
+    #    rand_min = unidad['fluctuacion']['min'] 
+    #  if 'max' in unidad[ 'fluctuacion' ]:
+    #    rand_max = unidad['fluctuacion']['max']
+    #  fluctuacion = random.uniform( 
+    #     rand_min,
+    #     rand_max 
+    #  ) if rand_min or rand_max else 1
+    #  """
+    #  Asignar dinámica.
+    #  """
+    #  dinamica = dinamicas[ paso % len( dinamicas ) ] * fluctuacion
+    #  """
+    #  Alturas, voz y superposición voces.
+    #  """
+    #  altura = alturas[ paso % len( alturas ) ]
+    #  tono   = tonos[ paso % len( tonos ) ]
+    #  acorde = []
+    #  nota = 'S' # Silencio
+    #  if altura != 0:
+    #    """
+    #    Relacion: altura > puntero en el set de intervalos; Trasponer
+    #    dentro del set de intervalos, luego Transportar, sumar a la nota
+    #    resultante.
+    #    """
+    #    transponer  = unidad[ 'transponer' ] 
+    #    transportar = unidad[ 'transportar' ]
+    #    n = intervalos[ ( ( altura - 1 ) + transponer ) % len( intervalos ) ] 
+    #    nota = transportar + n
+    #    """
+    #    Armar superposicion de voces.
+    #    """
+    #    if voces:
+    #      for v in voces:
+    #        voz = ( altura + ( v[ paso % len( v ) ] ) - 1 ) + transponer
+    #        acorde += [ transportar +  intervalos[ voz % len( intervalos ) ]  ]
 
-      """
-      Articulación a secuenciar.
-      """
-      articulacion = Articulacion(
-         str( segmento.orden ) + unidad[ 'nombre' ] + str( paso ),
-         paso,
-         bpm,
-         programa,
-         duracion,
-         dinamica,
-         nota,
-         acorde,
-         tono,
-         controles,
-      )
-      ARTICULACIONES.append( articulacion )
-    segmento.articulaciones = ARTICULACIONES
+    #  """
+    #  Cambios de control.
+    #  """
+    #  controles = []
+    #  if capas:
+    #    for capa in capas:
+    #      controles += [ capa[ paso % len( capa ) ] ]
+
+    #  """
+    #  Articulación a secuenciar.
+    #  """
+    #  articulacion = Articulacion(
+    #     str( segmento.orden ) + unidad[ 'nombre' ] + str( paso ),
+    #     paso,
+    #     bpm,
+    #     programa,
+    #     duracion,
+    #     dinamica,
+    #     nota,
+    #     acorde,
+    #     tono,
+    #     controles,
+    #  )
+    #  ARTICULACIONES.append( articulacion )
+    #segmento.articulaciones = ARTICULACIONES
     ### A SEG
 
     SECUENCIA.append( segmento )

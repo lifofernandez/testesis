@@ -11,7 +11,8 @@ nombre_archivo = args.output
 pistas_cantidad = Pista.cantidad 
 midi_tracks = MIDIFile( pistas_cantidad ) 
 for m in EVENTOS:
-    mu = getattr( midi_tracks, m[0] )( *m[1:] )
+  #print(m)
+  mu = getattr( midi_tracks, m[0] )( *m[1:] )
 with open( nombre_archivo + ".mid", "wb" ) as archivo_midi:
    midi_tracks.writeFile( archivo_midi )
 

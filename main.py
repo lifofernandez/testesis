@@ -75,8 +75,8 @@ for pista in PISTAS:
   ])
 
   #duracion_parte = 0
-  segmentoP =  pista.secuencia[0] 
-  articulacionP = segmentoP.articulaciones[0]
+  segmentoP =  pista.secuencia[ 0 ] 
+  articulacionP = segmentoP.articulaciones[ 0 ]
 
   """
   parametros de Parte /pista
@@ -279,6 +279,7 @@ for pista in PISTAS:
     metro  = segmento.metro.split( '/' )
     clave  = segmento.clave
     for numero_articulacion, articulacion in enumerate( segmento.articulaciones ):
+      #print(articulacion)
       articulacion_precedente = segmento.articulaciones[  numero_articulacion - 1 ]
 
       if  numero_articulacion == 0:
@@ -327,6 +328,7 @@ for pista in PISTAS:
       if articulacion.acorde:
         voces = articulacion.acorde 
 
+      dinamica = articulacion.dinamica
       for voz in voces:
         altura = voz 
         """
@@ -342,7 +344,7 @@ for pista in PISTAS:
           altura, 
           momento, 
           articulacion.duracion, 
-          int( articulacion.dinamica * 126 ),
+          dinamica,
         ])
 
 

@@ -34,7 +34,7 @@ class Articulacion:
     self.bpm       = bpm
     self.programa  = programa
     self.duracion  = duracion
-    self.dinamica  = dinamica
+    self.dinamica  = int( dinamica * 126 )
     self.controles = controles
     self.altura    = nota
     self.tono      = tono
