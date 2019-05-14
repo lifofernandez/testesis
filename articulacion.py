@@ -34,9 +34,20 @@ class Articulacion:
     self.bpm       = bpm
     self.programa  = programa
     self.duracion  = duracion
-    self.dinamica  = int( dinamica * 126 )
+    self._dinamica  = dinamica 
     self.controles = controles
     self.altura    = nota
     self.tono      = tono
     self.acorde    = acorde
 
+  @property
+  def dinamica(
+    self
+  ):
+    viejo_valor = self._dinamica 
+    viejo_min = 0 
+    viejo_max = 1 
+    nuevo_min = 0
+    nuevo_max = 126 
+    nuevo_valor = ( ( viejo_valor - viejo_min ) / ( viejo_max - viejo_min ) ) * ( nuevo_max - nuevo_min) + nuevo_min
+    return int( min( max( nuevo_valor, nuevo_min ), nuevo_max ) )

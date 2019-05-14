@@ -6,7 +6,7 @@ import random
 
 class Segmento:
   """
-  Secuencia > Segmentos > Articulaciones
+  Pista > Secuencia > SEGMENTOS > Articulaciones
   """
   cantidad = 0 
  
@@ -19,6 +19,7 @@ class Segmento:
 
   def __init__( 
     self,
+
     nombre,
     canal,
     reiterar,
@@ -66,6 +67,7 @@ class Segmento:
     self.NRPN              = NRPN
     self.RPN               = RPN
 
+
     # internos
     #programas
     #intervalos
@@ -98,39 +100,29 @@ class Segmento:
       programas,
     ]
     ganador = max( candidatos, key = len )
-    pasos = len( ganador )
+    self.pasos = len( ganador )
+
+
+    # TO DO
+    if 'min' in fluctuacion: rand_min = fluctuacion['min'] 
+    if 'max' in fluctuacion: rand_max = fluctuacion['max']
+    self.fluctuacion = random.uniform( 
+        rand_min,
+        rand_max 
+    ) if rand_min or rand_max else 1
 
     """
     Consolidad "articulacion" 
     combinar parametros: altura, duracion, dinamica, etc.
     """
-    ARTICULACIONES = []
-    for paso in range( pasos ):
-      bpm = BPMs[ paso % len( BPMs ) ]
-      programa = programas[ paso % len( programas ) ]
-      programa = 1
-      duracion = duraciones[ paso % len( duraciones ) ]
+    self._articulaciones = []
+    for paso in range( self.pasos ):
 
-      """
-      Variaciones de dinámica.
-      TODO: PASAR A ARTICULACION
-      """
-      #if 'min' in fluctuacion: rand_min = fluctuacion['min'] 
-      #if 'max' in fluctuacion: rand_max = fluctuacion['max']
-      #fluctuacion = random.uniform( 
-      #   rand_min,
-      #   rand_max 
-      #) if rand_min or rand_max else 1
-      fluctuacion = 1
-      """
-      Asignar dinámica.
-      """
-      dinamica = dinamicas[ paso % len( dinamicas ) ] * fluctuacion
+
       """
       Alturas, voz y superposición voces.
       """
       altura = alturas[ paso % len( alturas ) ]
-      tono   = tonos[ paso % len( tonos ) ]
       acorde = []
       nota   = 'S' # Silencio
       if altura != 0:
@@ -162,16 +154,16 @@ class Segmento:
       """
       articulacion = Articulacion(
          nombre = str( self.orden ) + self.nombre + str( paso ),
-         paso  = paso,
-         bpm = bpm,
-         programa = programa,
-         duracion =  duracion,
-         dinamica = dinamica,
+         paso = paso,
+         bpm = BPMs[ paso % len( BPMs ) ],
+         programa = programas[ paso % len( programas ) ],
+         duracion = duraciones[ paso % len( duraciones ) ],
+         dinamica = dinamicas[ paso % len( dinamicas ) ] * self.fluctuacion,
+         tono   = tonos[ paso % len( tonos ) ],
          nota = nota,
          acorde = acorde,
-         tono = tono,
          controles = controles,
       )
-      ARTICULACIONES.append( articulacion )
-    self.articulaciones = ARTICULACIONES
+      self._articulaciones.append( articulacion )
+    self.articulaciones = self._articulaciones
 
