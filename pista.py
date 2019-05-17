@@ -7,7 +7,7 @@ import sys
 class Pista:
   """
   Clase para cada definicion de a partir de archivos .yml
-  YAML => Pista => Canal 
+  PISTA > Secuencia > Segmentos > Articulaciones
   """
   cantidad = 0 
   defactos = {
@@ -43,18 +43,17 @@ class Pista:
     'controles'    : None,
   }
 
-  """ TO DO 
-  Agrupar/Revisar/Avisar propiedades "Globales" 
-  que NO refieren a un canal en particualr
-  'addTrackName',
-  'addCopyright',
-  'addTempo',
-  'addTimeSignature',
-  'addKeySignature',
-  'changeNoteTuning',
-  'addSysEx',
-  'addUniversalSysEx',
-  """
+  # TO DO 
+  # Agrupar/Revisar/Avisar propiedades "Globales" 
+  # que NO refieren a un canal en particualr
+  #'addTrackName',
+  #'addCopyright',
+  #'addTempo',
+  #'addTimeSignature',
+  #'addKeySignature',
+  #'changeNoteTuning',
+  #'addSysEx',
+  #'addUniversalSysEx',
  
   def __init__( 
     self,
@@ -73,7 +72,6 @@ class Pista:
 
     self.generar_secuencia( forma )
 
-
     verboseprint( '\n#### ' + self.nombre + ' ####' )
 
   def __str__( self ):
@@ -83,30 +81,20 @@ class Pista:
       o += l + '\n'
     return o
 
-  """
-  Organiza unidades según relacion de referencia
-  """
+  """ Organiza unidades según relacion de referencia """
   def generar_secuencia( 
     self,
     forma    = None,
     nivel    = 0,
     herencia = {},
-    sequ = [],
   ):
-    #forma = forma if forma is not None else self._macroforma
-    #if not forma:
-    #  forma = self._macroforma
 
     nivel += 1
-    """
-    Limpiar parametros q no se heredan.
-    """
+    """ Limpiar parametros q no se heredan.  """
     herencia.pop( 'unidades', None )
     herencia.pop( 'reiterar', None )
 
-    """
-    Recorre lista ordenada unidades principales.
-    """
+    """ Recorre lista ordenada unidades principales.  """
     error =  "PISTA \"" + self.nombre + "\""
     for unidad in forma:  
       verboseprint( '-' * ( nivel - 1 ) +  unidad )
@@ -117,9 +105,7 @@ class Pista:
           pass
         original = self.paleta[ unidad ]
 
-        """
-        Cuenta recurrencias de esta unidad en este nivel.
-        """
+        """ Cuenta recurrencias de esta unidad en este nivel.  """
         recurrencia = 0
         if nivel in self.registros:
           #TODO Revisar
@@ -128,11 +114,9 @@ class Pista:
           recurrencia = sum( 
             [ 1 for r in self.registros[ nivel ] if r[ 'nombre' ] == unidad ]
           ) 
-        """
-        Dicionario para ingresar al arbol de registros.
+        """ Dicionario para ingresar al arbol de registros.
         Si el referente está en el diccionario herencia registrar
-        referente.
-        """
+        referente.  """
         registro = { 
           'nombre'      : unidad,
           'recurrencia' : recurrencia,
@@ -142,74 +126,63 @@ class Pista:
         #  #aca registrar solo nombre? 
         #  registro[ 'referente' ] = herencia[ 'referente' ] 
 
-        """
-        Crea parametros de unidad combinando originales con herencia
-        Tambien agrega el registro de referentes
-        """
+        """ Crea parametros de unidad combinando originales con herencia
+        Tambien agrega el registro de referentes """
         sucesion = {
           **original,
           **herencia,
           **registro # separar esto
         } 
-        """
-        Cantidad de repeticiones de la unidad.
-        """
+        """ Cantidad de repeticiones de la unidad.  """
         reiterar = 1
         if 'reiterar' in original:
           reiterar = original[ 'reiterar' ]
         # n = str( nivel ) + unidad + str( reiterar )
 
         for r in range( reiterar ):
-
           """ Agregar a los registros """
           self.registros.setdefault( nivel , [] ).append( registro )
 
           if 'unidades' in original:
-            """
-            Si esta tiene parametro "unidades", refiere a otras unidades
-            "hijas" pasa de vuelta por esta metodo.
-            """
+            """ Si esta tiene parametro "unidades", refiere a otras unidades
+            "hijas" pasa de vuelta por esta metodo.  """
             sucesion[ 'referente' ] = registro 
             self.generar_secuencia( 
               original[ 'unidades' ],
               nivel,
               sucesion,
-              sequ,
             ) 
           else: 
-            """
-            Si esta unidad no refiere a otra unidades, 
+            """ Si esta unidad no refiere a otra unidades, 
             Unidad célula 
             Combinar "defactos" con propiedas resultantes de unidad +
-            "herencia" y registro.
-            """
+            "herencia" y registro.  """
             resultante = {
               **Pista.defactos,
               **sucesion,
             }
-            """
-            Secuenciar articulaciones
-            """
-            self.secuencia += self.generar_segmento( resultante ) 
+            """ Secuenciar articulaciones """
+            segmento = Segmento(
+              resultante
+            )
+            self.secuencia.append( segmento )
       except Excepcion as e:
           print( e )
 
-  """
-  Genera una secuencia de ariculaciones musicales 
-  a partir de unidades preprocesadas. 
-  """
-  # metodo de Segmento? Secuencia?
-  def generar_segmento( 
-    self,
-    unidad
-  ):
-    SECUENCIA = []
-
-
-
-    segmento = Segmento(
-      unidad,
-    )
-    SECUENCIA.append( segmento )
-    return SECUENCIA
-
+#  """
+#  Genera una secuencia de ariculaciones musicales 
+#  a partir de unidades preprocesadas. 
+#  """
+#  # metodo de Segmento? Secuencia?
+#  def generar_segmento( 
+#    self,
+#    unidad
+#  ):
+#    SECUENCIA = []
+#
+#    segmento = Segmento(
+#      unidad,
+#    )
+#    SECUENCIA.append( segmento )
+#    return SECUENCIA
+#

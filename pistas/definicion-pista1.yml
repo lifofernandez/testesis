@@ -17,7 +17,7 @@ base: &base !!map
     alteraciones: -2
     modo: 0 # Modo de la escala, 0 = Mayor o 1 = Menor
 
-  intervalos: !!seq 
+  registracion: !!seq 
     # Secuencia de intervalos 
     # A ser recorrida por el punteros de altura
     [ 
