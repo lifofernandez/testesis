@@ -1,7 +1,7 @@
 nombre: 'Prueba Relaciones'
 base: &base 
   canal: 1
-  intervalos: [ 
+  registracion: [ 
     -12, -10, -8, -7, -5, -3, -1,
       0,   2,  4,  5,  7,  9, 11,
      12,  14, 15, 17, 19, 21, 23,

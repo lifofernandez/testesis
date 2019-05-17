@@ -205,53 +205,10 @@ class Pista:
   ):
     SECUENCIA = []
 
-    """
-    PRE PROCESO DE UNIDAD
-    REVERTIR
-    Cambia el sentido de los parametros del tipo lista
-    TODO: ¿convertir cualquier string o int en lista?
-    """
-    if 'revertir' in unidad:
-      revertir = unidad[ 'revertir' ] 
-      if isinstance( revertir , list ): 
-        for r in revertir:
-          if r in unidad:
-            unidad[ r ].reverse() 
-      elif isinstance( revertir , str ):
-        if revertir in unidad:
-          unidad[ revertir ].reverse() 
 
-    #pp = Secuencia( unidad )
-    #print(pp)
 
     segmento = Segmento(
-      nombre            = unidad[ 'nombre' ],
-      canal             = unidad[ 'canal' ],
-      reiterar          = unidad[ 'reiterar' ],
-      revertir          = unidad[ 'revertir' ],
-      desplazar         = unidad[ 'desplazar' ],
-      transponer        = unidad[ 'transponer' ],
-      transportar       = unidad[ 'transportar' ],
-      referente         = unidad[ 'referente' ],
-      clave             = unidad[ 'clave' ],
-      metro             = unidad[ 'metro' ],
-      afinacionNota     = unidad[ 'afinacionNota' ],
-      afinacionBanco    = unidad[ 'afinacionBanco' ],
-      afinacionPrograma = unidad[ 'afinacionPrograma' ],
-      sysEx             = unidad[ 'sysEx' ],
-      uniSysEx          = unidad[ 'uniSysEx' ],
-      NRPN              = unidad[ 'NRPN' ],
-      RPN               = unidad[ 'RPN' ],
-      intervalos        = unidad[ 'intervalos' ],
-      programas         = unidad[ 'programas' ],
-      duraciones        = unidad[ 'duraciones' ],
-      BPMs              = unidad[ 'BPMs' ],
-      dinamicas         = unidad[ 'dinamicas' ],
-      fluctuacion       = unidad[ 'fluctuacion' ],
-      alturas           = unidad[ 'alturas' ],
-      tonos             = unidad[ 'tonos' ],
-      voces             = unidad[ 'voces' ],
-      capas             = unidad[ 'controles' ],
+      unidad,
     )
     SECUENCIA.append( segmento )
     return SECUENCIA

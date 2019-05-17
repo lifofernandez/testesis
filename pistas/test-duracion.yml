@@ -10,7 +10,7 @@ base: &base !!map
   clave: !!map
     alteraciones: 0
     modo: 0 
-  intervalos: !!seq 
+  registracion: !!seq 
     [ 
       -12,-10, -9, -7, -5, -3, -2,
         0,  2,  3,  5,  7,  9, 10,

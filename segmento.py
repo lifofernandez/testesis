@@ -19,58 +19,59 @@ class Segmento:
 
   def __init__( 
     self,
-
-    nombre,
-    canal,
-    reiterar,
-    revertir,
-    desplazar,
-    intervalos,
-    transponer,
-    transportar,
-    referente,
-    clave,
-    metro,
-    afinacionNota,
-    afinacionBanco,
-    afinacionPrograma,
-    sysEx,
-    uniSysEx,
-    NRPN,
-    RPN,
-    programas,
-    duraciones,
-    BPMs,
-    dinamicas,
-    fluctuacion,
-    alturas,
-    tonos,
-    voces,
-    capas,
+    unidad,
   ):
     self.orden = Segmento.cantidad 
     Segmento.cantidad += 1
 
-    self.nombre            = nombre
-    self.canal             = canal
-    self.reiterar          = reiterar
-    self.revertir          = revertir
-    self.desplazar         = desplazar
-    self.referente         = referente
-    self.clave             = clave
-    self.metro             = metro
-    self.afinacionNota     = afinacionNota
-    self.afinacionBanco    = afinacionBanco
-    self.afinacionPrograma = afinacionPrograma
-    self.sysEx             = sysEx
-    self.uniSysEx          = uniSysEx
-    self.NRPN              = NRPN
-    self.RPN               = RPN
+    self.nombre            = unidad[ 'nombre' ]
+    self.canal             = unidad[ 'canal' ]
+    self.reiterar          = unidad[ 'reiterar' ]
+    self.revertir          = unidad[ 'revertir' ]
+    self.desplazar         = unidad[ 'desplazar' ]
+    self.transponer        = unidad[ 'transponer' ]
+    self.transportar       = unidad[ 'transportar' ]
+    self.referente         = unidad[ 'referente' ]
+    self.clave             = unidad[ 'clave' ]
+    self.metro             = unidad[ 'metro' ]
+    self.afinacionNota     = unidad[ 'afinacionNota' ]
+    self.afinacionBanco    = unidad[ 'afinacionBanco' ]
+    self.afinacionPrograma = unidad[ 'afinacionPrograma' ]
+    self.sysEx             = unidad[ 'sysEx' ]
+    self.uniSysEx          = unidad[ 'uniSysEx' ]
+    self.NRPN              = unidad[ 'NRPN' ]
+    self.RPN               = unidad[ 'RPN' ]
+    self.registracion        = unidad[ 'registracion' ]
+
+    self.programas         = unidad[ 'programas' ]
+    self.duraciones        = unidad[ 'duraciones' ]
+    self.BPMs              = unidad[ 'BPMs' ]
+    self.dinamicas         = unidad[ 'dinamicas' ]
+    self.fluctuacion       = unidad[ 'fluctuacion' ]
+    self.alturas           = unidad[ 'alturas' ]
+    self.tonos             = unidad[ 'tonos' ]
+    self.voces             = unidad[ 'voces' ]
+    self.capas             = unidad[ 'controles' ]
+
+    """ PRE PROCESO DE UNIDAD
+    Cambia el sentido de los parametros del tipo lista """
+
+    #TODO: ¿convertir cualquier string o int en lista?
+
+    #if 'revertir' in unidad:
+    #  revertir = unidad[ 'revertir' ] 
+    #  if isinstance( revertir , list ): 
+    #    for r in revertir:
+    #      if r in unidad:
+    #        unidad[ r ].reverse() 
+    #  elif isinstance( revertir , str ):
+    #    if revertir in unidad:
+    #      unidad[ revertir ].reverse() 
 
 
     # internos
     #programas
-    #intervalos
+    #registracion
     #duraciones
     #BPMs     
     #dinamicas
@@ -80,86 +81,72 @@ class Segmento:
     #capas
 
     ganador_voces = [ 0 ]
-    if voces:
-      ganador_voces = max( voces, key = len) 
+    if self.voces:
+      ganador_voces = max( self.voces, key = len) 
     ganador_capas = [ 0 ]
-    if capas:
-      ganador_capas = max( capas , key = len) 
+    if self.capas:
+      ganador_capas = max( self.capas , key = len) 
 
-    """
-    Evaluar que parametro lista es el que mas valores tiene.
-    """
+    """ Evaluar que parametro lista es el que mas valores tiene.  """
     candidatos = [ 
-      dinamicas,
-      duraciones,
-      alturas,
+      self.dinamicas,
+      self.duraciones,
+      self.alturas,
+      self.tonos,
+      self.BPMs,
+      self.programas,
       ganador_voces,
       ganador_capas,
-      tonos,
-      BPMs,
-      programas,
     ]
     ganador = max( candidatos, key = len )
     self.pasos = len( ganador )
 
 
     # TO DO
-    if 'min' in fluctuacion: rand_min = fluctuacion['min'] 
-    if 'max' in fluctuacion: rand_max = fluctuacion['max']
+    rand_min = 0
+    rand_max = 0
+    if 'min' in self.fluctuacion:
+        rand_min = self.fluctuacion['min'] 
+    if 'max' in self.fluctuacion:
+        rand_max = self.fluctuacion['max']
     self.fluctuacion = random.uniform( 
         rand_min,
         rand_max 
     ) if rand_min or rand_max else 1
 
-    """
-    Consolidad "articulacion" 
-    combinar parametros: altura, duracion, dinamica, etc.
-    """
+    """ Consolidad "articulacion" 
+    combinar parametros: altura, duracion, dinamica, etc.  """
     self._articulaciones = []
     for paso in range( self.pasos ):
-
-
-      """
-      Alturas, voz y superposición voces.
-      """
-      altura = alturas[ paso % len( alturas ) ]
+      """ Alturas, voz y superposición voces.  """
+      altura = self.alturas[ paso % len( self.alturas ) ]
       acorde = []
       nota   = 'S' # Silencio
       if altura != 0:
-        """
-        Relacion: altura > puntero en el set de intervalos; Trasponer
-        dentro del set de intervalos, luego Transportar, sumar a la nota
-        resultante.
-        """
-        n = intervalos[ ( ( altura - 1 ) + transponer ) % len( intervalos ) ] 
-        nota = transportar + n
-        """
-        Armar superposicion de voces.
-        """
-        if voces:
-          for v in voces:
-            voz = ( altura + ( v[ paso % len( v ) ] ) - 1 ) + transponer
-            acorde += [ transportar +  intervalos[ voz % len( intervalos ) ]  ]
-
-      """
-      Cambios de control.
-      """
+        """ Relacion: altura > puntero en el set de registracion; Trasponer
+        dentro del set de registracion, luego Transportar, sumar a la nota
+        resultante. """
+        n = self.registracion[ ( ( altura - 1 ) + self.transponer ) % len( self.registracion ) ] 
+        nota = self.transportar + n
+        """ Armar superposicion de voces.  """
+        if self.voces:
+          for v in self.voces:
+            voz = ( altura + ( v[ paso % len( v ) ] ) - 1 ) + self.transponer
+            acorde += [ self.transportar +  self.registracion[ voz % len( self.registracion ) ]  ]
+      """ Cambios de control.  """
       controles = []
-      if capas:
-        for capa in capas:
+      if self.capas:
+        for capa in self.capas:
           controles += [ capa[ paso % len( capa ) ] ]
-
-      """
-      Articulación a secuenciar.
-      """
+      """ Articulación a secuenciar. """
       articulacion = Articulacion(
          nombre = str( self.orden ) + self.nombre + str( paso ),
          paso = paso,
-         bpm = BPMs[ paso % len( BPMs ) ],
-         programa = programas[ paso % len( programas ) ],
-         duracion = duraciones[ paso % len( duraciones ) ],
-         dinamica = dinamicas[ paso % len( dinamicas ) ] * self.fluctuacion,
-         tono   = tonos[ paso % len( tonos ) ],
+         bpm = self.BPMs[ paso % len( self.BPMs ) ],
+         programa = self.programas[ paso % len( self.programas ) ],
+         duracion = self.duraciones[ paso % len( self.duraciones ) ],
+         dinamica = self.dinamicas[ paso % len( self.dinamicas ) ] * self.fluctuacion,
+         tono   = self.tonos[ paso % len( self.tonos ) ],
          nota = nota,
          acorde = acorde,
          controles = controles,
