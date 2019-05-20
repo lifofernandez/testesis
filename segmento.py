@@ -23,51 +23,70 @@ class Segmento:
     self.orden = Segmento.cantidad 
     Segmento.cantidad += 1
 
-    self.nombre            = unidad[ 'nombre' ]
-    self.canal             = unidad[ 'canal' ]
-    self.reiterar          = unidad[ 'reiterar' ]
-    self.revertir          = unidad[ 'revertir' ]
-    self.desplazar         = unidad[ 'desplazar' ]
-    self.transponer        = unidad[ 'transponer' ]
-    self.transportar       = unidad[ 'transportar' ]
-    self.referente         = unidad[ 'referente' ]
-    self.clave             = unidad[ 'clave' ]
-    self.metro             = unidad[ 'metro' ]
-    self.afinacionNota     = unidad[ 'afinacionNota' ]
-    self.afinacionBanco    = unidad[ 'afinacionBanco' ]
-    self.afinacionPrograma = unidad[ 'afinacionPrograma' ]
-    self.sysEx             = unidad[ 'sysEx' ]
-    self.uniSysEx          = unidad[ 'uniSysEx' ]
-    self.NRPN              = unidad[ 'NRPN' ]
-    self.RPN               = unidad[ 'RPN' ]
-    self.registracion      = unidad[ 'registracion' ]
+    self.original = unidad
+    self.nombre            = self.original[ 'nombre' ]
 
-    self.programas         = unidad[ 'programas' ]
-    self.duraciones        = unidad[ 'duraciones' ]
-    self.BPMs              = unidad[ 'BPMs' ]
-    self.dinamicas         = unidad[ 'dinamicas' ]
-    self.fluctuacion       = unidad[ 'fluctuacion' ]
-    self.alturas           = unidad[ 'alturas' ]
-    self.tonos             = unidad[ 'tonos' ]
-    self.voces             = unidad[ 'voces' ]
-    self.capas             = unidad[ 'controles' ]
+    """ PRE PROCESO DE UNIDAD """
+    """ Cambia el sentido de los parametros de articulacion """
+    self.revertir = self.original[ 'revertir' ]
+    if self.revertir:
+      if isinstance( self.revertir , list ): 
+        for r in self.revertir:
+          if r in self.original:
+            self.original[ r ].reverse() 
+      elif isinstance( self.revertir , str ):
+        if revertir in self.original:
+          self.original[ self.revertir ].reverse() 
 
-    """ PRE PROCESO DE UNIDAD
-    Cambia el sentido de los parametros del tipo lista """
 
-    #TODO: ¿convertir cualquier string o int en lista?
+    self.canal             = self.original[ 'canal' ]
+    self.reiterar          = self.original[ 'reiterar' ]
+    self.desplazar         = self.original[ 'desplazar' ]
+    self.transponer        = self.original[ 'transponer' ]
+    self.transportar       = self.original[ 'transportar' ]
+    self.referente         = self.original[ 'referente' ]
+    self.clave             = self.original[ 'clave' ]
+    self.metro             = self.original[ 'metro' ]
+    self.afinacionNota     = self.original[ 'afinacionNota' ]
+    self.afinacionBanco    = self.original[ 'afinacionBanco' ]
+    self.afinacionPrograma = self.original[ 'afinacionPrograma' ]
+    self.sysEx             = self.original[ 'sysEx' ]
+    self.uniSysEx          = self.original[ 'uniSysEx' ]
+    self.NRPN              = self.original[ 'NRPN' ]
+    self.RPN               = self.original[ 'RPN' ]
+    self.registracion      = self.original[ 'registracion' ]
 
-    #for attr, value in self.__dict__.items():
-    #    print( attr )
-    #if 'revertir' in unidad:
-    #  revertir = unidad[ 'revertir' ] 
-    #  if isinstance( revertir , list ): 
-    #    for r in revertir:
-    #      if r in unidad:
-    #        unidad[ r ].reverse() 
-    #  elif isinstance( revertir , str ):
-    #    if revertir in unidad:
-    #      unidad[ revertir ].reverse() 
+    self.programas         = self.original[ 'programas' ]
+    self.duraciones        = self.original[ 'duraciones' ]
+    self.BPMs              = self.original[ 'BPMs' ]
+    self.dinamicas         = self.original[ 'dinamicas' ]
+    self.alturas           = self.original[ 'alturas' ]
+    self.tonos             = self.original[ 'tonos' ]
+    self.voces             = self.original[ 'voces' ]
+    self.capas             = self.original[ 'controles' ]
+
+    self.bpm = self.BPMs[0]
+    self.programa = self.programas[0]
+
+  @property
+  def fluctuacion( self ):
+    fluctuacion = self.original['fluctuacion']
+    rand_min = 0
+    if 'min' in fluctuacion:
+        rand_min = fluctuacion['min'] 
+    rand_max = 0
+    if 'max' in fluctuacion:
+        rand_max = fluctuacion['max']
+    f = random.uniform( 
+        rand_min,
+        rand_max 
+    ) if rand_min or rand_max else 1
+    return f 
+    
+  @property
+  def articulaciones( self ):
+
+    o = []
 
     self.ganador_voces = [ 0 ]
     if self.voces:
@@ -90,21 +109,11 @@ class Segmento:
     ganador = max( candidatos, key = len )
     self.pasos = len( ganador )
 
-    # TO DO
-    rand_min = 0
-    if 'min' in self.fluctuacion:
-        rand_min = self.fluctuacion['min'] 
-    rand_max = 0
-    if 'max' in self.fluctuacion:
-        rand_max = self.fluctuacion['max']
-    self.fluctuacion = random.uniform( 
-        rand_min,
-        rand_max 
-    ) if rand_min or rand_max else 1
+
 
     """ Consolidad "articulacion" 
     combinar parametros: altura, duracion, dinamica, etc. """
-    self.articulaciones = []
+    #self.articulaciones = []
     for paso in range( self.pasos ):
       """ Alturas, voz y superposición voces. """
       altura = self.alturas[ paso % len( self.alturas ) ]
@@ -139,6 +148,8 @@ class Segmento:
          acorde    = acorde,
          controles = controles,
       )
-      self.articulaciones.append( articulacion )
-    #self.articulaciones = self._articulaciones
+      o.append( articulacion )
+    return o
 
+
+ 

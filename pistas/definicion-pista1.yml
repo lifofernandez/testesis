@@ -205,7 +205,7 @@ unidades: !!map
     reiterar: 3
 
   B: &B 
-    metro: 9/8
+    metro: '9/8'
     unidades: [ 'a' , 'b^' ]
     #desplazar: -0.75
     SysEx: null 
@@ -233,6 +233,8 @@ unidades: !!map
 
   inter: 
     unidades: [ 'B^' ]
+    revertir: [ 'BPMs' ]
+
   estribo: 
     BPMs: [ 100 ]
     unidades: [ 'B', 'B^', 'a' ]

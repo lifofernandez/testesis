@@ -76,61 +76,29 @@ for pista in PISTAS:
 
   #duracion_parte = 0
   segmentoP =  pista.secuencia[ 0 ] 
-  articulacionP = segmentoP.articulaciones[ 0 ]
 
   """
   parametros de Parte /pista
   Primer articulación de la parte, agregar eventos fundamentales: pulso,
   armadura de clave, compás y programa.
   """
-  EVENTOS.append([
-    'addTempo',
-    track,
-    momento,
-    articulacionP.bpm,
-  ])
 
-  """
-  Clave de compás
-  https://midiutil.readthedocs.io/en/1.2.1/class.html#midiutil.MidiFile.MIDIFile.addTimeSignature
-  denominator  = potencia negativa de 2: log10( X ) / log10( 2 ) 
-  2 representa  una negra, 3 una corchea, etc.
-  primer_metro = articulacion2['metro'],
-  """
-  ##primer_metro = articulacionP[ 'metro' ].split( '/' )
-  #numerador        = int( primer_metro[0] ) 
-  #denominador      = int( math.log10( int( primer_metro[1] ) ) / math.log10( 2 ) )
-  #relojes_por_tick = 12 * denominador
-  #notas_por_pulso = 8
-  #EVENTOS.append([
-  #  'addTimeSignature',
-  #  track,
-  #  momento,
-  #  numerador,
-  #  denominador,
-  #  relojes_por_tick, 
-  #  notas_por_pulso
-  #])
+  if segmentoP.bpm:
+    EVENTOS.append([
+      'addTempo',
+      track,
+      momento,
+      segmentoP.bpm,
+    ])
 
-  #primer_clave = articulacionP['clave']
-  #EVENTOS.append([
-  #  'addKeySignature',
-  #  track,
-  #  momento,
-  #  primer_clave[ 'alteraciones' ],
-  #  # multiplica por el n de alteraciones
-  #  1, 
-  #  primer_clave[ 'modo' ]
-  #])
-
-  EVENTOS.append([
-    'addProgramChange',
-    track,
-    #articulacionP['canal'],
-    segmentoP.canal,
-    momento,  
-    articulacionP.programa
-  ])
+  if segmentoP.programa:
+    EVENTOS.append([
+      'addProgramChange',
+      track,
+      segmentoP.canal,
+      momento,  
+      segmentoP.programa
+    ])
 
   """
   Loop principal:
@@ -138,8 +106,9 @@ for pista in PISTAS:
   """
   for numero_segmento, segmento in enumerate( pista.secuencia ):
     segmento_precedente = pista.secuencia[  numero_segmento - 1 ]
+    if numero_segmento == 0:
+      segmento_precedente = pista.secuencia[ - 1 ]
     canal = segmento.canal
-
 
     momento += segmento.desplazar
     if momento < 0 :
@@ -279,9 +248,7 @@ for pista in PISTAS:
     metro  = segmento.metro.split( '/' )
     clave  = segmento.clave
     for numero_articulacion, articulacion in enumerate( segmento.articulaciones ):
-      #print(articulacion)
       articulacion_precedente = segmento.articulaciones[  numero_articulacion - 1 ]
-
       if  numero_articulacion == 0:
         articulacion_precedente = segmento_precedente.articulaciones[ - 1 ]
 

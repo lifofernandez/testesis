@@ -51,3 +51,18 @@ class Articulacion:
     nuevo_max = 126 
     nuevo_valor = ( ( viejo_valor - viejo_min ) / ( viejo_max - viejo_min ) ) * ( nuevo_max - nuevo_min) + nuevo_min
     return int( min( max( nuevo_valor, nuevo_min ), nuevo_max ) )
+
+  #def next(self):
+  #        try:
+  #            result = self.collection[self.index]
+  #            self.index += 1
+  #        except IndexError:
+  #            raise StopIteration
+  #        return result
+  #
+  #def previo(self):
+  #    self.index -= 1
+  #    if self.index < 0:
+  #        raise StopIteration
+  #    return self.collection[self.index]
+

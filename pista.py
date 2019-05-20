@@ -68,8 +68,8 @@ class Pista:
     self.paleta     = paleta
     self.registros  = {}
 
+    #TODO pasar a property
     self.secuencia  = [] 
-
     self.generar_secuencia( forma )
 
     verboseprint( '\n#### ' + self.nombre + ' ####' )
