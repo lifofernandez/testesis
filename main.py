@@ -144,10 +144,10 @@ for pista in PISTAS:
       segmento.nombre
     ])
 
-    metro = segmento.metro.split( '/' ) 
-    if ( segmento_precedente.metro.split( '/' ) != metro):
-      numerador        = int( metro[ 0 ] ) 
-      denominador      = int( math.log10( int( metro[ 1 ] ) ) / math.log10( 2 ) )
+    if ( segmento_precedente.metro != segmento.metro):
+      print( segmento_precedente.metro,segmento.metro)
+      numerador        = int( segmento.metro[ 0 ] ) 
+      denominador      = int( math.log10( int( segmento.metro[ 1 ] ) ) / math.log10( 2 ) )
       relojes_por_tick = 12 * denominador
       notas_por_pulso = 8
       EVENTOS.append([
@@ -243,21 +243,14 @@ for pista in PISTAS:
       ])
 
     #REVISAR
-
     unidad = segmento.nombre
-    metro  = segmento.metro.split( '/' )
-    clave  = segmento.clave
     for numero_articulacion, articulacion in enumerate( segmento.articulaciones ):
       articulacion_precedente = segmento.articulaciones[  numero_articulacion - 1 ]
       if  numero_articulacion == 0:
         articulacion_precedente = segmento_precedente.articulaciones[ - 1 ]
-
       verboseprint( articulacion )
-
-      """
-      Agrega cualquier cambio de parametro, 
-      comparar cada uno con la articulacion previa.
-      """
+      """ Agrega cualquier cambio de parametro, 
+      comparar cada uno con la articulacion previa. """
       if ( articulacion_precedente.bpm != articulacion.bpm ):
         #print( articulacion_precedente.bpm, articulacion.bpm )
         EVENTOS.append([
@@ -268,6 +261,7 @@ for pista in PISTAS:
         ])
 
       if ( articulacion_precedente.programa != articulacion.programa ):
+        #print(articulacion_precedente.programa, articulacion.programa )
         EVENTOS.append([
            'addProgramChange',
            track,
@@ -286,11 +280,9 @@ for pista in PISTAS:
            articulacion.tono
         ])
 
-      """
-      Agregar nota/s (altura, duracion, dinamica).
-      Si existe acorde en la articulación armar una lista con cada voz superpuesta. 
-      o una lista de solamente un elemento.
-      """
+      """ Agregar nota/s (altura, duracion, dinamica).
+      Si existe acorde en la articulación armar una lista con cada voz
+      superpuesta.  o una lista de solamente un elemento.  """
       voces = [ articulacion.altura ]
       if articulacion.acorde:
         voces = articulacion.acorde 
@@ -298,9 +290,8 @@ for pista in PISTAS:
       dinamica = articulacion.dinamica
       for voz in voces:
         altura = voz 
-        """
-        Si la articulacion es un silencio (S) agregar nota sin altura ni dinamica.
-        """
+        """ Si la articulacion es un silencio (S) agregar nota sin altura ni 
+        dinamica.  """
         if voz == 'S':
           dinamica = 0
           altura = 0
@@ -313,11 +304,7 @@ for pista in PISTAS:
           articulacion.duracion, 
           dinamica,
         ])
-
-
-      """
-      Agregar cambios de control
-      """
+      """ Agregar cambios de control """
       if articulacion.controles:
         for control in articulacion.controles:
           for control, valor in control.items():

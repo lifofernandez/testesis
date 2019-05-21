@@ -54,6 +54,13 @@ class Pista:
   #'changeNoteTuning',
   #'addSysEx',
   #'addUniversalSysEx',
+
+  def __str__( self ):
+    o = '' 
+    for attr, value in self.__dict__.items():
+      l = str( attr ) + ':' + str( value )
+      o += l + '\n'
+    return o
  
   def __init__( 
     self,
@@ -71,15 +78,10 @@ class Pista:
     #TODO pasar a property
     self.secuencia  = [] 
     self.generar_secuencia( forma )
+    
 
     verboseprint( '\n#### ' + self.nombre + ' ####' )
 
-  def __str__( self ):
-    o = '' 
-    for attr, value in self.__dict__.items():
-      l = str( attr ) + ':' + str( value )
-      o += l + '\n'
-    return o
 
   """ Organiza unidades según relacion de referencia """
   def generar_secuencia( 
@@ -122,9 +124,9 @@ class Pista:
           'recurrencia' : recurrencia,
           'nivel'       : nivel,
         }
-        #if 'referente' in herencia:
-        #  #aca registrar solo nombre? 
-        #  registro[ 'referente' ] = herencia[ 'referente' ] 
+        if 'referente' in herencia:
+          #aca registrar solo nombre? 
+          registro[ 'referente' ] = herencia[ 'referente' ] 
 
         """ Crea parametros de unidad combinando originales con herencia
         Tambien agrega el registro de referentes """
@@ -137,12 +139,10 @@ class Pista:
         reiterar = 1
         if 'reiterar' in original:
           reiterar = original[ 'reiterar' ]
-        # n = str( nivel ) + unidad + str( reiterar )
-
+          # n = str( nivel ) + unidad + str( reiterar )
         for r in range( reiterar ):
           """ Agregar a los registros """
           self.registros.setdefault( nivel , [] ).append( registro )
-
           if 'unidades' in original:
             """ Si esta tiene parametro "unidades", refiere a otras unidades
             "hijas" pasa de vuelta por esta metodo.  """
@@ -156,16 +156,19 @@ class Pista:
             """ Si esta unidad no refiere a otra unidades, 
             Unidad célula 
             Combinar "defactos" con propiedas resultantes de unidad +
-            "herencia" y registro.  """
+            "herencia" y registro. """
+            """ Secuenciar articulaciones """
+            if 'prueba' in sucesion:
+              print( sucesion['prueba'] )
             resultante = {
               **Pista.defactos,
               **sucesion,
             }
-            """ Secuenciar articulaciones """
             segmento = Segmento(
               resultante
             )
             self.secuencia.append( segmento )
+
       except Excepcion as e:
           print( e )
 

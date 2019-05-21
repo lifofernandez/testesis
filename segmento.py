@@ -46,7 +46,11 @@ class Segmento:
     self.transportar       = self.original[ 'transportar' ]
     self.referente         = self.original[ 'referente' ]
     self.clave             = self.original[ 'clave' ]
-    self.metro             = self.original[ 'metro' ]
+
+    #self.metro             = self.original[ 'metro' ]
+
+
+
     self.afinacionNota     = self.original[ 'afinacionNota' ]
     self.afinacionBanco    = self.original[ 'afinacionBanco' ]
     self.afinacionPrograma = self.original[ 'afinacionPrograma' ]
@@ -69,6 +73,10 @@ class Segmento:
     self.programa = self.programas[0]
 
   @property
+  def metro( self ):
+    return self.original[ 'metro' ].split( '/' ) 
+
+  @property
   def fluctuacion( self ):
     fluctuacion = self.original['fluctuacion']
     rand_min = 0
@@ -85,9 +93,7 @@ class Segmento:
     
   @property
   def articulaciones( self ):
-
     o = []
-
     self.ganador_voces = [ 0 ]
     if self.voces:
       self.ganador_voces = max( self.voces, key = len) 
@@ -107,14 +113,14 @@ class Segmento:
       self.ganador_capas,
     ]
     ganador = max( candidatos, key = len )
-    self.pasos = len( ganador )
-
-
+    self.cantidad_pasos = len( ganador )
 
     """ Consolidad "articulacion" 
     combinar parametros: altura, duracion, dinamica, etc. """
-    #self.articulaciones = []
-    for paso in range( self.pasos ):
+    bpm       = 0 
+    programa  = 0 
+    tono      = 0 
+    for paso in range( self.cantidad_pasos ):
       """ Alturas, voz y superposición voces. """
       altura = self.alturas[ paso % len( self.alturas ) ]
       acorde = []
@@ -141,9 +147,10 @@ class Segmento:
          paso      = paso,
          bpm       = self.BPMs[ paso % len( self.BPMs ) ],
          programa  = self.programas[ paso % len( self.programas ) ],
+         tono      = self.tonos[ paso % len( self.tonos ) ],
+
          duracion  = self.duraciones[ paso % len( self.duraciones ) ],
          dinamica  = self.dinamicas[ paso % len( self.dinamicas ) ] * self.fluctuacion,
-         tono      = self.tonos[ paso % len( self.tonos ) ],
          nota      = nota,
          acorde    = acorde,
          controles = controles,

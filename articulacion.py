@@ -33,11 +33,12 @@ class Articulacion:
     self.posicion  = paso
     self.bpm       = bpm
     self.programa  = programa
-    self.duracion  = duracion
+    self.tono      = tono
+
     self._dinamica  = dinamica 
+    self.duracion  = duracion
     self.controles = controles
     self.altura    = nota
-    self.tono      = tono
     self.acorde    = acorde
 
   @property
