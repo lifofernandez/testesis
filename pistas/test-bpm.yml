@@ -1,0 +1,60 @@
+# Boceto de PISTA (validdo / funciona)
+# YAML types: yaml.org/type
+# Ejemplo de documentación: https://selinon.readthedocs.io/en/latest/yaml.html
+
+nombre: !!str 
+  # Título de la pista
+  'Test Duraciones'
+  
+base: &base !!map
+  clave: !!map
+    alteraciones: 0
+    modo: 0 
+  registracion: !!seq 
+    [ 
+      -12,-10, -9, -7, -5, -3, -2,
+        0,  2,  3,  5,  7,  9, 10,
+       12, 14, 15, 17, 19, 21, 22,
+       24
+    ]
+  alturas: !!seq [ 1, 3, 5, 8 ] 
+  #voces: !!seq
+  #  - [ 8, 6 ] 
+  #  - [ 5 ] 
+  #  - [ 3 ]
+  transportar: !!int 60 # C
+  transponer: !!int 0
+  duraciones: !!seq [ 1 ]
+  BPMs: [ 59 ]
+  metro: !!str 3/4
+  desplazar: !!float 0
+  #reiterar: !!int 0
+  dinamicas: !!seq [ 1, .5, .4 ]
+  #revertir: !!seq [ 'duraciones', 'dinamicas' ]
+  canal: !!int 3
+  programas: !!seq [ 103 ]
+unidades: !!map
+  a: &a 
+    <<: *base
+    BPMs: [ 61 ]
+    duraciones: [ 1, 1, 1, 1 ]
+  b: &b 
+    <<: *base
+    BPMs: [ 58 ]
+    duraciones: [  1, 1, 1, 1 ]
+  A: 
+    unidades: [ 'a','b' ] 
+    reiterar: 2
+  B: 
+    unidades: [ 'a','b' ] 
+  estrofa: 
+    unidades: [ 'A' ]
+  estribo: 
+    BPMs: [ 61 ]
+    unidades: [ 'B','A' ]
+macroforma: !!seq [
+  'estrofa',
+  'estribo'
+]
+
+

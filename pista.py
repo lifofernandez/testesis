@@ -12,8 +12,21 @@ class Pista:
   cantidad = 0 
   defactos = {
 
-    # Propiedades de Segmento
-    'canal'             :  1 ,
+    # TO DO 
+    # Agrupar/Revisar/Avisar propiedades "Globales" 
+    # que NO refieren a un canal en particualr
+    #'addTrackName',
+    #'addCopyright',
+
+    #'addTempo',
+    #'addTimeSignature',
+    #'addKeySignature',
+    #'changeNoteTuning',
+    #'addSysEx',
+    #'addUniversalSysEx',
+
+    # Propiedades de Segmento 
+    'canal'             : 1,
     'desplazar'         : 0,
     'metro'             : '4/4',
     'clave'             : { 'alteraciones' : 0, 'modo' : 0 },
@@ -31,29 +44,17 @@ class Pista:
     'NRPN'              : None,
     'RPN'               : None,
 
-    # Propiedades de Articulacion
+    # Propiedades de Articulacion 
     'BPMs'         : [ 60 ],
-    'instrumentos' : [ 1 ],
+    'programas'    : [ 1 ],
     'duraciones'   : [ 1 ],
     'dinamicas'    : [ 1 ],
-    'intervalos'   : [ 1 ],
+    'registracion'   : [ 1 ],
     'alturas'      : [ 1 ],
     'tonos'        : [ 0 ],
     'voces'        : None,
     'controles'    : None,
   }
-
-  # TO DO 
-  # Agrupar/Revisar/Avisar propiedades "Globales" 
-  # que NO refieren a un canal en particualr
-  #'addTrackName',
-  #'addCopyright',
-  #'addTempo',
-  #'addTimeSignature',
-  #'addKeySignature',
-  #'changeNoteTuning',
-  #'addSysEx',
-  #'addUniversalSysEx',
 
   def __str__( self ):
     o = '' 
@@ -76,6 +77,10 @@ class Pista:
     self.registros  = {}
 
     #TODO pasar a property
+    self.defacto = Segmento({
+      'nombre' : nombre,
+      **Pista.defactos,
+    })
     self.secuencia  = [] 
     self.generar_secuencia( forma )
     
@@ -90,14 +95,12 @@ class Pista:
     nivel    = 0,
     herencia = {},
   ):
-
     nivel += 1
     """ Limpiar parametros q no se heredan.  """
     herencia.pop( 'unidades', None )
     herencia.pop( 'reiterar', None )
-
-    """ Recorre lista ordenada unidades principales.  """
     error =  "PISTA \"" + self.nombre + "\""
+    """ Recorre lista ordenada unidades principales.  """
     for unidad in forma:  
       verboseprint( '-' * ( nivel - 1 ) +  unidad )
       try:
@@ -106,12 +109,10 @@ class Pista:
           raise Excepcion( unidad, error )
           pass
         original = self.paleta[ unidad ]
-
         """ Cuenta recurrencias de esta unidad en este nivel.  """
         recurrencia = 0
         if nivel in self.registros:
-          #TODO Revisar
-          # Que los cuente en cualquier nivel.
+          # TODO Que los cuente en cualquier nivel.
           # puede revisar valor del anterior
           recurrencia = sum( 
             [ 1 for r in self.registros[ nivel ] if r[ 'nombre' ] == unidad ]
@@ -125,7 +126,6 @@ class Pista:
           'nivel'       : nivel,
         }
         if 'referente' in herencia:
-          #aca registrar solo nombre? 
           registro[ 'referente' ] = herencia[ 'referente' ] 
 
         """ Crea parametros de unidad combinando originales con herencia
@@ -139,7 +139,6 @@ class Pista:
         reiterar = 1
         if 'reiterar' in original:
           reiterar = original[ 'reiterar' ]
-          # n = str( nivel ) + unidad + str( reiterar )
         for r in range( reiterar ):
           """ Agregar a los registros """
           self.registros.setdefault( nivel , [] ).append( registro )
@@ -153,39 +152,17 @@ class Pista:
               sucesion,
             ) 
           else: 
-            """ Si esta unidad no refiere a otra unidades, 
-            Unidad célula 
+            """ Si esta unidad no refiere a otra unidades, Unidad célula 
             Combinar "defactos" con propiedas resultantes de unidad +
             "herencia" y registro. """
-            """ Secuenciar articulaciones """
-            if 'prueba' in sucesion:
-              print( sucesion['prueba'] )
             resultante = {
               **Pista.defactos,
               **sucesion,
             }
+            """ Secuenciar articulaciones """
             segmento = Segmento(
               resultante
             )
             self.secuencia.append( segmento )
-
       except Excepcion as e:
           print( e )
-
-#  """
-#  Genera una secuencia de ariculaciones musicales 
-#  a partir de unidades preprocesadas. 
-#  """
-#  # metodo de Segmento? Secuencia?
-#  def generar_segmento( 
-#    self,
-#    unidad
-#  ):
-#    SECUENCIA = []
-#
-#    segmento = Segmento(
-#      unidad,
-#    )
-#    SECUENCIA.append( segmento )
-#    return SECUENCIA
-#

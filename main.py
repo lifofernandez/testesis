@@ -2,7 +2,6 @@ from argumentos import args, verboseprint, Excepcion
 import yaml
 from pista import Pista
 from datetime import datetime, timedelta
-import math
 
 formato_tiempo =  '%H:%M:%S'
 
@@ -34,39 +33,21 @@ for d in DEFS:
   )
   PISTAS.append( pista )
 
-"""
-Extrae referentes recursivamente
-"""
-def referir(
-    refs,
-    o = None,
-  ):
-  referente   = refs[ 'referente' ]   if 'referente'   in refs else None
-  nombre      = refs[ 'nombre' ]      if 'nombre'      in refs else None
-  recurrencia = refs[ 'recurrencia' ] if 'recurrencia' in refs else None
-  nivel       = refs[ 'nivel' ]       if 'nivel'       in refs else None
-  output      = o                     if o is not None         else [ None ] * nivel 
-  output[ nivel - 1 ] = ( nombre, recurrencia )
-  if referente:
-    referir( referente, output )
-  return output
-
-
-"""
-Generar canal MIDI a partir de cada pista
-"""
+""" Generar canal MIDI a partir de cada pista """
 EVENTOS = []
 for pista in PISTAS:
   momento = 0
   track = pista.orden
 
+  """ Parametros de Pista
+  Primer articulación de la parte, agregar eventos fundamentales: pulso,
+  armadura de clave, compás y programa.  """
   EVENTOS.append([
     'addTrackName',
     track,
     momento,
     pista.nombre
   ])
-
   EVENTOS.append([
     'addCopyright',
     track,
@@ -74,93 +55,68 @@ for pista in PISTAS:
     args.copyright
   ])
 
-  #duracion_parte = 0
-  segmentoP =  pista.secuencia[ 0 ] 
-
-  """
-  parametros de Parte /pista
-  Primer articulación de la parte, agregar eventos fundamentales: pulso,
-  armadura de clave, compás y programa.
-  """
-
-  if segmentoP.bpm:
-    EVENTOS.append([
-      'addTempo',
-      track,
-      momento,
-      segmentoP.bpm,
-    ])
-
-  if segmentoP.programa:
-    EVENTOS.append([
-      'addProgramChange',
-      track,
-      segmentoP.canal,
-      momento,  
-      segmentoP.programa
-    ])
-
-  """
-  Loop principal:
-  Genera una secuencia de eventos MIDI lista de articulaciones.
-  """
+  """ Loop principal: Genera una secuencia de eventos MIDI lista de
+  articulaciones.  """
   for numero_segmento, segmento in enumerate( pista.secuencia ):
     segmento_precedente = pista.secuencia[  numero_segmento - 1 ]
     if numero_segmento == 0:
-      segmento_precedente = pista.secuencia[ - 1 ]
+      segmento_precedente = pista.defacto
+      
     canal = segmento.canal
-
     momento += segmento.desplazar
+
     if momento < 0 :
      raise ValueError( 'No se puede desplazar antes q el inicio' ) 
      pass
 
-    #"""
-    #Compone texto de la etiqueta a partir de nombre de unidad, numero de
-    #iteración y referentes
-    #""" 
-    #texto = ''
+    """ Compone texto de la etiqueta a partir de nombre de unidad, numero de
+    iteración y referentes """ 
+    texto = segmento.nombre
     #ers = [ ( 0, 0 ) ]
-    #if articulacion[ 'referente' ]:
-    #  ers = referir( articulacion[ 'referente' ] ) 
+    #if segmento.referente:
+    #  ers = segmento.referir( segmento.referente ) 
     #prs = [ ( 0, 0 ) ]
-    #if precedente[ 'referente' ]:
-    #  prs = referir( precedente[ 'referente' ] )
-
+    #if segmento_precedente.referente:
+    #  prs = segmento.referir( segmento_precedente.referente )
     #for er, pr in zip( ers , prs ):
     #  if er != pr: 
     #    texto += str( er[ 0 ] ) + ' #' + str( er[ 1 ] ) + '\n' 
-    #texto += unidad 
+    ##texto += segmento.nombre
     #if  segmento.referente:
-
-    """
-    Agregar propiedades de segmento
-    inserta etiquetas y modificadores de unidad (desplazar).
-    """
+    #  texto += segmento.nombre
     EVENTOS.append([
      'addText',
       track,
       momento,
-      segmento.nombre
+      texto
     ])
 
-    if ( segmento_precedente.metro != segmento.metro):
-      print( segmento_precedente.metro,segmento.metro)
-      numerador        = int( segmento.metro[ 0 ] ) 
-      denominador      = int( math.log10( int( segmento.metro[ 1 ] ) ) / math.log10( 2 ) )
-      relojes_por_tick = 12 * denominador
-      notas_por_pulso = 8
+    """ Agregar propiedades de segmento.
+    inserta etiquetas y modificadores de unidad (desplazar)."""
+    if ( 
+      segmento_precedente.metro != segmento.metro
+    ):
+      #print( segmento_precedente.metro, segmento.metro)
       EVENTOS.append([
         'addTimeSignature',
         track,
         momento,
-        numerador,
-        denominador,
-        relojes_por_tick, 
-        notas_por_pulso
+        segmento.metro['numerador'],
+        segmento.metro['denominador'],
+        segmento.metro['relojes_por_tick'], 
+        segmento.metro['notas_por_pulso']
       ])
 
-    if ( segmento_precedente.clave != segmento.clave ):
+    if segmento_precedente.bpm != segmento.bpm :
+      EVENTOS.append([
+        'addTempo',
+        track,
+        momento,
+        segmento.bpm,
+      ])
+    if ( 
+       segmento_precedente.clave != segmento.clave
+    ):
       EVENTOS.append([
         'addKeySignature',
         track,
@@ -242,8 +198,6 @@ for pista in PISTAS:
         segmento.RPN[ 'ordenar' ],
       ])
 
-    #REVISAR
-    unidad = segmento.nombre
     for numero_articulacion, articulacion in enumerate( segmento.articulaciones ):
       articulacion_precedente = segmento.articulaciones[  numero_articulacion - 1 ]
       if  numero_articulacion == 0:

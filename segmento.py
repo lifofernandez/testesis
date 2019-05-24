@@ -1,7 +1,8 @@
 from argumentos import args, verboseprint, Excepcion
 from articulacion import Articulacion
-
 import random
+import math
+import pprint
 
 class Segmento:
   """
@@ -47,10 +48,6 @@ class Segmento:
     self.referente         = self.original[ 'referente' ]
     self.clave             = self.original[ 'clave' ]
 
-    #self.metro             = self.original[ 'metro' ]
-
-
-
     self.afinacionNota     = self.original[ 'afinacionNota' ]
     self.afinacionBanco    = self.original[ 'afinacionBanco' ]
     self.afinacionPrograma = self.original[ 'afinacionPrograma' ]
@@ -74,7 +71,15 @@ class Segmento:
 
   @property
   def metro( self ):
-    return self.original[ 'metro' ].split( '/' ) 
+    metro = self.original[ 'metro' ].split( '/' ) 
+    denominador = int( math.log10( int( metro[ 1 ] ) ) / math.log10( 2 ) )
+    return {
+      'numerador'        : int( metro[ 0 ] ),
+      'denominador'      : denominador,
+      'relojes_por_tick' : 12 * denominador,
+      'notas_por_pulso'  : 8,
+    }
+    #return self.original[ 'metro' ].split( '/' ) 
 
   @property
   def fluctuacion( self ):
@@ -114,6 +119,7 @@ class Segmento:
     ]
     ganador = max( candidatos, key = len )
     self.cantidad_pasos = len( ganador )
+    #pprint.pprint(self.referente)
 
     """ Consolidad "articulacion" 
     combinar parametros: altura, duracion, dinamica, etc. """
@@ -158,5 +164,21 @@ class Segmento:
       o.append( articulacion )
     return o
 
+  """ Extrae referentes recursivamente """
+  def referir(
+      refs,
+      o = None,
+    ):
+    print(refs)
+    #referente   = refs[ 'referente' ]   if 'referente'   in refs else None
+    #nombre      = refs[ 'nombre' ]      if 'nombre'      in refs else None
+    #recurrencia = refs[ 'recurrencia' ] if 'recurrencia' in refs else None
+    #nivel       = refs[ 'nivel' ]       if 'nivel'       in refs else None
+    output      = o                     if o is not None         else [ None ] * nivel 
+    #output[ nivel - 1 ] = ( nombre, recurrencia )
+    #if referente:
+    #  referir( referente, output )
+    return output
+  
 
  
