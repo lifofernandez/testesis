@@ -42,10 +42,10 @@ unidades: !!map
     <<: *base
     duraciones: [  1, 1, 1, 1 ]
   A: 
-    unidades: [ 'a','b' ] 
+    forma: [ 'a','b' ] 
     reiterar: 1
   estrofa: 
-    unidades: [ 'A' ]
-macroforma: !!seq [ 'estrofa' ]
+    forma: [ 'A' ]
+forma: !!seq [ 'estrofa' ]
 
 

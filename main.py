@@ -5,9 +5,7 @@ from datetime import datetime, timedelta
 
 formato_tiempo =  '%H:%M:%S'
 
-"""
-Lee ficheros YAML declarados argumentos posicionales 
-"""
+""" Lee ficheros YAML declarados argumentos posicionales """
 def leer_yamls():
   defs = []
   for archivo in args.archivos:
@@ -21,15 +19,13 @@ def leer_yamls():
   return defs
 DEFS = leer_yamls()
 
-"""
-A partir de cada definicion agrega una "Pista" 
-"""
+""" A partir de cada definicion agrega una Pista """
 PISTAS = []
 for d in DEFS:
   pista = Pista(
     d[ 'nombre' ],
     d[ 'unidades' ],
-    d[ 'macroforma' ],
+    d[ 'forma' ],
   )
   PISTAS.append( pista )
 
@@ -65,7 +61,7 @@ for pista in PISTAS:
     canal = segmento.canal
     momento += segmento.desplazar
 
-    if momento < 0 :
+    if momento < 0:
      raise ValueError( 'No se puede desplazar antes q el inicio' ) 
      pass
 
@@ -93,9 +89,7 @@ for pista in PISTAS:
 
     """ Agregar propiedades de segmento.
     inserta etiquetas y modificadores de unidad (desplazar)."""
-    if ( 
-      segmento_precedente.metro != segmento.metro
-    ):
+    if segmento_precedente.metro != segmento.metro :
       #print( segmento_precedente.metro, segmento.metro)
       EVENTOS.append([
         'addTimeSignature',
@@ -114,9 +108,7 @@ for pista in PISTAS:
         momento,
         segmento.bpm,
       ])
-    if ( 
-       segmento_precedente.clave != segmento.clave
-    ):
+    if segmento_precedente.clave != segmento.clave:
       EVENTOS.append([
         'addKeySignature',
         track,
@@ -125,7 +117,6 @@ for pista in PISTAS:
         1, # multiplica por el n de alteraciones
         segmento.clave[ 'modo' ]
       ])
-
 
     if segmento.afinacionNota:
       EVENTOS.append([
@@ -136,6 +127,7 @@ for pista in PISTAS:
         segmento.afinacionNota[ 'tiempoReal' ],
         segmento.afinacionNota[ 'programa' ],
       ])
+
     if segmento.afinacionBanco:
       EVENTOS.append([
         'changeTuningBank',
@@ -205,8 +197,7 @@ for pista in PISTAS:
       verboseprint( articulacion )
       """ Agrega cualquier cambio de parametro, 
       comparar cada uno con la articulacion previa. """
-      if ( articulacion_precedente.bpm != articulacion.bpm ):
-        #print( articulacion_precedente.bpm, articulacion.bpm )
+      if articulacion_precedente.bpm != articulacion.bpm:
         EVENTOS.append([
           'addTempo',
           track,
@@ -214,8 +205,7 @@ for pista in PISTAS:
           articulacion.bpm,
         ])
 
-      if ( articulacion_precedente.programa != articulacion.programa ):
-        #print(articulacion_precedente.programa, articulacion.programa )
+      if articulacion_precedente.programa != articulacion.programa:
         EVENTOS.append([
            'addProgramChange',
            track,
@@ -225,7 +215,7 @@ for pista in PISTAS:
         ])
         #midi_bits.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
 
-      if ( articulacion_precedente.tono != articulacion.tono ):
+      if articulacion.tono:
         EVENTOS.append([
            'addPitchWheelEvent',
            track,

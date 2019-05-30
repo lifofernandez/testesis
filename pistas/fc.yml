@@ -49,28 +49,28 @@ unidades:
     alturas: [ 11, 11, 10, 8 ] 
 
   A: 
-    unidades: [ 'a', 'b' ] 
+    forma: [ 'a', 'b' ] 
   A`: 
-    unidades: [ 'a' , 'b`' ]
+    forma: [ 'a' , 'b`' ]
   B: 
     #desplazar: -0.5
-    unidades: [ 'a`', 'a``' ] 
+    forma: [ 'a`', 'a``' ] 
   A``: 
-    unidades: [ 'a```', 'b`' ] 
+    forma: [ 'a```', 'b`' ] 
 
   estrofa: 
-    unidades: [
+    forma: [
     'A',
     'A`',
   ]
     #reiterar: 4
   estribillo: 
-    unidades: [
+    forma: [
     'B',
     'A``',
   ]
 
-macroforma: [
+forma: [
   'espera',
   'estrofa',
   'estribillo',

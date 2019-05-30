@@ -42,16 +42,16 @@ unidades: !!map
     metro: !!str 2/4
     duraciones: [  1, 1, 1, 1 ]
   A: 
-    unidades: [ 'a','b' ] 
+    forma: [ 'a','b' ] 
     reiterar: 2
   B: 
-    unidades: [ 'a','b' ] 
+    forma: [ 'a','b' ] 
   estrofa: 
-    unidades: [ 'A' ]
+    forma: [ 'A' ]
   estribo: 
     metro: 12/8
-    unidades: [ 'B','A' ]
-macroforma: !!seq [
+    forma: [ 'B','A' ]
+forma: !!seq [
   'estrofa',
   'estribo'
 ]

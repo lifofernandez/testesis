@@ -43,16 +43,16 @@ unidades: !!map
     BPMs: [ 58 ]
     duraciones: [  1, 1, 1, 1 ]
   A: 
-    unidades: [ 'a','b' ] 
+    forma: [ 'a','b' ] 
     reiterar: 2
   B: 
-    unidades: [ 'a','b' ] 
+    forma: [ 'a','b' ] 
   estrofa: 
-    unidades: [ 'A' ]
+    forma: [ 'A' ]
   estribo: 
     BPMs: [ 61 ]
-    unidades: [ 'B','A' ]
-macroforma: !!seq [
+    forma: [ 'B','A' ]
+forma: !!seq [
   'estrofa',
   'estribo'
 ]

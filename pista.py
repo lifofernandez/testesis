@@ -67,7 +67,7 @@ class Pista:
     self,
     nombre,
     paleta,
-    forma,
+    forma
   ):
     self.nombre     = nombre
     self.orden      = Pista.cantidad 
@@ -76,20 +76,17 @@ class Pista:
     self.paleta     = paleta
     self.registros  = {}
 
-    #TODO pasar a property
     self.defacto = Segmento({
       'nombre' : nombre,
       **Pista.defactos,
     })
     self.secuencia  = [] 
-    self.generar_secuencia( forma )
+    self.secuenciar( forma )
     
-
     verboseprint( '\n#### ' + self.nombre + ' ####' )
 
-
   """ Organiza unidades según relacion de referencia """
-  def generar_secuencia( 
+  def secuenciar( 
     self,
     forma    = None,
     nivel    = 0,
@@ -97,15 +94,15 @@ class Pista:
   ):
     nivel += 1
     """ Limpiar parametros q no se heredan.  """
-    herencia.pop( 'unidades', None )
+    herencia.pop( 'forma', None )
     herencia.pop( 'reiterar', None )
-    error =  "PISTA \"" + self.nombre + "\""
+    error = "PISTA \"" + self.nombre + "\""
     """ Recorre lista ordenada unidades principales.  """
     for unidad in forma:  
       verboseprint( '-' * ( nivel - 1 ) +  unidad )
       try:
         if unidad not in self.paleta:
-          error +=  " NO ENCUENTRO \"" + unidad + "\"  "  
+          error += " NO ENCUENTRO \"" + unidad + "\"  "  
           raise Excepcion( unidad, error )
           pass
         original = self.paleta[ unidad ]
@@ -113,7 +110,6 @@ class Pista:
         recurrencia = 0
         if nivel in self.registros:
           # TODO Que los cuente en cualquier nivel.
-          # puede revisar valor del anterior
           recurrencia = sum( 
             [ 1 for r in self.registros[ nivel ] if r[ 'nombre' ] == unidad ]
           ) 
@@ -127,7 +123,6 @@ class Pista:
         }
         if 'referente' in herencia:
           registro[ 'referente' ] = herencia[ 'referente' ] 
-
         """ Crea parametros de unidad combinando originales con herencia
         Tambien agrega el registro de referentes """
         sucesion = {
@@ -142,24 +137,23 @@ class Pista:
         for r in range( reiterar ):
           """ Agregar a los registros """
           self.registros.setdefault( nivel , [] ).append( registro )
-          if 'unidades' in original:
+          if 'forma' in original:
             """ Si esta tiene parametro "unidades", refiere a otras unidades
             "hijas" pasa de vuelta por esta metodo.  """
             sucesion[ 'referente' ] = registro 
-            self.generar_secuencia( 
-              original[ 'unidades' ],
+            self.secuenciar( 
+              original[ 'forma' ],
               nivel,
               sucesion,
             ) 
           else: 
-            """ Si esta unidad no refiere a otra unidades, Unidad célula 
-            Combinar "defactos" con propiedas resultantes de unidad +
-            "herencia" y registro. """
+            """ Si esta unidad no refiere a otra unidade = "celula" 
+            Combinar "defactos" con: resultado de original + sucesion. """
             resultante = {
               **Pista.defactos,
               **sucesion,
             }
-            """ Secuenciar articulaciones """
+            """ Generar Segmento y adjuntar a la secuencia """
             segmento = Segmento(
               resultante
             )

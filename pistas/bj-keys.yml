@@ -26,11 +26,8 @@ unidades:
     <<: *base
     alturas: [ 10, 9 ] 
   vuelta:
-    unidades: [
-      'a', 'b',
-    ]
-macroforma: [
-   'vuelta',
+    forma: [ 'a', 'b' ]
+forma: [
    'vuelta',
 ]
 

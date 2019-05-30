@@ -21,14 +21,9 @@ unidades:
   b:
     <<: *base
     alturas: [ 7, 5, 4, 5 ] 
-  A:
-    unidades: [
-      'a', 'b',
-    ]
-macroforma: [
-        #'wdqwA',
-   'A',
-   'A',
-   'A',
-   'A',
+  vuelta:
+    forma: [ 'a', 'b' ]
+    reiterar: 2 
+forma: [
+   'vuelta',
 ]

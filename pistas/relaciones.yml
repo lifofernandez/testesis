@@ -39,45 +39,45 @@ unidades:
 
   papa: 
     metro : 4/4
-    unidades: [ 'hija','hijo','medioHermano' ] 
+    forma: [ 'hija','hijo','medioHermano' ] 
   madrastra: 
-    unidades: [ 'medioHermano']
+    forma: [ 'medioHermano']
   mama: 
-    unidades: [ 'hija','hija'] 
+    forma: [ 'hija','hija'] 
 
   tio: 
-    unidades: [ 'primo']
+    forma: [ 'primo']
 
   tioSegundo: 
-    unidades: [ 'primoSegundo']
+    forma: [ 'primoSegundo']
 
   abueles: 
-    unidades: [ 'mama' ] 
+    forma: [ 'mama' ] 
 
   abuelo: 
-    unidades: [ 'papa','tio','papa' ]
+    forma: [ 'papa','tio','papa' ]
   tioAbuelo: 
-    unidades: [ 'tioSegundo' ] 
+    forma: [ 'tioSegundo' ] 
 
   perros: 
-    unidades: [ 'cachorro' ] 
+    forma: [ 'cachorro' ] 
 
   bizAbuelo: 
-    unidades: [ 
+    forma: [ 
       'abuelo',
       'tioAbuelo',
       'abuelo',
     ] 
 
   tataraAbuelo: 
-    unidades: [ 'bizAbuelo' ] 
+    forma: [ 'bizAbuelo' ] 
 
   animales: 
-    unidades: [ 
+    forma: [ 
       'perros',
       'osos'
     ] 
-macroforma: [
+forma: [
   'hija', 
   'papa',
   'papa',

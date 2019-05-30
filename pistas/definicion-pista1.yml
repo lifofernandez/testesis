@@ -202,12 +202,12 @@ unidades: !!map
   # Unidad de unidades ( UoUs )
   # Propiedades sobrescriben a las de las unidades referidas 
   A: 
-    unidades: [ 'a', 'b' ] 
+    forma: [ 'a', 'b' ] 
     reiterar: 3
 
   B: &B 
     metro: '9/8'
-    unidades: [ 'a' , 'b^' ]
+    forma: [ 'a' , 'b^' ]
     #desplazar: -0.75
     SysEx: null 
     UniSysEx: null 
@@ -223,27 +223,27 @@ unidades: !!map
     <<: *B
     voces: 0 
     BPMs: [89,37]
-    unidades: [ 'b', 'a' ] 
+    forma: [ 'b', 'a' ] 
     dinamicas: [ 1 ]
 
   intro: 
-    unidades: [ 'B' ]
+    forma: [ 'B' ]
     prueba: 4
     metro: '12/8'
 
   estrofa: 
-    unidades: [ 'A', 'B', 'B^' ]
+    forma: [ 'A', 'B', 'B^' ]
 
   inter: 
-    unidades: [ 'B^' ]
+    forma: [ 'B^' ]
     revertir: [ 'BPMs' ]
 
   estribo: 
     BPMs: [ 100 ]
-    unidades: [ 'B', 'B^', 'a' ]
+    forma: [ 'B', 'B^', 'a' ]
 
 # Lista de unidades a ser sequenciadas 
-macroforma: !!seq 
+forma: !!seq 
   [
     'intro',
     'estrofa',
