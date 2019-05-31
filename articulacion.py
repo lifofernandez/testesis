@@ -2,7 +2,7 @@ from argumentos import args, verboseprint, Excepcion
 
 class Articulacion:
   """
-  Pista > Secuencia > Segmentos > ARTICULACIONES
+  Pista > Segmentos > ARTICULACIONES
   """
   cantidad = 0 
  
@@ -15,8 +15,8 @@ class Articulacion:
 
   def __init__( 
     self,
-    nombre,
-    paso,
+    id,
+    orden,
     bpm,
     programa,
     duracion,
@@ -26,11 +26,11 @@ class Articulacion:
     tono,
     controles,
   ):
-    self.orden = Articulacion.cantidad 
+    self.numero = Articulacion.cantidad 
     Articulacion.cantidad += 1
 
-    self.nombre    = nombre
-    self.posicion  = paso
+    self.id        = id 
+    self.orden     = orden
     self.bpm       = bpm
     self.programa  = programa
     self.tono      = tono
@@ -50,7 +50,9 @@ class Articulacion:
     viejo_max = 1 
     nuevo_min = 0
     nuevo_max = 126 
-    nuevo_valor = ( ( viejo_valor - viejo_min ) / ( viejo_max - viejo_min ) ) * ( nuevo_max - nuevo_min) + nuevo_min
+    nuevo_valor = (
+      ( viejo_valor - viejo_min ) / ( viejo_max - viejo_min )
+    ) * ( nuevo_max - nuevo_min) + nuevo_min
     return int( min( max( nuevo_valor, nuevo_min ), nuevo_max ) )
 
   #def next(self):

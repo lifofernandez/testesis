@@ -7,11 +7,10 @@ import sys
 class Pista:
   """
   Clase para cada definicion de a partir de archivos .yml
-  PISTA > Secuencia > Segmentos > Articulaciones
+  PISTA > Segmentos > Articulaciones
   """
   cantidad = 0 
   defactos = {
-
     # TO DO 
     # Agrupar/Revisar/Avisar propiedades "Globales" 
     # que NO refieren a un canal en particualr
@@ -70,11 +69,12 @@ class Pista:
     forma
   ):
     self.nombre     = nombre
-    self.orden      = Pista.cantidad 
+    self.numero      = Pista.cantidad 
     Pista.cantidad += 1
     Pista.defacto = Segmento(
-      nombre,
-      {
+      pista = 'defacto',
+      orden = 0,
+      unidad = {
         'nombre' : 'defacto',
         **Pista.defactos
       }
@@ -100,8 +100,8 @@ class Pista:
     herencia.pop( 'forma', None )
     herencia.pop( 'reiterar', None )
     error = "PISTA \"" + self.nombre + "\""
-    """ Recorre lista ordenada unidades principales.  """
-    for unidad in forma:  
+    """ Recorre lista d unidades principales.  """
+    for index, unidad in enumerate(forma):  
       verboseprint( '-' * ( nivel - 1 ) +  unidad )
       try:
         if unidad not in self.paleta:
@@ -157,9 +157,11 @@ class Pista:
               **sucesion,
             }
             """ Generar Segmento y adjuntar a la secuencia """
+            #TODO revisar orden
             segmento = Segmento(
-              self.nombre,
-              resultante
+              pista = self.nombre,
+              orden = index,
+              unidad = resultante
             )
             self.secuencia.append( segmento )
       except Excepcion as e:

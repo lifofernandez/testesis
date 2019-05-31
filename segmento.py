@@ -6,7 +6,7 @@ import pprint
 
 class Segmento:
   """
-  Pista > Secuencia > SEGMENTOS > Articulaciones
+  Pista > SEGMENTOS > Articulaciones
   """
   cantidad = 0 
  
@@ -20,10 +20,11 @@ class Segmento:
   def __init__( 
     self,
     pista, 
+    orden,
     unidad,
   ):
     self.pista = pista 
-    self.orden = Segmento.cantidad 
+    self.numero = Segmento.cantidad 
     Segmento.cantidad += 1
 
     self.original = unidad
@@ -150,8 +151,8 @@ class Segmento:
           controles += [ capa[ paso % len( capa ) ] ]
       """ Articulación a secuenciar. """
       articulacion = Articulacion(
-         nombre    = str( self.orden ) + self.nombre + str( paso ),
-         paso      = paso,
+         id        = str( self.numero ) + self.nombre + str( paso ),
+         orden     = paso,
          bpm       = self.BPMs[ paso % len( self.BPMs ) ],
          programa  = self.programas[ paso % len( self.programas ) ],
          tono      = self.tonos[ paso % len( self.tonos ) ],

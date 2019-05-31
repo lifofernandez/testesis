@@ -33,7 +33,7 @@ for d in DEFS:
 EVENTOS = []
 for pista in PISTAS:
   momento = 0
-  track = pista.orden
+  track = pista.numero
 
   """ Parametros de Pista
   Primer articulación de la parte, agregar eventos fundamentales: pulso,
@@ -54,8 +54,7 @@ for pista in PISTAS:
   """ Loop principal: Genera una secuencia de eventos MIDI lista de
   articulaciones.  """
   for numero_segmento, segmento in enumerate( pista.secuencia ):
-    print(segmento.pista, numero_segmento, segmento.orden)
-
+    print(segmento.pista, numero_segmento, segmento.numero)
     segmento_precedente = pista.secuencia[  numero_segmento - 1 ]
     if numero_segmento == 0:
       segmento_precedente = Pista.defacto
@@ -213,7 +212,7 @@ for pista in PISTAS:
            momento, 
            articulacion.programa
         ])
-        #midi_bits.addText( pista.orden, momento , 'prgm : #' + str( programa ) )
+        #midi_bits.addText( pista.numero, momento , 'prgm : #' + str( programa ) )
 
       if articulacion.tono:
         EVENTOS.append([
