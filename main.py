@@ -54,9 +54,11 @@ for pista in PISTAS:
   """ Loop principal: Genera una secuencia de eventos MIDI lista de
   articulaciones.  """
   for numero_segmento, segmento in enumerate( pista.secuencia ):
+    print(segmento.pista, numero_segmento, segmento.orden)
+
     segmento_precedente = pista.secuencia[  numero_segmento - 1 ]
     if numero_segmento == 0:
-      segmento_precedente = pista.defacto
+      segmento_precedente = Pista.defacto
       
     canal = segmento.canal
     momento += segmento.desplazar
@@ -89,8 +91,7 @@ for pista in PISTAS:
 
     """ Agregar propiedades de segmento.
     inserta etiquetas y modificadores de unidad (desplazar)."""
-    if segmento_precedente.metro != segmento.metro :
-      #print( segmento_precedente.metro, segmento.metro)
+    if segmento_precedente.metro != segmento.metro:
       EVENTOS.append([
         'addTimeSignature',
         track,
@@ -100,8 +101,7 @@ for pista in PISTAS:
         segmento.metro['relojes_por_tick'], 
         segmento.metro['notas_por_pulso']
       ])
-
-    if segmento_precedente.bpm != segmento.bpm :
+    if segmento_precedente.bpm != segmento.bpm:
       EVENTOS.append([
         'addTempo',
         track,

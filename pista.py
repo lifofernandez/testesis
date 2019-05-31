@@ -1,6 +1,6 @@
 from argumentos import args, verboseprint, Excepcion
 from segmento import Segmento
-from secuencia import Secuencia
+#from secuencia import Secuencia
 import random
 import sys
 
@@ -72,14 +72,17 @@ class Pista:
     self.nombre     = nombre
     self.orden      = Pista.cantidad 
     Pista.cantidad += 1
+    Pista.defacto = Segmento(
+      nombre,
+      {
+        'nombre' : 'defacto',
+        **Pista.defactos
+      }
+    )
 
     self.paleta     = paleta
     self.registros  = {}
 
-    self.defacto = Segmento({
-      'nombre' : nombre,
-      **Pista.defactos,
-    })
     self.secuencia  = [] 
     self.secuenciar( forma )
     
@@ -155,6 +158,7 @@ class Pista:
             }
             """ Generar Segmento y adjuntar a la secuencia """
             segmento = Segmento(
+              self.nombre,
               resultante
             )
             self.secuencia.append( segmento )

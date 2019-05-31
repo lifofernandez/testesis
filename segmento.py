@@ -19,13 +19,15 @@ class Segmento:
 
   def __init__( 
     self,
+    pista, 
     unidad,
   ):
+    self.pista = pista 
     self.orden = Segmento.cantidad 
     Segmento.cantidad += 1
 
     self.original = unidad
-    self.nombre            = self.original[ 'nombre' ]
+    self.nombre = self.original[ 'nombre' ]
 
     """ PRE PROCESO DE UNIDAD """
     """ Cambia el sentido de los parametros de articulacion """
@@ -38,7 +40,6 @@ class Segmento:
       elif isinstance( self.revertir , str ):
         if revertir in self.original:
           self.original[ self.revertir ].reverse() 
-
 
     self.canal             = self.original[ 'canal' ]
     self.reiterar          = self.original[ 'reiterar' ]
