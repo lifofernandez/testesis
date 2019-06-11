@@ -21,59 +21,59 @@ class Segmento:
     self,
     pista, 
     orden,
-    unidad,
+    propiedades,
   ):
     self.pista = pista 
     self.numero = Segmento.cantidad 
     Segmento.cantidad += 1
 
-    self.original = unidad
-    self.nombre = self.original[ 'nombre' ]
+    self.props = propiedades 
+    self.nombre = self.props[ 'nombre' ]
 
     """ PRE PROCESO DE UNIDAD """
     """ Cambia el sentido de los parametros de articulacion """
-    self.revertir = self.original[ 'revertir' ]
+    self.revertir = self.props[ 'revertir' ]
     if self.revertir:
       if isinstance( self.revertir , list ): 
         for r in self.revertir:
-          if r in self.original:
-            self.original[ r ].reverse() 
+          if r in self.props:
+            self.props[ r ].reverse() 
       elif isinstance( self.revertir , str ):
-        if revertir in self.original:
-          self.original[ self.revertir ].reverse() 
+        if revertir in self.props:
+          self.props[ self.revertir ].reverse() 
 
-    self.canal             = self.original[ 'canal' ]
-    self.reiterar          = self.original[ 'reiterar' ]
-    self.desplazar         = self.original[ 'desplazar' ]
-    self.transponer        = self.original[ 'transponer' ]
-    self.transportar       = self.original[ 'transportar' ]
-    self.referente         = self.original[ 'referente' ]
-    self.clave             = self.original[ 'clave' ]
+    self.canal             = self.props[ 'canal' ]
+    self.reiterar          = self.props[ 'reiterar' ]
+    self.desplazar         = self.props[ 'desplazar' ]
+    self.transponer        = self.props[ 'transponer' ]
+    self.transportar       = self.props[ 'transportar' ]
+    self.referente         = self.props[ 'referente' ]
+    self.clave             = self.props[ 'clave' ]
 
-    self.afinacionNota     = self.original[ 'afinacionNota' ]
-    self.afinacionBanco    = self.original[ 'afinacionBanco' ]
-    self.afinacionPrograma = self.original[ 'afinacionPrograma' ]
-    self.sysEx             = self.original[ 'sysEx' ]
-    self.uniSysEx          = self.original[ 'uniSysEx' ]
-    self.NRPN              = self.original[ 'NRPN' ]
-    self.RPN               = self.original[ 'RPN' ]
-    self.registracion      = self.original[ 'registracion' ]
+    self.afinacionNota     = self.props[ 'afinacionNota' ]
+    self.afinacionBanco    = self.props[ 'afinacionBanco' ]
+    self.afinacionPrograma = self.props[ 'afinacionPrograma' ]
+    self.sysEx             = self.props[ 'sysEx' ]
+    self.uniSysEx          = self.props[ 'uniSysEx' ]
+    self.NRPN              = self.props[ 'NRPN' ]
+    self.RPN               = self.props[ 'RPN' ]
+    self.registracion      = self.props[ 'registracion' ]
 
-    self.programas         = self.original[ 'programas' ]
-    self.duraciones        = self.original[ 'duraciones' ]
-    self.BPMs              = self.original[ 'BPMs' ]
-    self.dinamicas         = self.original[ 'dinamicas' ]
-    self.alturas           = self.original[ 'alturas' ]
-    self.tonos             = self.original[ 'tonos' ]
-    self.voces             = self.original[ 'voces' ]
-    self.capas             = self.original[ 'controles' ]
+    self.programas         = self.props[ 'programas' ]
+    self.duraciones        = self.props[ 'duraciones' ]
+    self.BPMs              = self.props[ 'BPMs' ]
+    self.dinamicas         = self.props[ 'dinamicas' ]
+    self.alturas           = self.props[ 'alturas' ]
+    self.tonos             = self.props[ 'tonos' ]
+    self.voces             = self.props[ 'voces' ]
+    self.capas             = self.props[ 'controles' ]
 
     self.bpm = self.BPMs[0]
     self.programa = self.programas[0]
 
   @property
   def metro( self ):
-    metro = self.original[ 'metro' ].split( '/' ) 
+    metro = self.props[ 'metro' ].split( '/' ) 
     denominador = int( math.log10( int( metro[ 1 ] ) ) / math.log10( 2 ) )
     return {
       'numerador'        : int( metro[ 0 ] ),
@@ -85,7 +85,7 @@ class Segmento:
 
   @property
   def fluctuacion( self ):
-    fluctuacion = self.original['fluctuacion']
+    fluctuacion = self.props['fluctuacion']
     rand_min = 0
     if 'min' in fluctuacion:
         rand_min = fluctuacion['min'] 

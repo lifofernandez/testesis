@@ -1,6 +1,5 @@
 from argumentos import args, verboseprint, Excepcion
 from segmento import Segmento
-#from secuencia import Secuencia
 import random
 import sys
 
@@ -69,12 +68,12 @@ class Pista:
     forma
   ):
     self.nombre     = nombre
-    self.numero      = Pista.cantidad 
+    self.numero     = Pista.cantidad 
     Pista.cantidad += 1
     Pista.defacto = Segmento(
       pista = 'defacto',
       orden = 0,
-      unidad = {
+      propiedades = {
         'nombre' : 'defacto',
         **Pista.defactos
       }
@@ -100,8 +99,9 @@ class Pista:
     herencia.pop( 'forma', None )
     herencia.pop( 'reiterar', None )
     error = "PISTA \"" + self.nombre + "\""
+
     """ Recorre lista d unidades principales.  """
-    for index, unidad in enumerate(forma):  
+    for index, unidad in enumerate( forma ):  
       verboseprint( '-' * ( nivel - 1 ) +  unidad )
       try:
         if unidad not in self.paleta:
@@ -109,6 +109,7 @@ class Pista:
           raise Excepcion( unidad, error )
           pass
         original = self.paleta[ unidad ]
+
         """ Cuenta recurrencias de esta unidad en este nivel.  """
         recurrencia = 0
         if nivel in self.registros:
@@ -116,52 +117,58 @@ class Pista:
           recurrencia = sum( 
             [ 1 for r in self.registros[ nivel ] if r[ 'nombre' ] == unidad ]
           ) 
-        """ Dicionario para ingresar al arbol de registros.
-        Si el referente está en el diccionario herencia registrar
-        referente.  """
-        registro = { 
-          'nombre'      : unidad,
-          'recurrencia' : recurrencia,
-          'nivel'       : nivel,
-        }
-        if 'referente' in herencia:
-          registro[ 'referente' ] = herencia[ 'referente' ] 
+
+       # """ Dicionario para ingresar al arbol de registros.
+       # Si el referente está en el diccionario herencia registrar
+       # referente.  """
+       # registro = { 
+       #   'nombre'      : unidad,
+       #   'recurrencia' : recurrencia,
+       #   'nivel'       : nivel,
+       # }
+       # if 'referente' in herencia:
+       #   registro[ 'referente' ] = herencia[ 'referente' ] 
+          
         """ Crea parametros de unidad combinando originales con herencia
         Tambien agrega el registro de referentes """
         sucesion = {
           **original,
           **herencia,
-          **registro # separar esto
+          #**registro # separar esto
+          'nombre'      : unidad,
+          'recurrencia' : recurrencia,
+          'nivel'       : nivel,
         } 
-        """ Cantidad de repeticiones de la unidad.  """
+
+        """ Cantidad de repeticiones de la unidad. """
         reiterar = 1
         if 'reiterar' in original:
           reiterar = original[ 'reiterar' ]
         for r in range( reiterar ):
+
           """ Agregar a los registros """
-          self.registros.setdefault( nivel , [] ).append( registro )
+          #self.registros.setdefault( nivel , [] ).append( registro )
+
           if 'forma' in original:
-            """ Si esta tiene parametro "unidades", refiere a otras unidades
-            "hijas" pasa de vuelta por esta metodo.  """
-            sucesion[ 'referente' ] = registro 
+            """ Si esta tiene parametro "forma",
+            refiere a otras unidades "hijas"
+            pasa de vuelta por esta metodo.  """
+            #sucesion[ 'referente' ] = registro 
             self.secuenciar( 
               original[ 'forma' ],
               nivel,
               sucesion,
             ) 
           else: 
-            """ Si esta unidad no refiere a otra unidade = "celula" 
+            """ Si esta unidad NO refiere a otra unidade = "celula" 
             Combinar "defactos" con: resultado de original + sucesion. """
-            resultante = {
-              **Pista.defactos,
-              **sucesion,
-            }
-            """ Generar Segmento y adjuntar a la secuencia """
-            #TODO revisar orden
             segmento = Segmento(
               pista = self.nombre,
               orden = index,
-              unidad = resultante
+              propiedades = {
+                **Pista.defactos,
+                **sucesion,
+              }
             )
             self.secuencia.append( segmento )
       except Excepcion as e:
