@@ -11,7 +11,7 @@ def leer_yamls():
   for archivo in args.archivos:
     data = open( archivo.name, 'r' )
     try:
-      y = yaml.load( data ) 
+      y = yaml.load( data, Loader = yaml.FullLoader ) 
       defs.append( y )
     except Exception as e:
       print(e)
@@ -54,7 +54,7 @@ for pista in PISTAS:
   """ Loop principal: Genera una secuencia de eventos MIDI lista de
   articulaciones.  """
   for numero_segmento, segmento in enumerate( pista.secuencia ):
-    print(segmento.pista, numero_segmento, segmento.numero)
+    print( segmento.pista, segmento.reiterar, segmento.orden, segmento.numero)
     segmento_precedente = pista.secuencia[  numero_segmento - 1 ]
     if numero_segmento == 0:
       segmento_precedente = Pista.defacto

@@ -1,12 +1,13 @@
 from argumentos import args, verboseprint, Excepcion
 from segmento import Segmento
+from seccion import Seccion
 import random
 import sys
 
 class Pista:
   """
   Clase para cada definicion de a partir de archivos .yml
-  PISTA > Segmentos > Articulaciones
+  PISTA > Secuencia > Secciones > Segmentos > Articulaciones
   """
   cantidad = 0 
   defactos = {
@@ -80,7 +81,6 @@ class Pista:
     )
 
     self.paleta     = paleta
-    self.registros  = {}
 
     self.secuencia  = [] 
     self.secuenciar( forma )
@@ -93,6 +93,7 @@ class Pista:
     forma    = None,
     nivel    = 0,
     herencia = {},
+    seccion  = None
   ):
     nivel += 1
     """ Limpiar parametros q no se heredan.  """
@@ -101,7 +102,9 @@ class Pista:
     error = "PISTA \"" + self.nombre + "\""
 
     """ Recorre lista d unidades principales.  """
-    for index, unidad in enumerate( forma ):  
+    cuenta_seccion = 0
+    cuenta_segmentos = 0
+    for unidad in forma:  
       verboseprint( '-' * ( nivel - 1 ) +  unidad )
       try:
         if unidad not in self.paleta:
@@ -112,29 +115,11 @@ class Pista:
 
         """ Cuenta recurrencias de esta unidad en este nivel.  """
         recurrencia = 0
-        if nivel in self.registros:
-          # TODO Que los cuente en cualquier nivel.
-          recurrencia = sum( 
-            [ 1 for r in self.registros[ nivel ] if r[ 'nombre' ] == unidad ]
-          ) 
-
-       # """ Dicionario para ingresar al arbol de registros.
-       # Si el referente está en el diccionario herencia registrar
-       # referente.  """
-       # registro = { 
-       #   'nombre'      : unidad,
-       #   'recurrencia' : recurrencia,
-       #   'nivel'       : nivel,
-       # }
-       # if 'referente' in herencia:
-       #   registro[ 'referente' ] = herencia[ 'referente' ] 
           
-        """ Crea parametros de unidad combinando originales con herencia
-        Tambien agrega el registro de referentes """
+        """ Crea parametros de unidad combinando originales con herencia """
         sucesion = {
           **original,
           **herencia,
-          #**registro # separar esto
           'nombre'      : unidad,
           'recurrencia' : recurrencia,
           'nivel'       : nivel,
@@ -146,30 +131,48 @@ class Pista:
           reiterar = original[ 'reiterar' ]
         for r in range( reiterar ):
 
-          """ Agregar a los registros """
-          #self.registros.setdefault( nivel , [] ).append( registro )
-
           if 'forma' in original:
-            """ Si esta tiene parametro "forma",
+            """ Si esta tiene parametro "forma" es una seccio es una seccion
             refiere a otras unidades "hijas"
-            pasa de vuelta por esta metodo.  """
-            #sucesion[ 'referente' ] = registro 
+            crea una seccion y pasa de vuelta por esta metodo.  """
+
+            # si HAY o NO HAY seccion
+            
+            # TODO agregar "seccion" de segmentos o de secciones
+            seccion = Seccion(
+              id = unidad,
+              pista = self.nombre,
+              orden = cuenta_seccion,
+            )
+            cuenta_seccion += 1
+
             self.secuenciar( 
               original[ 'forma' ],
               nivel,
               sucesion,
+              seccion 
             ) 
+
           else: 
-            """ Si esta unidad NO refiere a otra unidade = "celula" 
-            Combinar "defactos" con: resultado de original + sucesion. """
+            """ Si esta unidad NO refiere a otra unidad = "celula" """
             segmento = Segmento(
-              pista = self.nombre,
-              orden = index,
+              pista       = self.nombre,
+              orden       = cuenta_segmentos,
               propiedades = {
                 **Pista.defactos,
                 **sucesion,
               }
             )
+            cuenta_segmentos += 1
+
             self.secuencia.append( segmento )
+            seccion.elementos.append( segmento )
+
+            #seccion de secciones
+            #self.seccion.elementos.append( seccion )
+
+            #self.secuencia.append( seccion )
+        print("SECCION",seccion)
+
       except Excepcion as e:
           print( e )

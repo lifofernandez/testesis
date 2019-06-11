@@ -6,7 +6,8 @@ import pprint
 
 class Segmento:
   """
-  Pista > SEGMENTOS > Articulaciones
+  Pista > Secuencia > Secciones > SEGMENTOS > Articulaciones
+  Conjunto de Articulaciones
   """
   cantidad = 0 
  
@@ -29,6 +30,7 @@ class Segmento:
 
     self.props = propiedades 
     self.nombre = self.props[ 'nombre' ]
+    self.orden  = orden 
 
     """ PRE PROCESO DE UNIDAD """
     """ Cambia el sentido de los parametros de articulacion """
@@ -70,6 +72,12 @@ class Segmento:
 
     self.bpm = self.BPMs[0]
     self.programa = self.programas[0]
+
+    ##if nivel in self.registros:
+    # TODO Que los cuente en cualquier nivel.
+    #recurrencia = sum( 
+    #  [ 1 for r in self.registros[ nivel ] if r[ 'nombre' ] == unidad ]
+    #) 
 
   @property
   def metro( self ):
@@ -171,7 +179,7 @@ class Segmento:
       refs,
       o = None,
     ):
-    print(refs)
+    #print(refs)
     #referente   = refs[ 'referente' ]   if 'referente'   in refs else None
     #nombre      = refs[ 'nombre' ]      if 'nombre'      in refs else None
     #recurrencia = refs[ 'recurrencia' ] if 'recurrencia' in refs else None
