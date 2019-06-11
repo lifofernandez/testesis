@@ -102,7 +102,7 @@ class Pista:
     error = "PISTA \"" + self.nombre + "\""
 
     """ Recorre lista d unidades principales.  """
-    cuenta_seccion = 0
+    cuenta_secciones = 0
     cuenta_segmentos = 0
     for unidad in forma:  
       verboseprint( '-' * ( nivel - 1 ) +  unidad )
@@ -115,6 +115,9 @@ class Pista:
 
         """ Cuenta recurrencias de esta unidad en este nivel.  """
         recurrencia = 0
+        reiterar = 1
+        if 'reiterar' in original:
+          reiterar = original[ 'reiterar' ]
           
         """ Crea parametros de unidad combinando originales con herencia """
         sucesion = {
@@ -126,9 +129,6 @@ class Pista:
         } 
 
         """ Cantidad de repeticiones de la unidad. """
-        reiterar = 1
-        if 'reiterar' in original:
-          reiterar = original[ 'reiterar' ]
         for r in range( reiterar ):
 
           if 'forma' in original:
@@ -142,9 +142,9 @@ class Pista:
             seccion = Seccion(
               id = unidad,
               pista = self.nombre,
-              orden = cuenta_seccion,
+              orden = cuenta_secciones,
             )
-            cuenta_seccion += 1
+            cuenta_secciones += 1
 
             self.secuenciar( 
               original[ 'forma' ],
