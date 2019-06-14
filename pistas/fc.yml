@@ -69,11 +69,20 @@ unidades:
     'B',
     'A``',
   ]
+  perro: 
+    forma: [
+    'estrofa',
+    'estribillo',
+  ]
 
 forma: [
   'espera',
   'estrofa',
   'estribillo',
+  'estrofa',
+  'perro',
+  'perro',
+  'estrofa',
 ]
 
 

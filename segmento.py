@@ -30,6 +30,9 @@ class Segmento:
 
     self.props = propiedades 
     self.nombre = self.props[ 'nombre' ]
+    # TODO componer id con nombre y numero
+    self.id = self.props[ 'nombre' ]
+
     self.orden  = orden 
 
     """ PRE PROCESO DE UNIDAD """

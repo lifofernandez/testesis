@@ -19,10 +19,10 @@ with open( nombre_archivo + ".mid", "wb" ) as archivo_midi:
 
 """
 TO DO:
-    [ ] agregar primer segmento de la pista
-    [ ] agregar primer  articulacion del segmento
-    [ ] pasar intervalos a propiedad de segmento/unidad
-    [ ] parametros de Segmento = art#0 de la unidad
+    [x] agregar primer segmento de la pista
+    [x] agregar primer  articulacion del segmento
+    [x] pasar intervalos a propiedad de segmento/unidad
+    [x] parametros de Segmento = art#0 de la unidad
     [ ] Parar tempo a canal global, propiedad de  no canal specifico
     [ ] Agregar Letra (texo)
     [ ] Excepciones main

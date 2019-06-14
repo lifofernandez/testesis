@@ -1,4 +1,5 @@
 from argumentos import args, verboseprint, Excepcion
+import pprint
 from segmento import Segmento
 from seccion import Seccion
 import random
@@ -83,7 +84,9 @@ class Pista:
     self.paleta     = paleta
 
     self.secuencia  = [] 
+    self.secciones = []
     self.secuenciar( forma )
+    pprint.pprint(self.secciones)
     
     verboseprint( '\n#### ' + self.nombre + ' ####' )
 
@@ -93,7 +96,8 @@ class Pista:
     forma    = None,
     nivel    = 0,
     herencia = {},
-    seccion  = None
+    padre = None,
+    #secciones = []
   ):
     nivel += 1
     """ Limpiar parametros q no se heredan.  """
@@ -116,6 +120,7 @@ class Pista:
         """ Cuenta recurrencias de esta unidad en este nivel.  """
         recurrencia = 0
         reiterar = 1
+
         if 'reiterar' in original:
           reiterar = original[ 'reiterar' ]
           
@@ -130,16 +135,14 @@ class Pista:
 
         """ Cantidad de repeticiones de la unidad. """
         for r in range( reiterar ):
+          destino = self.secciones
 
           if 'forma' in original:
+
             """ Si esta tiene parametro "forma" es una seccio es una seccion
             refiere a otras unidades "hijas"
             crea una seccion y pasa de vuelta por esta metodo.  """
-
-            # si HAY o NO HAY seccion
-            
-            # TODO agregar "seccion" de segmentos o de secciones
-            seccion = Seccion(
+            seccion_n = Seccion(
               id = unidad,
               pista = self.nombre,
               orden = cuenta_secciones,
@@ -150,10 +153,11 @@ class Pista:
               original[ 'forma' ],
               nivel,
               sucesion,
-              seccion 
+              unidad,
             ) 
 
-          else: 
+
+          if 'forma' not in original:
             """ Si esta unidad NO refiere a otra unidad = "celula" """
             segmento = Segmento(
               pista       = self.nombre,
@@ -166,13 +170,29 @@ class Pista:
             cuenta_segmentos += 1
 
             self.secuencia.append( segmento )
-            seccion.elementos.append( segmento )
-
-            #seccion de secciones
-            #self.seccion.elementos.append( seccion )
-
+            
             #self.secuencia.append( seccion )
-        print("SECCION",seccion)
+
+          h = {
+            'nombre' : unidad,
+            #'recurrencia' : 0,
+            'recurrencia' : sum( 
+              [ 1 for s in destino if s[ 'nombre' ] == unidad ]
+            ) 
+          }
+
+          if not padre:
+            #h['recurrencia'] = sum( 
+            #  [ 1 for s in self.secciones if s[ 'nombre' ] == unidad ]
+            #) 
+            self.secciones.append( h  )
+          #if padre:
+          #  for s in self.secciones:
+          #    if padre == s['nombre']:
+          #      h.setdefault( 'hijos' , original['forma'])
+          #      s.setdefault( 'hijos' , [] ).append( h)
+          #      #s['hijos'].append( h )
 
       except Excepcion as e:
           print( e )
+
