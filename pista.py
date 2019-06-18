@@ -90,6 +90,7 @@ class Pista:
     self.SECCIONES = []
 
     self.seccionar( forma )
+    print('SECCIONES')
     pprint.pprint( self.SECCIONES )
     
     verboseprint( '\n#### ' + self.nombre + ' ####' )
@@ -99,36 +100,53 @@ class Pista:
     self,
     forma = None,
     nivel = 0,
-    rama = None,
+    seccion = None,
   ):
     nivel += 1
 
+    destino = self.SECCIONES
+    if seccion:
+      print( seccion )
+      forma = self.paleta[ seccion['nombre' ] ]['forma']
+      print(forma)
+
     for unidad in forma:  
       original = self.paleta[ unidad ]
-      destino = self.SECCIONES
+
+      if seccion:
+         seccion.setdefault( 'elementos' , [] )
+         destino = seccion['elementos']
+      #  e['seccion'] = seccion['nombre']
+
       recurrencia = sum( 
-        [ 1 for s in destino if s[ 'nombre' ] == unidad ]
+        [ 1 for e in destino if e[ 'nombre' ] == unidad ]
       )
-      h = {
+      e = {
         'nombre' : unidad,
         'id'     : str(nivel) + unidad + str(recurrencia),
         'nivel'  : nivel,
         'suena'  : False,
         'recurrencia' : recurrencia,
       }
+
+
+      if 'forma' not in original:
+        # esto es un segmento
+        e['suena'] = True
+        #destino.setdefault( 'elementos' , [] ).append( e )
+        destino.append( e )
+        #print(unidad,destino)
+
       if 'forma' in original:
-        h['cantidad_hojas'] = len( original['forma'] )
+        # esto es una seccion 
+        e['cantidad_elementos'] = len( original['forma'] )
         self.seccionar( 
           original[ 'forma' ],
           nivel,
-          h,
+          e,
         ) 
-      if rama:
-        #h['rama'] = rama['nombre']
-        if 'forma' not in original:
-          h['suena'] = True
-          #destino.setdefault( 'elementos' , [] ).append( h )
-          destino.append( h )
+
+
 
       #if not rama:
       #  destino = self.SECCIONES
