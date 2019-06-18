@@ -84,115 +84,192 @@ class Pista:
     self.paleta     = paleta
 
     self.secuencia  = [] 
-    self.secciones = []
-    self.secuenciar( forma )
-    pprint.pprint(self.secciones)
+    #self.secuenciar( forma )
+
+
+    self.SECCIONES = []
+
+    self.seccionar( forma )
+    pprint.pprint( self.SECCIONES )
     
     verboseprint( '\n#### ' + self.nombre + ' ####' )
 
   """ Organiza unidades según relacion de referencia """
-  def secuenciar( 
+  def seccionar( 
     self,
-    forma    = None,
-    nivel    = 0,
-    herencia = {},
-    padre = None,
-    #secciones = []
+    forma = None,
+    nivel = 0,
+    rama = None,
   ):
     nivel += 1
-    """ Limpiar parametros q no se heredan.  """
-    herencia.pop( 'forma', None )
-    herencia.pop( 'reiterar', None )
-    error = "PISTA \"" + self.nombre + "\""
 
-    """ Recorre lista d unidades principales.  """
-    cuenta_secciones = 0
-    cuenta_segmentos = 0
     for unidad in forma:  
-      verboseprint( '-' * ( nivel - 1 ) +  unidad )
-      try:
-        if unidad not in self.paleta:
-          error += " NO ENCUENTRO \"" + unidad + "\"  "  
-          raise Excepcion( unidad, error )
-          pass
-        original = self.paleta[ unidad ]
+      original = self.paleta[ unidad ]
+      destino = self.SECCIONES
+      recurrencia = sum( 
+        [ 1 for s in destino if s[ 'nombre' ] == unidad ]
+      )
+      h = {
+        'nombre' : unidad,
+        'id'     : str(nivel) + unidad + str(recurrencia),
+        'nivel'  : nivel,
+        'suena'  : False,
+        'recurrencia' : recurrencia,
+      }
+      if 'forma' in original:
+        h['cantidad_hojas'] = len( original['forma'] )
+        self.seccionar( 
+          original[ 'forma' ],
+          nivel,
+          h,
+        ) 
+      if rama:
+        #h['rama'] = rama['nombre']
+        if 'forma' not in original:
+          h['suena'] = True
+          #destino.setdefault( 'elementos' , [] ).append( h )
+          destino.append( h )
 
-        """ Cuenta recurrencias de esta unidad en este nivel.  """
-        recurrencia = 0
-        reiterar = 1
+      #if not rama:
+      #  destino = self.SECCIONES
+      #  destino.append( rama )
+      #  #destino.setdefault( 'elementos' , [] ).append( rama )
 
-        if 'reiterar' in original:
-          reiterar = original[ 'reiterar' ]
-          
-        """ Crea parametros de unidad combinando originales con herencia """
-        sucesion = {
-          **original,
-          **herencia,
-          'nombre'      : unidad,
-          'recurrencia' : recurrencia,
-          'nivel'       : nivel,
-        } 
-
-        """ Cantidad de repeticiones de la unidad. """
-        for r in range( reiterar ):
-          destino = self.secciones
-
-          if 'forma' in original:
-
-            """ Si esta tiene parametro "forma" es una seccio es una seccion
-            refiere a otras unidades "hijas"
-            crea una seccion y pasa de vuelta por esta metodo.  """
-            seccion_n = Seccion(
-              id = unidad,
-              pista = self.nombre,
-              orden = cuenta_secciones,
-            )
-            cuenta_secciones += 1
-
-            self.secuenciar( 
-              original[ 'forma' ],
-              nivel,
-              sucesion,
-              unidad,
-            ) 
+      #if not padre:
+      #  destino.append( h )
+      #if padre:
+      #  for s in destino:
+      #    if s['nombre'] == padre['nombre']:
+      #       if s['eo'] == False:
+      #         #s.setdefault( 'hijos' , [] ).append( h )
+      #         s['eo'] = True
 
 
-          if 'forma' not in original:
-            """ Si esta unidad NO refiere a otra unidad = "celula" """
-            segmento = Segmento(
-              pista       = self.nombre,
-              orden       = cuenta_segmentos,
-              propiedades = {
-                **Pista.defactos,
-                **sucesion,
-              }
-            )
-            cuenta_segmentos += 1
-
-            self.secuencia.append( segmento )
-            
-            #self.secuencia.append( seccion )
-
-          h = {
-            'nombre' : unidad,
-            #'recurrencia' : 0,
-            'recurrencia' : sum( 
-              [ 1 for s in destino if s[ 'nombre' ] == unidad ]
-            ) 
-          }
-
-          if not padre:
-            #h['recurrencia'] = sum( 
-            #  [ 1 for s in self.secciones if s[ 'nombre' ] == unidad ]
-            #) 
-            self.secciones.append( h  )
-          #if padre:
-          #  for s in self.secciones:
-          #    if padre == s['nombre']:
-          #      h.setdefault( 'hijos' , original['forma'])
-          #      s.setdefault( 'hijos' , [] ).append( h)
-          #      #s['hijos'].append( h )
-
-      except Excepcion as e:
-          print( e )
+#  """ Organiza unidades según relacion de referencia """
+#  def secuenciar( 
+#    self,
+#    forma    = None,
+#    nivel    = 0,
+#    herencia = {},
+#    padre = None,
+#    #secciones = []
+#  ):
+#    print(nivel)
+#    nivel += 1
+#    """ Limpiar parametros q no se heredan.  """
+#    herencia.pop( 'forma', None )
+#    herencia.pop( 'reiterar', None )
+#    error = "PISTA \"" + self.nombre + "\""
+#
+#    """ Recorre lista d unidades principales.  """
+#    cuenta_secciones = 0
+#    cuenta_segmentos = 0
+#    for unidad in forma:  
+#      verboseprint( '-' * ( nivel - 1 ) +  unidad )
+#      try:
+#        if unidad not in self.paleta:
+#          error += " NO ENCUENTRO \"" + unidad + "\"  "  
+#          raise Excepcion( unidad, error )
+#          pass
+#        original = self.paleta[ unidad ]
+#
+#        """ Cuenta recurrencias de esta unidad en este nivel.  """
+#        recurrencia = 0
+#        reiterar = 1
+#
+#        if 'reiterar' in original:
+#          reiterar = original[ 'reiterar' ]
+#          
+#        """ Crea parametros de unidad combinando originales con herencia """
+#        sucesion = {
+#          **original,
+#          **herencia,
+#          'nombre'      : unidad,
+#          'recurrencia' : recurrencia,
+#          'nivel'       : nivel,
+#        } 
+#
+#        """ Cantidad de repeticiones de la unidad. """
+#        for r in range( reiterar ):
+#          destino = self.secciones
+#          h = {
+#            'nombre' : unidad,
+#            #'recurrencia' : 0,
+#            'recurrencia' : sum( 
+#              [ 1 for s in destino if s[ 'nombre' ] == unidad ]
+#            ),
+#            'pasada':1,
+#            'nivel':nivel,
+#            'eo': False
+#          }
+#          if 'forma' in original:
+#            #h['hijos'] = original['forma'] 
+#            destino = original['forma'] 
+#            h['cantidad_hijos'] = len( original['forma'] )
+#            for hije in original['forma']:
+#              h = {
+#                'nombre' : h,
+#                #'recurrencia' : 0,
+#                'recurrencia' : sum( 
+#                  [ 1 for s in destino if s[ 'nombre' ] == hije]
+#                ),
+#                'pasada':1,
+#                'nivel':nivel,
+#                'eo': False
+#              }
+#               h.setdefault( 'hijos' , [] ).append( hije )
+#             
+#
+#            """ Si esta tiene parametro "forma" es una seccio es una seccion
+#            refiere a otras unidades "hijas"
+#            crea una seccion y pasa de vuelta por esta metodo.  """
+#            seccion_n = Seccion(
+#              id = unidad,
+#              pista = self.nombre,
+#              orden = cuenta_secciones,
+#            )
+#            cuenta_secciones += 1
+#
+#            self.secuenciar( 
+#              original[ 'forma' ],
+#              nivel,
+#              sucesion,
+#              h,
+#            ) 
+#
+#
+#          if 'forma' not in original:
+#            """ Si esta unidad NO refiere a otra unidad = "celula" """
+#            segmento = Segmento(
+#              pista       = self.nombre,
+#              orden       = cuenta_segmentos,
+#              propiedades = {
+#                **Pista.defactos,
+#                **sucesion,
+#              }
+#            )
+#            cuenta_segmentos += 1
+#            self.secuencia.append( segmento )
+#            #self.secuencia.append( seccion )
+#
+#
+#          if not padre:
+#            #h['recurrencia'] = sum( 
+#            #  [ 1 for s in self.secciones if s[ 'nombre' ] == unidad ]
+#            #) 
+#            destino.append( h )
+#
+#          if padre:
+#            for s in destino:
+#              if s['nombre'] == padre['nombre']:
+#                 if s['eo'] == False:
+#                   #s.setdefault( 'hijos' , [] ).append( h )
+#                   s['eo'] = True
+#          #    #s.setdefault( 'PASADO' , )
+#          #    #h.setdefault( 'hijos' , original['forma'])
+#
+#          #    #s['hijos'].append( h )
+#
+#      except Excepcion as e:
+#          print( e )
 
