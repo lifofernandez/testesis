@@ -106,28 +106,25 @@ class Pista:
     nivel += 1
 
     destino = self.SECCIONES
-    #if seccion:
-    #  print( seccion )
-    #  forma = self.paleta[ seccion['nombre' ] ]['forma']
-    #  print(forma)
-
     for unidad in forma:  
       original = self.paleta[ unidad ]
       self.cuenta +=1
       e = {
-        'id'     : self.cuenta,
+        'orden'  : self.cuenta,
         'nombre' : unidad,
-        #'id'     : str(nivel) + unidad + str(recurrencia),
         'nivel'  : nivel,
         #'suena'  : False,
-        #'recurrencia' : recurrencia,
+        'recurrencia' : sum( 
+          [ 1 for e in destino if e[ 'nombre' ] == unidad ]
+        )
       }
       if seccion: 
-        e['padre'] = seccion['nombre']
+        e['referente'] = seccion['nombre']
       destino.append(e)
       if 'forma' in original:
         # esto es una seccion 
-        #e['cantidad_elementos'] = len( original['forma'] )
+        # e['cantidad_elementos'] = len( original['forma'] )
+        e['referidos'] = original['forma'] 
         self.seccionar( 
           original[ 'forma' ],
           nivel,
@@ -139,9 +136,6 @@ class Pista:
       #   destino = seccion['elementos']
       ##  e['seccion'] = seccion['nombre']
 
-      #recurrencia = sum( 
-      #  [ 1 for e in destino if e[ 'nombre' ] == unidad ]
-      #)
 
 
       #if 'forma' not in original:
