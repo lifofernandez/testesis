@@ -96,6 +96,7 @@ class Pista:
     verboseprint( '\n#### ' + self.nombre + ' ####' )
 
   """ Organiza unidades según relacion de referencia """
+  cuenta = 0
   def seccionar( 
     self,
     forma = None,
@@ -105,46 +106,51 @@ class Pista:
     nivel += 1
 
     destino = self.SECCIONES
-    if seccion:
-      print( seccion )
-      forma = self.paleta[ seccion['nombre' ] ]['forma']
-      print(forma)
+    #if seccion:
+    #  print( seccion )
+    #  forma = self.paleta[ seccion['nombre' ] ]['forma']
+    #  print(forma)
 
     for unidad in forma:  
       original = self.paleta[ unidad ]
-
-      if seccion:
-         seccion.setdefault( 'elementos' , [] )
-         destino = seccion['elementos']
-      #  e['seccion'] = seccion['nombre']
-
-      recurrencia = sum( 
-        [ 1 for e in destino if e[ 'nombre' ] == unidad ]
-      )
+      self.cuenta +=1
       e = {
+        'id'     : self.cuenta,
         'nombre' : unidad,
-        'id'     : str(nivel) + unidad + str(recurrencia),
+        #'id'     : str(nivel) + unidad + str(recurrencia),
         'nivel'  : nivel,
-        'suena'  : False,
-        'recurrencia' : recurrencia,
+        #'suena'  : False,
+        #'recurrencia' : recurrencia,
       }
-
-
-      if 'forma' not in original:
-        # esto es un segmento
-        e['suena'] = True
-        #destino.setdefault( 'elementos' , [] ).append( e )
-        destino.append( e )
-        #print(unidad,destino)
-
+      if seccion: 
+        e['padre'] = seccion['nombre']
+      destino.append(e)
       if 'forma' in original:
         # esto es una seccion 
-        e['cantidad_elementos'] = len( original['forma'] )
+        #e['cantidad_elementos'] = len( original['forma'] )
         self.seccionar( 
           original[ 'forma' ],
           nivel,
           e,
         ) 
+
+      #if seccion:
+      #   seccion.setdefault( 'elementos' , [] )
+      #   destino = seccion['elementos']
+      ##  e['seccion'] = seccion['nombre']
+
+      #recurrencia = sum( 
+      #  [ 1 for e in destino if e[ 'nombre' ] == unidad ]
+      #)
+
+
+      #if 'forma' not in original:
+      #  # esto es un segmento
+      #  e['suena'] = True
+      #  #destino.setdefault( 'elementos' , [] ).append( e )
+      #  destino.append( e )
+      #  #print(unidad,destino)
+
 
 
 
