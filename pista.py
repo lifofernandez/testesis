@@ -1,7 +1,7 @@
 from argumentos import args, verboseprint, Excepcion
 import pprint
+from elemento import Elemento
 from segmento import Segmento
-from seccion import Seccion
 import random
 import sys
 
@@ -90,9 +90,17 @@ class Pista:
     self.SECCIONES = []
 
     self.seccionar( forma )
-    print('SECCIONES')
-    pprint.pprint( self.SECCIONES )
-    
+
+    # ESto es para verbose print level 2
+    print('ELEMENTOS')
+    print( 'numero\tnivel\trecur\tnombre' )
+    for s in self.SECCIONES:
+      print( 
+        str(s.numero)+'\t'+
+        str(s.nivel)+'\t'+
+        str(s.recurrencia)+'\t'+
+        s.nombre+'\t'
+    )
     verboseprint( '\n#### ' + self.nombre + ' ####' )
 
   """ Organiza unidades según relacion de referencia """
@@ -104,27 +112,26 @@ class Pista:
     seccion = None,
   ):
     nivel += 1
-
     destino = self.SECCIONES
     for unidad in forma:  
       original = self.paleta[ unidad ]
       self.cuenta +=1
-      e = {
-        'orden'  : self.cuenta,
-        'nombre' : unidad,
-        'nivel'  : nivel,
-        #'suena'  : False,
-        'recurrencia' : sum( 
-          [ 1 for e in destino if e[ 'nombre' ] == unidad ]
+      e = Elemento(
+        pista       = self.nombre,
+        numero      = self.cuenta,
+        nombre      = unidad,
+        nivel       = nivel - 1,
+        recurrencia = sum( 
+          [ 1 for e in destino if e.nombre  == unidad ]
         )
-      }
+        #recurrencia = 1
+      )
       if seccion: 
-        e['referente'] = seccion['nombre']
+        e.referente = seccion.nombre
       destino.append(e)
       if 'forma' in original:
         # esto es una seccion 
-        # e['cantidad_elementos'] = len( original['forma'] )
-        e['referidos'] = original['forma'] 
+        e.referidos = original['forma'] 
         self.seccionar( 
           original[ 'forma' ],
           nivel,

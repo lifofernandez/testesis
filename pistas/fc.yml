@@ -64,7 +64,7 @@ unidades:
     'A`',
   ]
     #reiterar: 4
-  estribillo: 
+  estribo: 
     forma: [
     'B',
     'A``',
@@ -77,9 +77,9 @@ unidades:
 forma: [
   'espera',
   'estrofa',
-  'estribillo',
+  'estribo',
   #  'estrofa',
-  #  'perro',
+     'perro',
   #  'estrofa',
 ]
 
