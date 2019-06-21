@@ -1,6 +1,7 @@
 from argumentos import args, verboseprint, Excepcion
 import pprint
 from elemento import Elemento
+from seccion  import Seccion
 from segmento import Segmento
 import random
 import sys
@@ -87,56 +88,52 @@ class Pista:
     #self.secuenciar( forma )
 
 
-    self.SECCIONES = []
+    self.SECCIONES = self.seccionar( forma )
 
-    self.seccionar( forma )
-
-    # ESto es para verbose print level 2
-    print('ELEMENTOS')
-    print( 'numero\tnivel\trecur\tnombre' )
-    for s in self.SECCIONES:
-      print( 
-        str(s.numero)+'\t'+
-        str(s.nivel)+'\t'+
-        str(s.recurrencia)+'\t'+
-        s.nombre+'\t'
-    )
     verboseprint( '\n#### ' + self.nombre + ' ####' )
 
+    # ESto es para verbose print level 2
+    print('ELEMENTOS ' +  self.nombre)
+    print( 'numero\tnivel\trecur\tnombre' )
+    for s in self.SECCIONES:
+      print( s)
+
   """ Organiza unidades según relacion de referencia """
-  cuenta = 0
   def seccionar( 
     self,
     forma = None,
     nivel = 0,
-    seccion = None,
+    referente = None,
+    bufer = []
   ):
     nivel += 1
-    destino = self.SECCIONES
     for unidad in forma:  
       original = self.paleta[ unidad ]
-      self.cuenta +=1
-      e = Elemento(
-        pista       = self.nombre,
-        numero      = self.cuenta,
-        nombre      = unidad,
-        nivel       = nivel - 1,
-        recurrencia = sum( 
-          [ 1 for e in destino if e.nombre  == unidad ]
+      args = {
+        'pista'      : self.nombre,
+        'nombre'     : unidad,
+        'nivel'      : nivel - 1,
+        'recurrencia': sum( 
+          [ 1 for e in bufer if e.nombre == unidad ]
         )
-        #recurrencia = 1
-      )
-      if seccion: 
-        e.referente = seccion.nombre
-      destino.append(e)
+      }
+      e = Seccion( **args )
+      if 'forma' not in original: 
+        e.tipo = 'SEGMENTO'
+      if referente: 
+        e.referente = referente.nombre
+      bufer.append( e )
+
       if 'forma' in original:
-        # esto es una seccion 
+        #e.tipo = 'seccion'
         e.referidos = original['forma'] 
         self.seccionar( 
           original[ 'forma' ],
           nivel,
           e,
+          bufer
         ) 
+    return bufer
 
       #if seccion:
       #   seccion.setdefault( 'elementos' , [] )

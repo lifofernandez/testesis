@@ -71,7 +71,7 @@ unidades:
   ]
   perro: 
     forma: [
-    'A',
+    'estrofa',
   ]
 
 forma: [
@@ -80,7 +80,6 @@ forma: [
   'estribo',
   #  'estrofa',
      'perro',
-  #  'estrofa',
 ]
 
 
