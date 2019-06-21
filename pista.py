@@ -73,14 +73,16 @@ class Pista:
     self.nombre     = nombre
     self.numero     = Pista.cantidad 
     Pista.cantidad += 1
-    Pista.defacto = Segmento(
-      pista = 'defacto',
-      orden = 0,
-      propiedades = {
-        'nombre' : 'defacto',
-        **Pista.defactos
-      }
-    )
+    #Pista.defacto = Segmento(
+    #  pista = nombre,
+    #  nombre = 'defacto',
+    #  nivel = None,
+    #  orden = None,
+    #  recurrencia = None,
+    #  propiedades = {
+    #    **Pista.defactos
+    #  }
+    #)
 
     self.paleta     = paleta
 
@@ -93,10 +95,13 @@ class Pista:
     verboseprint( '\n#### ' + self.nombre + ' ####' )
 
     # ESto es para verbose print level 2
+    # TOTALES
+    print( Elemento.cantidad , Seccion.cantidad , Segmento.cantidad )
+
     print('ELEMENTOS ' +  self.nombre)
-    print( 'numero\tnivel\trecur\tnombre' )
+    print( '#\torden\tnivel\trecur\tnombre' )
     for s in self.SECCIONES:
-      print( s)
+      print( s )
 
   """ Organiza unidades según relacion de referencia """
   def seccionar( 
@@ -113,13 +118,22 @@ class Pista:
         'pista'      : self.nombre,
         'nombre'     : unidad,
         'nivel'      : nivel - 1,
+        'orden'      : len( bufer ),
         'recurrencia': sum( 
           [ 1 for e in bufer if e.nombre == unidad ]
         )
       }
-      e = Seccion( **args )
       if 'forma' not in original: 
-        e.tipo = 'SEGMENTO'
+        e = Segmento(
+          **args, 
+          #aca va el orden del segmento dentro de la seccion
+          propiedades = {
+            **Pista.defactos
+          }
+        )
+
+      else:
+        e = Seccion( **args )
       if referente: 
         e.referente = referente.nombre
       bufer.append( e )

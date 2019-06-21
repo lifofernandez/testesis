@@ -11,9 +11,10 @@ class Elemento:
 
   def __str__( self ):
     # Esto es para verbose level 2
-    o = str(self.numero) + '\t' 
-    o += str(self.nivel) + '\t'
-    o += str(self.recurrencia) + '\t' 
+    o  = str( self.numero_elemento ) + '\t' 
+    o += str( self.orden ) + '\t' 
+    o += str( self.nivel )  + '\t'
+    o += str( self.recurrencia ) + '\t' 
     o += '+' + str( '-' * ( self.nivel ) ) 
     o += self.nombre + '\t'
     if self.tipo:
@@ -32,13 +33,15 @@ class Elemento:
     pista, 
     nombre,
     nivel,
+    orden,
     recurrencia
   ):
     self.pista  = pista 
     self.nombre = nombre
     self.nivel = nivel
+    self.orden = orden
     self.recurrencia = recurrencia
-    self.numero = Elemento.cantidad 
+    self.numero_elemento = Elemento.cantidad 
     Elemento.cantidad += 1
     self.tipo = None 
 

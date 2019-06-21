@@ -2,7 +2,26 @@
 from elemento import Elemento
 
 class Seccion( Elemento ):
+  cantidad = 0
   """
   Pista > Secuencia > SECCION > Segmentos > Articulaciones 
   """
-  pass
+  def __init__( 
+    self,
+    pista, 
+    nombre,
+    nivel,
+    orden,
+    recurrencia,
+  ):
+    Elemento.__init__( 
+      self,
+      pista, 
+      nombre,
+      nivel,
+      orden,
+      recurrencia
+    )
+    self.numero = Seccion.cantidad 
+    Seccion.cantidad += 1
+    self.tipo = 'SECCION'

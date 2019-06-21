@@ -1,39 +1,36 @@
-from argumentos import args, verboseprint, Excepcion
-from articulacion import Articulacion
 import random
 import math
-import pprint
+from elemento import Elemento
+from articulacion import Articulacion
 
-class Segmento:
+class Segmento( Elemento ):
   """
   Pista > Secuencia > Secciones > SEGMENTOS > Articulaciones
   Conjunto de Articulaciones
   """
-  cantidad = 0 
- 
-  def __str__( self ):
-    o = '' 
-    for attr, value in self.__dict__.items():
-      l = str( attr ) + ':' + str( value )
-      o += l + '\n'
-    return o
-
+  cantidad = 0
   def __init__( 
     self,
     pista, 
+    nombre,
+    nivel,
     orden,
-    propiedades,
+    recurrencia,
+    propiedades
   ):
-    self.pista = pista 
-    self.numero = Segmento.cantidad 
+    Elemento.__init__( 
+      self,
+      pista, 
+      nombre,
+      nivel,
+      orden,
+      recurrencia
+    )
+    self.numero_segmento = Segmento.cantidad 
     Segmento.cantidad += 1
+    self.tipo = 'SEGMENTO'
 
     self.props = propiedades 
-    self.nombre = self.props[ 'nombre' ]
-    # TODO componer id con nombre y numero
-    self.id = self.props[ 'nombre' ]
-
-    self.orden  = orden 
 
     """ PRE PROCESO DE UNIDAD """
     """ Cambia el sentido de los parametros de articulacion """
@@ -75,12 +72,6 @@ class Segmento:
 
     self.bpm = self.BPMs[0]
     self.programa = self.programas[0]
-
-    ##if nivel in self.registros:
-    # TODO Que los cuente en cualquier nivel.
-    #recurrencia = sum( 
-    #  [ 1 for r in self.registros[ nivel ] if r[ 'nombre' ] == unidad ]
-    #) 
 
   @property
   def metro( self ):
@@ -132,7 +123,6 @@ class Segmento:
     ]
     ganador = max( candidatos, key = len )
     self.cantidad_pasos = len( ganador )
-    #pprint.pprint(self.referente)
 
     """ Consolidad "articulacion" 
     combinar parametros: altura, duracion, dinamica, etc. """
