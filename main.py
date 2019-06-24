@@ -1,5 +1,6 @@
 from argumentos import args, verboseprint, Excepcion
 import yaml
+import pprint
 from pista import Pista
 from datetime import datetime, timedelta
 
@@ -22,6 +23,7 @@ DEFS = leer_yamls()
 
 """ A partir de cada definicion agrega una Pista """
 PISTAS = []
+registro = []
 for d in DEFS:
   pista = Pista(
     d[ 'nombre' ],
@@ -30,6 +32,8 @@ for d in DEFS:
   )
   print( pista )
   PISTAS.append( pista )
+  #registro += pista.secciones
+#pprint.pprint(registro)
 
 """ Generar canal MIDI a partir de cada pista """
 EVENTOS = []

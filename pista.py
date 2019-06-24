@@ -13,7 +13,7 @@ class Pista:
   """
   cantidad = 0 
   defactos = {
-    # TO DO 
+    # TO DO Meta Track
     # Agrupar/Revisar/Avisar propiedades "Globales" 
     # que NO refieren a un canal en particualr
     #'addTrackName',
@@ -58,21 +58,19 @@ class Pista:
   }
 
   def __str__( self ):
-
-    # ESto es para verbose print level 1
-    o = '###' + str(self.nombre) + '###'
-    o += str(Elemento.cantidad ) 
-    o += str(Seccion.cantidad )  
-    o += str(Segmento.cantidad)  + '\n'
+    # Esto es para verbose print level 1
+    o = '### ' + str( self.nombre) + ' ###'
+    o += str( Elemento.cantidad ) 
+    o += str( Seccion.cantidad )  
+    o += str( Segmento.cantidad )  + '\n'
 
     # Esto es para verbose print level 2
     o += 'ELEMENTOS\n'
     o +=  '#\torden\tnivel\trecur\tnombre\n'
-    for s in self.SECCIONES:
+    for s in self.secciones:
       o += str(s) + '\n'
     return o
 
- 
   def __init__( 
     self,
     nombre,
@@ -82,24 +80,24 @@ class Pista:
     self.nombre     = nombre
     self.numero     = Pista.cantidad 
     Pista.cantidad += 1
-    #Pista.defacto = Segmento(
-    #  pista = nombre,
-    #  nombre = 'defacto',
-    #  nivel = None,
-    #  orden = None,
-    #  recurrencia = None,
-    #  propiedades = {
-    #    **Pista.defactos
-    #  }
-    #)
+
+    Pista.defacto = Segmento(
+      pista = nombre,
+      nombre = 'Segmento Defacto:' + nombre,
+      nivel = None,
+      orden = None,
+      recurrencia = None,
+      propiedades = {
+        **Pista.defactos
+      }
+    )
 
     self.paleta     = paleta
 
     self.secuencia  = [] 
     #self.secuenciar( forma )
 
-
-    self.SECCIONES = self.seccionar( forma )
+    self.secciones = self.seccionar( forma )
 
     verboseprint( '\n#### ' + self.nombre + ' ####' )
 
@@ -127,7 +125,6 @@ class Pista:
       if 'forma' not in original: 
         e = Segmento(
           **args, 
-          #aca va el orden del segmento dentro de la seccion
           propiedades = {
             **Pista.defactos
           }
@@ -135,13 +132,12 @@ class Pista:
 
       else:
         e = Seccion( **args )
+        e.referidos = original['forma'] 
       if referente: 
         e.referente = referente.nombre
       bufer.append( e )
 
       if 'forma' in original:
-        #e.tipo = 'seccion'
-        e.referidos = original['forma'] 
         self.seccionar( 
           original[ 'forma' ],
           nivel,
