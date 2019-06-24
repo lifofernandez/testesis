@@ -11,8 +11,8 @@ def leer_yamls():
   for archivo in args.archivos:
     data = open( archivo.name, 'r' )
     try:
-      y = yaml.load( data, Loader = yaml.FullLoader ) 
-      #y = yaml.load( data ) 
+      #y = yaml.load( data, Loader = yaml.FullLoader ) 
+      y = yaml.load( data ) 
       defs.append( y )
     except Exception as e:
       print(e)
@@ -28,6 +28,7 @@ for d in DEFS:
     d[ 'unidades' ],
     d[ 'forma' ],
   )
+  print( pista )
   PISTAS.append( pista )
 
 """ Generar canal MIDI a partir de cada pista """

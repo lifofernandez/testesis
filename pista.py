@@ -58,11 +58,20 @@ class Pista:
   }
 
   def __str__( self ):
-    o = '' 
-    for attr, value in self.__dict__.items():
-      l = str( attr ) + ':' + str( value )
-      o += l + '\n'
+
+    # ESto es para verbose print level 1
+    o = '###' + str(self.nombre) + '###'
+    o += str(Elemento.cantidad ) 
+    o += str(Seccion.cantidad )  
+    o += str(Segmento.cantidad)  + '\n'
+
+    # Esto es para verbose print level 2
+    o += 'ELEMENTOS\n'
+    o +=  '#\torden\tnivel\trecur\tnombre\n'
+    for s in self.SECCIONES:
+      o += str(s) + '\n'
     return o
+
  
   def __init__( 
     self,
@@ -94,14 +103,6 @@ class Pista:
 
     verboseprint( '\n#### ' + self.nombre + ' ####' )
 
-    # ESto es para verbose print level 2
-    # TOTALES
-    print( Elemento.cantidad , Seccion.cantidad , Segmento.cantidad )
-
-    print('ELEMENTOS ' +  self.nombre)
-    print( '#\torden\tnivel\trecur\tnombre' )
-    for s in self.SECCIONES:
-      print( s )
 
   """ Organiza unidades según relacion de referencia """
   def seccionar( 
