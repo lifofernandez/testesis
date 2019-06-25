@@ -25,9 +25,9 @@ unidades:
   b:
     <<: *base
     alturas: [ 10, 9 ] 
-  vuelta:
+  vuelta3:
     forma: [ 'a', 'b' ]
 forma: [
-   'vuelta',
+   'vuelta3',
 ]
 

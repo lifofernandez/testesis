@@ -22,6 +22,6 @@ class Seccion( Elemento ):
       orden,
       recurrencia
     )
-    self.numero = Seccion.cantidad 
+    self.numero_seccion = Seccion.cantidad 
     Seccion.cantidad += 1
     self.tipo = 'SECCION'

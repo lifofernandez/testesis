@@ -30,14 +30,13 @@ for d in DEFS:
     d[ 'unidades' ],
     d[ 'forma' ],
   )
-  print( pista )
+  #print( d[ 'unidades' ])
   PISTAS.append( pista )
-  #registro += pista.secciones
-#pprint.pprint(registro)
 
 """ Generar canal MIDI a partir de cada pista """
 EVENTOS = []
 for pista in PISTAS:
+  print( pista )
   momento = 0
   track = pista.numero
 

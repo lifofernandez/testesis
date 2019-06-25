@@ -3,6 +3,9 @@ import pprint
 from elemento import Elemento
 from seccion  import Seccion
 from segmento import Segmento
+
+#from elemento import Elemento, Seccion, Segmento
+
 import random
 import sys
 
@@ -59,14 +62,14 @@ class Pista:
 
   def __str__( self ):
     # Esto es para verbose print level 1
-    o = '### ' + str( self.nombre) + ' ###'
-    o += str( Elemento.cantidad ) 
-    o += str( Seccion.cantidad )  
-    o += str( Segmento.cantidad )  + '\n'
+    o = str( self.nombre) + ' ###'
+    #o += str( Elemento.cantidad ) 
+    #o += str( Seccion.cantidad )  
+    #o += str( Segmento.cantidad )  + '\n'
 
     # Esto es para verbose print level 2
-    o += 'ELEMENTOS\n'
-    o +=  '#\torden\tnivel\trecur\tnombre\n'
+    #o += 'ELEMENTOS\n'
+    o +=  '\n#\torden\tnivel\trecur\tnombre\n'
     for s in self.secciones:
       o += str(s) + '\n'
     return o
@@ -81,23 +84,27 @@ class Pista:
     self.numero     = Pista.cantidad 
     Pista.cantidad += 1
 
-    Pista.defacto = Segmento(
-      pista = nombre,
-      nombre = 'Segmento Defacto:' + nombre,
-      nivel = None,
-      orden = None,
-      recurrencia = None,
-      propiedades = {
-        **Pista.defactos
-      }
-    )
+    #Pista.defacto = Segmento(
+    #  pista = nombre,
+    #  nombre = 'Segmento Defacto:' + nombre,
+    #  nivel = None,
+    #  orden = None,
+    #  recurrencia = None,
+    #  propiedades = {
+    #    **Pista.defactos
+    #  }
+    #)
 
     self.paleta     = paleta
+    self.forma =forma 
 
     self.secuencia  = [] 
     #self.secuenciar( forma )
 
-    self.secciones = self.seccionar( forma )
+    #self.secciones = self.seccionar( self.forma )
+
+    self.secciones = []
+    self.seccionar( self.forma )
 
     verboseprint( '\n#### ' + self.nombre + ' ####' )
 
@@ -108,7 +115,7 @@ class Pista:
     forma = None,
     nivel = 0,
     referente = None,
-    bufer = []
+    #bufer = []
   ):
     nivel += 1
     for unidad in forma:  
@@ -117,9 +124,9 @@ class Pista:
         'pista'      : self.nombre,
         'nombre'     : unidad,
         'nivel'      : nivel - 1,
-        'orden'      : len( bufer ),
+        'orden'      : len( self.secciones ),
         'recurrencia': sum( 
-          [ 1 for e in bufer if e.nombre == unidad ]
+          [ 1 for e in self.secciones if e.nombre == unidad ]
         )
       }
       if 'forma' not in original: 
@@ -135,16 +142,16 @@ class Pista:
         e.referidos = original['forma'] 
       if referente: 
         e.referente = referente.nombre
-      bufer.append( e )
+      self.secciones.append( e )
 
       if 'forma' in original:
         self.seccionar( 
           original[ 'forma' ],
           nivel,
           e,
-          bufer
+          #bufer
         ) 
-    return bufer
+    #return bufer
 
       #if seccion:
       #   seccion.setdefault( 'elementos' , [] )

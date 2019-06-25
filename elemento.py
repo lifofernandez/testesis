@@ -1,7 +1,7 @@
 #from argumentos import args, verboseprint, Excepcion
 #import pprint
 
-class Elemento:
+class Elemento():
   """
   Pista > ELEMENTOS
   Clase base para, Secciones, Segmentos y Articulaciones
@@ -44,4 +44,8 @@ class Elemento:
     self.numero_elemento = Elemento.cantidad 
     Elemento.cantidad += 1
     self.tipo = None 
+
+# def __init_subclass__(cls, **kwargs):
+#        super().__init_subclass__(**kwargs)
+#        register(cls)
 

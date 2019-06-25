@@ -22,9 +22,9 @@ unidades:
     voces:
       - [ 0 ]
       - [ 2, 0 ]
-  vuelta:
+  vuelta2:
     forma: [ 'a', 'b' ]
-    reiterar: 4
+    #reiterar: 4
 forma: [
-   'vuelta',
+   'vuelta2',
 ]
