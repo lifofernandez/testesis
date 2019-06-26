@@ -6,6 +6,12 @@ class Seccion( Elemento ):
   """
   Pista > Secuencia > SECCION > Segmentos > Articulaciones 
   """
+  def __str__( self ):
+    o = Elemento.__str__( self )
+    o += self.tipo + ' '
+    o += str( self.numero_seccion ) + '\t' 
+    return o  
+
   def __init__( 
     self,
     pista, 

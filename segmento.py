@@ -9,6 +9,11 @@ class Segmento( Elemento ):
   Conjunto de Articulaciones
   """
   cantidad = 0
+  def __str__( self ):
+    o = Elemento.__str__( self )
+    o += self.tipo + ' '
+    o += str( self.numero_segmento) + '\t' 
+    return o  
   def __init__( 
     self,
     pista, 
@@ -29,7 +34,6 @@ class Segmento( Elemento ):
     self.numero_segmento = Segmento.cantidad 
     Segmento.cantidad += 1
     self.tipo = 'SEGMENTO'
-
     self.props = propiedades 
 
     """ PRE PROCESO DE UNIDAD """
@@ -76,14 +80,15 @@ class Segmento( Elemento ):
   @property
   def metro( self ):
     metro = self.props[ 'metro' ].split( '/' ) 
-    denominador = int( math.log10( int( metro[ 1 ] ) ) / math.log10( 2 ) )
+    denominador = int(
+      math.log10( int( metro[ 1 ] ) ) / math.log10( 2 )
+    )
     return {
       'numerador'        : int( metro[ 0 ] ),
       'denominador'      : denominador,
       'relojes_por_tick' : 12 * denominador,
       'notas_por_pulso'  : 8,
     }
-    #return self.original[ 'metro' ].split( '/' ) 
 
   @property
   def fluctuacion( self ):

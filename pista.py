@@ -83,6 +83,8 @@ class Pista:
     self.nombre     = nombre
     self.numero     = Pista.cantidad 
     Pista.cantidad += 1
+    self.paleta = paleta
+    self.forma = forma 
 
     #Pista.defacto = Segmento(
     #  pista = nombre,
@@ -95,8 +97,6 @@ class Pista:
     #  }
     #)
 
-    self.paleta     = paleta
-    self.forma =forma 
 
     self.secuencia  = [] 
     #self.secuenciar( forma )
@@ -114,10 +114,13 @@ class Pista:
     self,
     forma = None,
     nivel = 0,
+    herencia = {},
     referente = None,
-    #bufer = []
   ):
     nivel += 1
+    """ Limpiar parametros q no se heredan.  """
+    herencia.pop( 'forma', None )
+    herencia.pop( 'reiterar', None )
     for unidad in forma:  
       original = self.paleta[ unidad ]
       args = {
@@ -129,33 +132,43 @@ class Pista:
           [ 1 for e in self.secciones if e.nombre == unidad ]
         )
       }
+      sucesion = {
+        **original,
+        **herencia,
+      } 
       if 'forma' not in original: 
-        e = Segmento(
+        elemento = Segmento(
           **args, 
           propiedades = {
-            **Pista.defactos
+            **Pista.defactos,
+            **sucesion,
           }
         )
 
       else:
-        e = Seccion( **args )
-        e.referidos = original['forma'] 
+        elemento = Seccion( **args )
+        elemento.referidos = original['forma'] 
       if referente: 
-        e.referente = referente.nombre
-      self.secciones.append( e )
+        elemento.referente = referente.nombre
 
-      if 'forma' in original:
-        self.seccionar( 
-          original[ 'forma' ],
-          nivel,
-          e,
-          #bufer
-        ) 
-    #return bufer
+      reiterar = 1
+      if 'reiterar' in original:
+        reiterar = original[ 'reiterar' ]
+      """ Cantidad de repeticiones de la unidad. """
+      for r in range( reiterar ):
+        self.secciones.append( elemento )
+        if 'forma' in original:
+          self.seccionar( 
+            original[ 'forma' ],
+            nivel,
+            sucesion,
+            elemento,
+          ) 
+    #
 
       #if seccion:
       #   seccion.setdefault( 'elementos' , [] )
-      #   destino = seccion['elementos']
+      #   destino = seccion[ 'elementos' ]
       ##  e['seccion'] = seccion['nombre']
 
 
@@ -167,9 +180,6 @@ class Pista:
       #  destino.append( e )
       #  #print(unidad,destino)
 
-
-
-
       #if not rama:
       #  destino = self.SECCIONES
       #  destino.append( rama )
@@ -177,6 +187,7 @@ class Pista:
 
       #if not padre:
       #  destino.append( h )
+
       #if padre:
       #  for s in destino:
       #    if s['nombre'] == padre['nombre']:
@@ -215,20 +226,16 @@ class Pista:
 #
 #        """ Cuenta recurrencias de esta unidad en este nivel.  """
 #        recurrencia = 0
-#        reiterar = 1
-#
-#        if 'reiterar' in original:
-#          reiterar = original[ 'reiterar' ]
 #          
 #        """ Crea parametros de unidad combinando originales con herencia """
 #        sucesion = {
 #          **original,
 #          **herencia,
-#          'nombre'      : unidad,
-#          'recurrencia' : recurrencia,
-#          'nivel'       : nivel,
 #        } 
 #
+#        reiterar = 1
+#        if 'reiterar' in original:
+#          reiterar = original[ 'reiterar' ]
 #        """ Cantidad de repeticiones de la unidad. """
 #        for r in range( reiterar ):
 #          destino = self.secciones
@@ -295,7 +302,7 @@ class Pista:
 #
 #          if not padre:
 #            #h['recurrencia'] = sum( 
-#            #  [ 1 for s in self.secciones if s[ 'nombre' ] == unidad ]
+#            #[ 1 for s in self.secciones if s[ 'nombre' ] == unidad ]
 #            #) 
 #            destino.append( h )
 #
