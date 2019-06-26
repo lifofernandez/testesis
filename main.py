@@ -30,13 +30,11 @@ for d in DEFS:
     d[ 'unidades' ],
     d[ 'forma' ],
   )
-  #print( d[ 'unidades' ])
   PISTAS.append( pista )
 
 """ Generar canal MIDI a partir de cada pista """
 EVENTOS = []
 for pista in PISTAS:
-  print( pista )
   momento = 0
   track = pista.numero
 
@@ -58,6 +56,7 @@ for pista in PISTAS:
 
   """ Loop principal: Genera una secuencia de eventos MIDI lista de
   articulaciones.  """
+  #es = [1 for e in pista.secciones if e.__class__.__name__ == 'Segmento']
   for numero_segmento, segmento in enumerate( pista.secuencia ):
     print( segmento.pista, segmento.reiterar, segmento.orden, segmento.numero)
     segmento_precedente = pista.secuencia[  numero_segmento - 1 ]

@@ -32,7 +32,8 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
-verboseprint = pprint.pprint if args.verbosity else lambda *a, **k: None
+#verboseprint = pprint.pprint if args.verbosity else lambda *a, **k: None
+verboseprint = print if args.verbosity else lambda *a, **k: None
 
 class Excepcion( Exception ):
   """Excepción basica para Pifies invocados por """

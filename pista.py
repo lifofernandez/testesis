@@ -62,14 +62,10 @@ class Pista:
 
   def __str__( self ):
     # Esto es para verbose print level 1
-    o = str( self.nombre) + ' ###'
-    #o += str( Elemento.cantidad ) 
-    #o += str( Seccion.cantidad )  
-    #o += str( Segmento.cantidad )  + '\n'
+    o = 'PISTA ' + str( self.numero) + ': '+ str( self.nombre)
 
     # Esto es para verbose print level 2
-    #o += 'ELEMENTOS\n'
-    o +=  '\n#\torden\tnivel\trecur\tnombre\n'
+    o +=  '\nid\torden\tnivel\trecur\tnombre\n'
     for s in self.secciones:
       o += str(s) + '\n'
     return o
@@ -86,27 +82,27 @@ class Pista:
     self.paleta = paleta
     self.forma = forma 
 
-    #Pista.defacto = Segmento(
-    #  pista = nombre,
-    #  nombre = 'Segmento Defacto:' + nombre,
-    #  nivel = None,
-    #  orden = None,
-    #  recurrencia = None,
-    #  propiedades = {
-    #    **Pista.defactos
-    #  }
-    #)
+    Pista.defacto = Segmento(
+      pista = nombre,
+      nombre = 'Segmento Defacto:' + nombre,
+      nivel = None,
+      orden = None,
+      recurrencia = None,
+      propiedades = {
+        **Pista.defactos
+      }
+    )
 
 
     self.secuencia  = [] 
     #self.secuenciar( forma )
 
     #self.secciones = self.seccionar( self.forma )
-
     self.secciones = []
     self.seccionar( self.forma )
 
-    verboseprint( '\n#### ' + self.nombre + ' ####' )
+    # esto no va aca
+    verboseprint( self )
 
 
   """ Organiza unidades según relacion de referencia """
@@ -122,49 +118,56 @@ class Pista:
     herencia.pop( 'forma', None )
     herencia.pop( 'reiterar', None )
     for unidad in forma:  
-      original = self.paleta[ unidad ]
-      args = {
-        'pista'      : self.nombre,
-        'nombre'     : unidad,
-        'nivel'      : nivel - 1,
-        'orden'      : len( self.secciones ),
-        'recurrencia': sum( 
-          [ 1 for e in self.secciones if e.nombre == unidad ]
-        )
-      }
-      sucesion = {
-        **original,
-        **herencia,
-      } 
-      if 'forma' not in original: 
-        elemento = Segmento(
-          **args, 
-          propiedades = {
-            **Pista.defactos,
-            **sucesion,
-          }
-        )
+      try:
+        if unidad not in self.paleta:
+          error = "PISTA: \"" + self.nombre + "\""
+          error += " NO ENCUENTRO: \"" + unidad + "\"  "  
+          raise Excepcion( unidad, error )
+          pass
+        original = self.paleta[ unidad ]
+        args = {
+          'pista'      : self.nombre,
+          'nombre'     : unidad,
+          'nivel'      : nivel - 1,
+          'orden'      : len( self.secciones ),
+          'recurrencia': sum( 
+            [ 1 for e in self.secciones if e.nombre == unidad ]
+          )
+        }
+        sucesion = {
+          **original,
+          **herencia,
+        } 
+        if 'forma' not in original: 
+          elemento = Segmento(
+            **args, 
+            propiedades = {
+              **Pista.defactos,
+              **sucesion,
+            }
+          )
 
-      else:
-        elemento = Seccion( **args )
-        elemento.referidos = original['forma'] 
-      if referente: 
-        elemento.referente = referente.nombre
+        else:
+          elemento = Seccion( **args )
+          elemento.referidos = original['forma'] 
+        if referente: 
+          elemento.referente = referente.nombre
 
-      reiterar = 1
-      if 'reiterar' in original:
-        reiterar = original[ 'reiterar' ]
-      """ Cantidad de repeticiones de la unidad. """
-      for r in range( reiterar ):
-        self.secciones.append( elemento )
-        if 'forma' in original:
-          self.seccionar( 
-            original[ 'forma' ],
-            nivel,
-            sucesion,
-            elemento,
-          ) 
-    #
+        reiterar = 1
+        if 'reiterar' in original:
+          reiterar = original[ 'reiterar' ]
+        """ Cantidad de repeticiones de la unidad. """
+        for r in range( reiterar ):
+          self.secciones.append( elemento )
+          if 'forma' in original:
+            self.seccionar( 
+              original[ 'forma' ],
+              nivel,
+              sucesion,
+              elemento,
+            ) 
+      except Excepcion as e:
+          print( e )
 
       #if seccion:
       #   seccion.setdefault( 'elementos' , [] )
