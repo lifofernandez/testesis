@@ -9,11 +9,58 @@ class Segmento( Elemento ):
   Conjunto de Articulaciones
   """
   cantidad = 0
+
+  defactos = {
+    # TO DO Meta Track
+    # Agrupar/Revisar/Avisar propiedades "Globales" 
+    # que NO refieren a un canal en particualr
+    #'addTrackName',
+    #'addCopyright',
+
+    #'addTempo',
+    #'addTimeSignature',
+    #'addKeySignature',
+    #'changeNoteTuning',
+    #'addSysEx',
+    #'addUniversalSysEx',
+
+    # Propiedades de Segmento 
+    'canal'             : 1,
+    'desplazar'         : 0,
+    'metro'             : '4/4',
+    'clave'             : { 'alteraciones' : 0, 'modo' : 0 },
+    'fluctuacion'       : { 'min' : 1, 'max' : 1 },
+    'transportar'       : 0,
+    'transponer'        : 0,
+    'reiterar'          : 1,
+    'referente'         : None,
+    'revertir'          : None,
+    'afinacionNota'     : None,
+    'afinacionBanco'    : None,
+    'afinacionPrograma' : None,
+    'sysEx'             : None,
+    'uniSysEx'          : None,
+    'NRPN'              : None,
+    'RPN'               : None,
+
+    # Propiedades de Articulacion 
+    'BPMs'         : [ 60 ],
+    'programas'    : [ 1 ],
+    'duraciones'   : [ 1 ],
+    'dinamicas'    : [ 1 ],
+    'registracion'   : [ 1 ],
+    'alturas'      : [ 1 ],
+    'tonos'        : [ 0 ],
+    'voces'        : None,
+    'controles'    : None,
+  }
+
   def __str__( self ):
     o = Elemento.__str__( self )
     o += self.tipo + ' '
     o += str( self.numero_segmento) + '\t' 
     return o  
+
   def __init__( 
     self,
     pista, 

@@ -1,4 +1,4 @@
-from argumentos import args, verboseprint, Excepcion
+from argumentos import args, verbose, Excepcion
 import yaml
 import pprint
 from pista import Pista
@@ -35,6 +35,7 @@ for d in DEFS:
 """ Generar canal MIDI a partir de cada pista """
 EVENTOS = []
 for pista in PISTAS:
+  verbose(pista)
   momento = 0
   track = pista.numero
 
@@ -59,6 +60,7 @@ for pista in PISTAS:
   for numero_segmento, segmento in enumerate( pista.segmentos ):
   #for numero_segmento, segmento in enumerate( pista.secuencia ):
     #revisar
+    #print(pista.precedente( segmento.orden ))
     segmento_precedente = pista.segmentos[  numero_segmento - 1 ]
     if numero_segmento == 0:
       segmento_precedente = Pista.defacto
@@ -197,7 +199,6 @@ for pista in PISTAS:
       articulacion_precedente = segmento.articulaciones[  numero_articulacion - 1 ]
       if  numero_articulacion == 0:
         articulacion_precedente = segmento_precedente.articulaciones[ - 1 ]
-      verboseprint( articulacion )
       """ Agrega cualquier cambio de parametro, 
       comparar cada uno con la articulacion previa. """
       if articulacion_precedente.bpm != articulacion.bpm:

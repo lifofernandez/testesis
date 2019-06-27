@@ -24,7 +24,7 @@ unidades:
       - [ 2, 0 ]
   vuelta:
     forma: [ 'a', 'b' ]
-    reiterar: 4
+    #reiterar: 4
 forma: [
    'vuelta',
 ]

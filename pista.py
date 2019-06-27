@@ -1,4 +1,4 @@
-from argumentos import args, verboseprint, Excepcion
+from argumentos import args, verbose, Excepcion
 import pprint
 from elemento import Elemento
 from seccion  import Seccion
@@ -15,50 +15,6 @@ class Pista:
   PISTA > Secuencia > Secciones > Segmentos > Articulaciones
   """
   cantidad = 0 
-  defactos = {
-    # TO DO Meta Track
-    # Agrupar/Revisar/Avisar propiedades "Globales" 
-    # que NO refieren a un canal en particualr
-    #'addTrackName',
-    #'addCopyright',
-
-    #'addTempo',
-    #'addTimeSignature',
-    #'addKeySignature',
-    #'changeNoteTuning',
-    #'addSysEx',
-    #'addUniversalSysEx',
-
-    # Propiedades de Segmento 
-    'canal'             : 1,
-    'desplazar'         : 0,
-    'metro'             : '4/4',
-    'clave'             : { 'alteraciones' : 0, 'modo' : 0 },
-    'fluctuacion'       : { 'min' : 1, 'max' : 1 },
-    'transportar'       : 0,
-    'transponer'        : 0,
-    'reiterar'          : 1,
-    'referente'         : None,
-    'revertir'          : None,
-    'afinacionNota'     : None,
-    'afinacionBanco'    : None,
-    'afinacionPrograma' : None,
-    'sysEx'             : None,
-    'uniSysEx'          : None,
-    'NRPN'              : None,
-    'RPN'               : None,
-
-    # Propiedades de Articulacion 
-    'BPMs'         : [ 60 ],
-    'programas'    : [ 1 ],
-    'duraciones'   : [ 1 ],
-    'dinamicas'    : [ 1 ],
-    'registracion'   : [ 1 ],
-    'alturas'      : [ 1 ],
-    'tonos'        : [ 0 ],
-    'voces'        : None,
-    'controles'    : None,
-  }
 
   def __str__( self ):
     # Esto es para verbose print level 1
@@ -66,8 +22,8 @@ class Pista:
 
     # Esto es para verbose print level 2
     o +=  '\nid\torden\tnivel\trecur\tnombre\n'
-    for s in self.secciones:
-      o += str(s) + '\n'
+    for e in self.elementos:
+      o += str(e) + '\n'
     return o
 
   def __init__( 
@@ -91,30 +47,29 @@ class Pista:
       orden = None,
       recurrencia = None,
       propiedades = {
-        **Pista.defactos
+        **Segmento.defactos
       }
     )
 
-
-    self.secuencia  = [] 
-    #self.secuenciar( forma )
-
-    #self.secciones = self.seccionar( self.forma )
-    self.secciones = []
+    self.elementos = []
     self.seccionar( self.forma )
-
-    # esto no va aca
-    verboseprint( self )
 
   @property
   def segmentos( 
     self
   ):
     segmentos = []
-    for s in self.secciones:
+    cuenta = 0
+    for s in self.elementos:
         if s.__class__.__name__ == 'Segmento':
+          s.orden = cuenta
           segmentos.append(s)
+          cuenta += 1
     return segmentos
+
+  def precedente( self, n  ):
+    o = self.segmentos[ n - 1]
+    return o 
   
 
   """ Organiza unidades según relacion de referencia """
@@ -141,9 +96,9 @@ class Pista:
           'pista'      : self.nombre,
           'nombre'     : unidad,
           'nivel'      : nivel - 1,
-          'orden'      : len( self.secciones ),
+          'orden'      : len( self.elementos ),
           'recurrencia': sum( 
-            [ 1 for e in self.secciones if e.nombre == unidad ]
+            [ 1 for e in self.elementos if e.nombre == unidad ]
           )
         }
         sucesion = {
@@ -154,7 +109,7 @@ class Pista:
           elemento = Segmento(
             **args, 
             propiedades = {
-              **Pista.defactos,
+              **Segmento.defactos,
               **sucesion,
             }
           )
@@ -164,7 +119,7 @@ class Pista:
           # registrar recurrencia/id
           elemento.referidos = original['forma'] 
         if referente: 
-          # registrar recurrencia/id
+          # registrar  q recurrencia/id
           elemento.referente = referente.nombre
 
         reiterar = 1
@@ -172,7 +127,7 @@ class Pista:
           reiterar = original[ 'reiterar' ]
         """ Cantidad de repeticiones de la unidad. """
         for r in range( reiterar ):
-          self.secciones.append( elemento )
+          self.elementos.append( elemento )
           if 'forma' in original:
             self.seccionar( 
               original[ 'forma' ],
