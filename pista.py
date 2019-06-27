@@ -22,7 +22,7 @@ class Pista:
 
     # Esto es para verbose print level 2
     o +=  '\nid\torden\tnivel\trecur\tnombre\n'
-    for e in self.elementos:
+    for e in self.segmentos:
       o += str(e) + '\n'
     return o
 
@@ -39,10 +39,11 @@ class Pista:
     self.forma = forma 
 
     # hacer uno para todas las pistas
-    # sacar de la cuenta general
+    # Segmento 0, inicial sacar de la cuenta general
+    # puede heredar de 'base'
     Pista.defacto = Segmento(
       pista = nombre,
-      nombre = 'Segmento Defacto:' + nombre,
+      nombre = 'Defacto:' + nombre,
       nivel = None,
       orden = None,
       recurrencia = None,
@@ -51,21 +52,22 @@ class Pista:
       }
     )
 
-    self.elementos = []
+    self.secciones = []
+    self.segmentos = []
     self.seccionar( self.forma )
 
-  @property
-  def segmentos( 
-    self
-  ):
-    segmentos = []
-    cuenta = 0
-    for s in self.elementos:
-        if s.__class__.__name__ == 'Segmento':
-          s.orden = cuenta
-          segmentos.append(s)
-          cuenta += 1
-    return segmentos
+  #@property
+  #def segmentos( 
+  #  self
+  #):
+  #  segmentos = []
+  #  cuenta = 0
+  #  for s in self.elementos:
+  #    if s.__class__.__name__ == 'Segmento':
+  #      s.orden = cuenta
+  #      segmentos.append(s)
+  #      cuenta += 1
+  #  return segmentos
 
   def precedente( self, n  ):
     o = self.segmentos[ n - 1]
@@ -93,41 +95,52 @@ class Pista:
           pass
         original = self.paleta[ unidad ]
         args = {
-          'pista'      : self.nombre,
-          'nombre'     : unidad,
-          'nivel'      : nivel - 1,
-          'orden'      : len( self.elementos ),
-          'recurrencia': sum( 
-            [ 1 for e in self.elementos if e.nombre == unidad ]
-          )
         }
         sucesion = {
           **original,
           **herencia,
         } 
         if 'forma' not in original: 
-          elemento = Segmento(
-            **args, 
+          segmento = Segmento(
+            pista       = self.nombre,
+            nombre      = unidad,
+            nivel       = nivel - 1,
+            orden       = len( self.segmentos ),
+            recurrencia = sum( 
+              [ 1 for e in self.segmentos if e.nombre == unidad ]
+            ),
             propiedades = {
               **Segmento.defactos,
               **sucesion,
             }
           )
-
+          if referente: 
+            # registrar  q recurrencia/id
+            segmento.referente = referente.nombre
+          destino = self.segmentos
+          elemento = segmento
         else:
-          elemento = Seccion( **args )
+          seccion = Seccion(
+            pista       = self.nombre,
+            nombre      = unidad,
+            nivel       = nivel - 1,
+            orden       = len( self.segmentos ),
+            recurrencia = sum( 
+              [ 1 for e in self.segmentos if e.nombre == unidad ]
+            ),
+          )
           # registrar recurrencia/id
-          elemento.referidos = original['forma'] 
-        if referente: 
-          # registrar  q recurrencia/id
-          elemento.referente = referente.nombre
+          seccion.referidos = original['forma'] 
+          destino = self.secciones
+          elemento = seccion
+
 
         reiterar = 1
         if 'reiterar' in original:
           reiterar = original[ 'reiterar' ]
         """ Cantidad de repeticiones de la unidad. """
         for r in range( reiterar ):
-          self.elementos.append( elemento )
+          destino.append( elemento )
           if 'forma' in original:
             self.seccionar( 
               original[ 'forma' ],
