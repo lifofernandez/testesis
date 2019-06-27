@@ -56,10 +56,10 @@ for pista in PISTAS:
 
   """ Loop principal: Genera una secuencia de eventos MIDI lista de
   articulaciones.  """
-  #es = [1 for e in pista.secciones if e.__class__.__name__ == 'Segmento']
-  for numero_segmento, segmento in enumerate( pista.secuencia ):
-    print( segmento.pista, segmento.reiterar, segmento.orden, segmento.numero)
-    segmento_precedente = pista.secuencia[  numero_segmento - 1 ]
+  for numero_segmento, segmento in enumerate( pista.segmentos ):
+  #for numero_segmento, segmento in enumerate( pista.secuencia ):
+    #revisar
+    segmento_precedente = pista.segmentos[  numero_segmento - 1 ]
     if numero_segmento == 0:
       segmento_precedente = Pista.defacto
       

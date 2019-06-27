@@ -82,6 +82,8 @@ class Pista:
     self.paleta = paleta
     self.forma = forma 
 
+    # hacer uno para todas las pistas
+    # sacar de la cuenta general
     Pista.defacto = Segmento(
       pista = nombre,
       nombre = 'Segmento Defacto:' + nombre,
@@ -104,6 +106,16 @@ class Pista:
     # esto no va aca
     verboseprint( self )
 
+  @property
+  def segmentos( 
+    self
+  ):
+    segmentos = []
+    for s in self.secciones:
+        if s.__class__.__name__ == 'Segmento':
+          segmentos.append(s)
+    return segmentos
+  
 
   """ Organiza unidades según relacion de referencia """
   def seccionar( 
@@ -149,8 +161,10 @@ class Pista:
 
         else:
           elemento = Seccion( **args )
+          # registrar recurrencia/id
           elemento.referidos = original['forma'] 
         if referente: 
+          # registrar recurrencia/id
           elemento.referente = referente.nombre
 
         reiterar = 1
@@ -169,34 +183,6 @@ class Pista:
       except Excepcion as e:
           print( e )
 
-      #if seccion:
-      #   seccion.setdefault( 'elementos' , [] )
-      #   destino = seccion[ 'elementos' ]
-      ##  e['seccion'] = seccion['nombre']
-
-
-
-      #if 'forma' not in original:
-      #  # esto es un segmento
-      #  e['suena'] = True
-      #  #destino.setdefault( 'elementos' , [] ).append( e )
-      #  destino.append( e )
-      #  #print(unidad,destino)
-
-      #if not rama:
-      #  destino = self.SECCIONES
-      #  destino.append( rama )
-      #  #destino.setdefault( 'elementos' , [] ).append( rama )
-
-      #if not padre:
-      #  destino.append( h )
-
-      #if padre:
-      #  for s in destino:
-      #    if s['nombre'] == padre['nombre']:
-      #       if s['eo'] == False:
-      #         #s.setdefault( 'hijos' , [] ).append( h )
-      #         s['eo'] = True
 
 
 #  """ Organiza unidades según relacion de referencia """
