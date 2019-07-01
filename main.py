@@ -60,11 +60,12 @@ for pista in PISTAS:
   for numero_segmento, segmento in enumerate( pista.segmentos ):
   #for numero_segmento, segmento in enumerate( pista.secuencia ):
     #revisar
-    #segmento_precedente = pista.precedente( segmento.orden )
-    #print(pista.precedente( segmento.orden ))
-    segmento_precedente = pista.segmentos[  numero_segmento - 1 ]
-    if numero_segmento == 0:
-      segmento_precedente = Pista.defacto
+    #segmento.precedente = pista.precedente( segmento.orden )
+    #print( segmento.precedente )
+    #segmento_precedente = pista.segmentos[  numero_segmento - 1 ]
+    #if numero_segmento == 0:
+    #  segmento_precedente = Pista.defacto
+
       
     canal = segmento.canal
     momento += segmento.desplazar
@@ -80,8 +81,8 @@ for pista in PISTAS:
     #if segmento.referente:
     #  ers = segmento.referir( segmento.referente ) 
     #prs = [ ( 0, 0 ) ]
-    #if segmento_precedente.referente:
-    #  prs = segmento.referir( segmento_precedente.referente )
+    #if segmento.precedente.referente:
+    #  prs = segmento.referir( segmento.precedente.referente )
     #for er, pr in zip( ers , prs ):
     #  if er != pr: 
     #    texto += str( er[ 0 ] ) + ' #' + str( er[ 1 ] ) + '\n' 
@@ -97,7 +98,7 @@ for pista in PISTAS:
 
     """ Agregar propiedades de segmento.
     inserta etiquetas y modificadores de unidad (desplazar)."""
-    if segmento_precedente.metro != segmento.metro:
+    if segmento.precedente.metro != segmento.metro:
       EVENTOS.append([
         'addTimeSignature',
         track,
@@ -107,14 +108,14 @@ for pista in PISTAS:
         segmento.metro['relojes_por_tick'], 
         segmento.metro['notas_por_pulso']
       ])
-    if segmento_precedente.bpm != segmento.bpm:
+    if segmento.precedente.bpm != segmento.bpm:
       EVENTOS.append([
         'addTempo',
         track,
         momento,
         segmento.bpm,
       ])
-    if segmento_precedente.clave != segmento.clave:
+    if segmento.precedente.clave != segmento.clave:
       EVENTOS.append([
         'addKeySignature',
         track,
@@ -199,7 +200,7 @@ for pista in PISTAS:
     for numero_articulacion, articulacion in enumerate( segmento.articulaciones ):
       articulacion_precedente = segmento.articulaciones[  numero_articulacion - 1 ]
       if  numero_articulacion == 0:
-        articulacion_precedente = segmento_precedente.articulaciones[ - 1 ]
+        articulacion_precedente = segmento.precedente.articulaciones[ - 1 ]
       """ Agrega cualquier cambio de parametro, 
       comparar cada uno con la articulacion previa. """
       if articulacion_precedente.bpm != articulacion.bpm:

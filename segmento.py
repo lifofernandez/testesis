@@ -125,6 +125,14 @@ class Segmento( Elemento ):
     self.programa = self.programas[0]
 
   @property
+  def precedente( self ):
+    n = self.orden
+    #if n == 0:
+    # segmento_precedente = Pista.defacto
+    o = self.pista.segmentos[ n - 1]
+    return o 
+
+  @property
   def metro( self ):
     metro = self.props[ 'metro' ].split( '/' ) 
     denominador = int(

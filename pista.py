@@ -43,7 +43,7 @@ class Pista:
     # puede heredar de 'base'
 
     Pista.defacto = Segmento(
-      pista = nombre,
+      pista = self,
       nombre = 'Segmento Inicial',
       nivel = None,
       orden = None,
@@ -64,7 +64,7 @@ class Pista:
       key=lambda x: x.numero
     )
 
-  @property
+  #@property
   def precedente( self, n  ):
     o = self.segmentos[ n - 1]
     return o 
@@ -100,7 +100,7 @@ class Pista:
         for r in range( reiterar ):
           if 'forma' not in original: 
             segmento = Segmento(
-              pista       = self.nombre,
+              pista       = self,
               nombre      = unidad,
               nivel       = nivel - 1,
               orden       = len( self.segmentos ),
