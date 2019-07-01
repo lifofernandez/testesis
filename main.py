@@ -60,6 +60,7 @@ for pista in PISTAS:
   for numero_segmento, segmento in enumerate( pista.segmentos ):
   #for numero_segmento, segmento in enumerate( pista.secuencia ):
     #revisar
+    #segmento_precedente = pista.precedente( segmento.orden )
     #print(pista.precedente( segmento.orden ))
     segmento_precedente = pista.segmentos[  numero_segmento - 1 ]
     if numero_segmento == 0:

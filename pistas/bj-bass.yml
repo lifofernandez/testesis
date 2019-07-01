@@ -23,7 +23,7 @@ unidades:
     alturas: [ 7, 5, 4, 5 ] 
   vuelta:
     forma: [ 'a', 'b' ]
-    #reiterar: 2 
+    reiterar: 2 
 forma: [
    'vuelta',
 ]
