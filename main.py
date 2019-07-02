@@ -39,9 +39,10 @@ for pista in PISTAS:
   momento = 0
   track = pista.numero
 
-  """ Parametros de Pista
-  Primer articulación de la parte, agregar eventos fundamentales: pulso,
-  armadura de clave, compás y programa.  """
+  """ Parametros de Pista Primer articulación de la parte, agregar
+  eventos fundamentales: pulso, armadura de clave, compás y programa.
+  """
+
   EVENTOS.append([
     'addTrackName',
     track,

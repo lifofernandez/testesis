@@ -79,6 +79,7 @@ class Pista:
     """ Limpiar parametros q no se heredan.  """
     herencia.pop( 'forma', None )
     herencia.pop( 'reiterar', None )
+
     for unidad in forma:  
       try:
         #revisar
