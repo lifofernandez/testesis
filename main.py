@@ -57,7 +57,7 @@ for pista in PISTAS:
 
   """ Loop principal: Genera una secuencia de eventos MIDI lista de
   articulaciones.  """
-  for numero_segmento, segmento in enumerate( pista.segmentos ):
+  for segmento in  pista.segmentos:
       
     canal = segmento.canal
     momento += segmento.desplazar
@@ -66,8 +66,9 @@ for pista in PISTAS:
      raise ValueError( 'No se puede desplazar antes q el inicio' ) 
      pass
 
-    """ Compone texto de la etiqueta a partir de nombre de unidad, numero de
-    iteración y referentes """ 
+    """ Compone texto de la etiqueta a partir de nombre de unidad,
+    numero de iteración y referentes """ 
+
     texto = segmento.nombre
 
     #ers = [ ( 0, 0 ) ]
