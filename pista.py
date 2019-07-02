@@ -41,17 +41,16 @@ class Pista:
     # hacer uno para todas las pistas
     # Segmento 0, inicial sacar de la cuenta general
     # puede heredar de 'base'
-
-    Pista.defacto = Segmento(
-      pista = self,
-      nombre = 'Segmento Inicial',
-      nivel = None,
-      orden = None,
-      recurrencia = None,
-      propiedades = {
-        **Segmento.defactos
-      }
-    )
+    #Pista.defacto = Segmento(
+    #  pista = self,
+    #  nombre = 'Segmento Inicial',
+    #  nivel = None,
+    #  orden = None,
+    #  recurrencia = None,
+    #  propiedades = {
+    #    **Segmento.defactos
+    #  }
+    #)
 
     self.secciones = []
     self.segmentos = []
@@ -66,9 +65,7 @@ class Pista:
 
   #@property
   def precedente( self, n  ):
-    o = self.segmentos[ n - 1]
-    return o 
-  
+    return self.segmentos[ n - 1]
 
   """ Organiza unidades según relacion de referencia """
   def seccionar( 
@@ -84,6 +81,7 @@ class Pista:
     herencia.pop( 'reiterar', None )
     for unidad in forma:  
       try:
+        #revisar
         if unidad not in self.paleta:
           error = "PISTA: \"" + self.nombre + "\""
           error += " NO ENCUENTRO: \"" + unidad + "\"  "  
@@ -121,9 +119,9 @@ class Pista:
               pista       = self.nombre,
               nombre      = unidad,
               nivel       = nivel - 1,
-              orden       = len( self.segmentos ),
+              orden       = len( self.secciones ),
               recurrencia = sum( 
-                [ 1 for e in self.segmentos if e.nombre == unidad ]
+                [ 1 for e in self.secciones if e.nombre == unidad ]
               ),
             )
             # registrar  q numero de recurrencia/id o de cual es clonnn
@@ -138,6 +136,3 @@ class Pista:
             ) 
       except Excepcion as e:
           print( e )
-
-
-

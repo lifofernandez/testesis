@@ -15,7 +15,7 @@ class Articulacion:
 
   def __init__( 
     self,
-    id,
+    #id,
     orden,
     bpm,
     programa,
@@ -29,7 +29,7 @@ class Articulacion:
     self.numero = Articulacion.cantidad 
     Articulacion.cantidad += 1
 
-    self.id        = id 
+    #self.id        = id 
     self.orden     = orden
     self.bpm       = bpm
     self.programa  = programa

@@ -58,14 +58,6 @@ for pista in PISTAS:
   """ Loop principal: Genera una secuencia de eventos MIDI lista de
   articulaciones.  """
   for numero_segmento, segmento in enumerate( pista.segmentos ):
-  #for numero_segmento, segmento in enumerate( pista.secuencia ):
-    #revisar
-    #segmento.precedente = pista.precedente( segmento.orden )
-    #print( segmento.precedente )
-    #segmento_precedente = pista.segmentos[  numero_segmento - 1 ]
-    #if numero_segmento == 0:
-    #  segmento_precedente = Pista.defacto
-
       
     canal = segmento.canal
     momento += segmento.desplazar
@@ -77,6 +69,7 @@ for pista in PISTAS:
     """ Compone texto de la etiqueta a partir de nombre de unidad, numero de
     iteración y referentes """ 
     texto = segmento.nombre
+
     #ers = [ ( 0, 0 ) ]
     #if segmento.referente:
     #  ers = segmento.referir( segmento.referente ) 
@@ -89,6 +82,7 @@ for pista in PISTAS:
     ##texto += segmento.nombre
     #if  segmento.referente:
     #  texto += segmento.nombre
+
     EVENTOS.append([
      'addText',
       track,
@@ -98,7 +92,8 @@ for pista in PISTAS:
 
     """ Agregar propiedades de segmento.
     inserta etiquetas y modificadores de unidad (desplazar)."""
-    if segmento.precedente.metro != segmento.metro:
+    #if segmento.precedente.metro != segmento.metro:
+    if segmento.cambia( 'metro' ):
       EVENTOS.append([
         'addTimeSignature',
         track,
@@ -108,14 +103,16 @@ for pista in PISTAS:
         segmento.metro['relojes_por_tick'], 
         segmento.metro['notas_por_pulso']
       ])
-    if segmento.precedente.bpm != segmento.bpm:
+    #if segmento.precedente.bpm != segmento.bpm:
+    if segmento.cambia( 'bpm' ):
       EVENTOS.append([
         'addTempo',
         track,
         momento,
         segmento.bpm,
       ])
-    if segmento.precedente.clave != segmento.clave:
+    #if segmento.precedente.clave != segmento.clave:
+    if segmento.cambia( 'clave' ):
       EVENTOS.append([
         'addKeySignature',
         track,

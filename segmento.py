@@ -2,6 +2,7 @@ import random
 import math
 from elemento import Elemento
 from articulacion import Articulacion
+from argumentos import Excepcion
 
 class Segmento( Elemento ):
   """
@@ -127,10 +128,33 @@ class Segmento( Elemento ):
   @property
   def precedente( self ):
     n = self.orden
-    #if n == 0:
-    # segmento_precedente = Pista.defacto
+    # self.pista.segmentos puede ser: self.hermanos
     o = self.pista.segmentos[ n - 1]
+
+    #if n == 0:
+    # #segmento_precedente = Pista.defacto
+    # o = None
+
+    #print(
+    #  self.obtener( 'metro' )
+    #  #self.cambia( 'metro' )
+    #)
+
     return o 
+
+  def obtener( self, key ):
+      try:
+        o = getattr( self, key )
+        return o
+      except AttributeError as e:
+        return e
+
+  def cambia( self, key ):
+      if self.orden == 0:
+        return True
+      anterior = self.precedente.obtener( key )
+      este = self.obtener( key ) 
+      return anterior != este
 
   @property
   def metro( self ):
@@ -212,7 +236,7 @@ class Segmento( Elemento ):
           controles += [ capa[ paso % len( capa ) ] ]
       """ Articulación a secuenciar. """
       articulacion = Articulacion(
-         id        = str( self.numero ) + self.nombre + str( paso ),
+         #id        = str( self.numero ) + self.nombre + str( paso ),
          orden     = paso,
          bpm       = self.BPMs[ paso % len( self.BPMs ) ],
          programa  = self.programas[ paso % len( self.programas ) ],
