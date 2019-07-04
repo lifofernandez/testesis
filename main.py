@@ -59,7 +59,6 @@ for pista in PISTAS:
   """ Loop principal: Genera una secuencia de eventos MIDI lista de
   articulaciones.  """
   for segmento in  pista.segmentos:
-      
     canal = segmento.canal
     momento += segmento.desplazar
 
@@ -196,13 +195,11 @@ for pista in PISTAS:
         segmento.RPN[ 'ordenar' ],
       ])
 
-    for numero_articulacion, articulacion in enumerate( segmento.articulaciones ):
-      articulacion_precedente = segmento.articulaciones[  numero_articulacion - 1 ]
-      if  numero_articulacion == 0:
-        articulacion_precedente = segmento.precedente.articulaciones[ - 1 ]
+    for articulacion in segmento.articulaciones:
+
       """ Agrega cualquier cambio de parametro, 
       comparar cada uno con la articulacion previa. """
-      if articulacion_precedente.bpm != articulacion.bpm:
+      if articulacion.cambia('bpm'):
         EVENTOS.append([
           'addTempo',
           track,
@@ -210,7 +207,7 @@ for pista in PISTAS:
           articulacion.bpm,
         ])
 
-      if articulacion_precedente.programa != articulacion.programa:
+      if articulacion.cambia('programa'):
         EVENTOS.append([
            'addProgramChange',
            track,
@@ -218,7 +215,9 @@ for pista in PISTAS:
            momento, 
            articulacion.programa
         ])
-        #midi_bits.addText( pista.numero, momento , 'prgm : #' + str( programa ) )
+        # midi_bits.addText(
+        #  pista.numero, momento , 'prgm : #' + str( programa )
+        #)
 
       if articulacion.tono:
         EVENTOS.append([

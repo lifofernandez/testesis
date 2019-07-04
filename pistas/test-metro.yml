@@ -53,7 +53,8 @@ unidades: !!map
     forma: [ 'B','A' ]
 forma: !!seq [
   'estrofa',
-  'estribo'
+  'estribo',
+  'estrofa',
 ]
 
 

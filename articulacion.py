@@ -16,6 +16,7 @@ class Articulacion:
   def __init__( 
     self,
     #id,
+    segmento, 
     orden,
     bpm,
     programa,
@@ -30,16 +31,39 @@ class Articulacion:
     Articulacion.cantidad += 1
 
     #self.id        = id 
+    self.segmento  = segmento
     self.orden     = orden
     self.bpm       = bpm
     self.programa  = programa
     self.tono      = tono
-
     self._dinamica  = dinamica 
     self.duracion  = duracion
     self.controles = controles
     self.altura    = nota
     self.acorde    = acorde
+    #print(self.orden)
+
+  @property
+  def precedente( self ):
+    n = self.orden
+    o = self.segmento.articulaciones[ n - 1]
+    if  n == 0:
+      o = self.segmento.precedente.articulaciones[ - 1 ]
+    return o 
+
+  def obtener( self, key ):
+      try:
+        o = getattr( self, key )
+        return o
+      except AttributeError as e:
+        return e
+
+  def cambia( self, key ):
+      if self.segmento.orden == 0 and self.orden == 0:
+        return True
+      anterior = self.precedente.obtener( key )
+      este = self.obtener( key ) 
+      return anterior != este
 
   @property
   def dinamica(
@@ -54,18 +78,4 @@ class Articulacion:
       ( viejo_valor - viejo_min ) / ( viejo_max - viejo_min )
     ) * ( nuevo_max - nuevo_min) + nuevo_min
     return int( min( max( nuevo_valor, nuevo_min ), nuevo_max ) )
-
-  #def next(self):
-  #        try:
-  #            result = self.collection[self.index]
-  #            self.index += 1
-  #        except IndexError:
-  #            raise StopIteration
-  #        return result
-  #
-  #def previo(self):
-  #    self.index -= 1
-  #    if self.index < 0:
-  #        raise StopIteration
-  #    return self.collection[self.index]
 

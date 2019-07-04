@@ -222,7 +222,7 @@ unidades: !!map
   B^: 
     <<: *B
     voces: 0 
-    BPMs: [89,37]
+    BPMs: [89,37,15]
     forma: [ 'b', 'a' ] 
     dinamicas: [ 1 ]
 

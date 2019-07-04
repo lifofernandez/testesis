@@ -130,16 +130,6 @@ class Segmento( Elemento ):
     n = self.orden
     # self.pista.segmentos puede ser: self.hermanos
     o = self.pista.segmentos[ n - 1]
-
-    #if n == 0:
-    # #segmento_precedente = Pista.defacto
-    # o = None
-
-    #print(
-    #  self.obtener( 'metro' )
-    #  #self.cambia( 'metro' )
-    #)
-
     return o 
 
   def obtener( self, key ):
@@ -237,6 +227,7 @@ class Segmento( Elemento ):
       """ Articulación a secuenciar. """
       articulacion = Articulacion(
          #id        = str( self.numero ) + self.nombre + str( paso ),
+         segmento  = self,
          orden     = paso,
          bpm       = self.BPMs[ paso % len( self.BPMs ) ],
          programa  = self.programas[ paso % len( self.programas ) ],
