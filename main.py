@@ -1,4 +1,5 @@
 from argumentos import args, verbose, Excepcion
+
 import yaml
 import pprint
 from pista import Pista
@@ -266,5 +267,6 @@ for pista in PISTAS:
             ])
 
       momento += articulacion.duracion
-      #duracion_parte += ( duracion *  60 ) / bpm 
+
+
 

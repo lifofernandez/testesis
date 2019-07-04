@@ -1,3 +1,4 @@
+# TODO Agregar duracion de segmento
 import random
 import math
 from elemento import Elemento

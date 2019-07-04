@@ -1,3 +1,4 @@
+# TODO subcribir a Elemento()
 from argumentos import args, verbose, Excepcion
 
 class Articulacion:
@@ -15,7 +16,6 @@ class Articulacion:
 
   def __init__( 
     self,
-    #id,
     segmento, 
     orden,
     bpm,
@@ -30,7 +30,6 @@ class Articulacion:
     self.numero = Articulacion.cantidad 
     Articulacion.cantidad += 1
 
-    #self.id        = id 
     self.segmento  = segmento
     self.orden     = orden
     self.bpm       = bpm
