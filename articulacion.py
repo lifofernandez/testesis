@@ -8,11 +8,15 @@ class Articulacion:
   cantidad = 0 
  
   def __str__( self ):
-    o = '' 
-    for attr, value in self.__dict__.items():
-      l = str( attr ) + ':' + str( value )
-      o += l + '\n'
-    return o
+    o  = str( self.numero ) + '\t' 
+    o += str( self.orden ) + '\t' 
+    o += str( self.bpm)  + '\t'
+    o += str( self.duracion) + '\t' 
+    o += str( self.dinamica) + '\t' 
+    o += str( self.altura) + '\t' 
+    o += str( self.tono) + '\t' 
+    o += str( self.controles) + '\n' 
+    return o  
 
   def __init__( 
     self,
@@ -40,7 +44,6 @@ class Articulacion:
     self.controles = controles
     self.altura    = nota
     self.acorde    = acorde
-    #print(self.orden)
 
   @property
   def precedente( self ):

@@ -12,6 +12,11 @@ class Seccion( Elemento ):
     o += str( self.numero_seccion ) + '\t' 
     return o  
 
+  def verbose( self, verbose = 0 ):
+    o = str(self)
+    o += '\n' + '=' * 60
+    return o
+
   def __init__( 
     self,
     pista, 

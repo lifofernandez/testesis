@@ -1,9 +1,7 @@
-# TODO Agregar duracion de segmento
 import random
 import math
 from elemento import Elemento
 from articulacion import Articulacion
-from argumentos import Excepcion
 
 class Segmento( Elemento ):
   """
@@ -18,7 +16,6 @@ class Segmento( Elemento ):
     # que NO refieren a un canal en particualr
     #'addTrackName',
     #'addCopyright',
-
     #'addTempo',
     #'addTimeSignature',
     #'addKeySignature',
@@ -57,11 +54,21 @@ class Segmento( Elemento ):
     'controles'    : None,
   }
 
-  def __str__( self ):
+  def __str__( self):
     o = Elemento.__str__( self )
     o += self.tipo + ' '
     o += str( self.numero_segmento) + '\t' 
     return o  
+
+  def verbose( self, verbose = 0 ):
+    o = str(self)
+    o += '\n' + '=' * 60
+    if verbose > 2:
+      o += '\nARTICULACIONES\n'
+      o += '#\tord\tbpm\tdur\tdin\talt\tton\tctrs\n' 
+      for a in self.articulaciones:
+        o += str( a )
+    return o
 
   def __init__( 
     self,
@@ -129,7 +136,6 @@ class Segmento( Elemento ):
   @property
   def precedente( self ):
     n = self.orden
-    # self.pista.segmentos puede ser: self.hermanos
     o = self.pista.segmentos[ n - 1]
     return o 
 
@@ -146,6 +152,10 @@ class Segmento( Elemento ):
       anterior = self.precedente.obtener( key )
       este = self.obtener( key ) 
       return anterior != este
+
+  @property
+  def duracion( self ):
+    return sum(self.duraciones) 
 
   @property
   def metro( self ):
@@ -210,10 +220,12 @@ class Segmento( Elemento ):
       acorde = []
       nota   = 'S' # Silencio
       if altura != 0:
-        """ Relacion: altura > puntero en el set de registracion; Trasponer
-        dentro del set de registracion, luego Transportar, sumar a la nota
-        resultante. """
-        n = self.registracion[ ( ( altura - 1 ) + self.transponer ) % len( self.registracion ) ] 
+        """ Relacion: altura > puntero en el set de registracion;
+        Trasponer dentro del set de registracion, luego Transportar,
+        sumar a la nota resultante. """
+        n = self.registracion[
+          ( ( altura - 1 ) + self.transponer ) % len( self.registracion )
+        ] 
         nota = self.transportar + n
         """ Armar superposicion de voces. """
         if self.voces:
@@ -227,7 +239,6 @@ class Segmento( Elemento ):
           controles += [ capa[ paso % len( capa ) ] ]
       """ Articulación a secuenciar. """
       articulacion = Articulacion(
-         #id        = str( self.numero ) + self.nombre + str( paso ),
          segmento  = self,
          orden     = paso,
          bpm       = self.BPMs[ paso % len( self.BPMs ) ],
@@ -243,21 +254,3 @@ class Segmento( Elemento ):
       o.append( articulacion )
     return o
 
-  """ Extrae referentes recursivamente """
-  def referir(
-      refs,
-      o = None,
-    ):
-    #print(refs)
-    #referente   = refs[ 'referente' ]   if 'referente'   in refs else None
-    #nombre      = refs[ 'nombre' ]      if 'nombre'      in refs else None
-    #recurrencia = refs[ 'recurrencia' ] if 'recurrencia' in refs else None
-    #nivel       = refs[ 'nivel' ]       if 'nivel'       in refs else None
-    output      = o                     if o is not None         else [ None ] * nivel 
-    #output[ nivel - 1 ] = ( nombre, recurrencia )
-    #if referente:
-    #  referir( referente, output )
-    return output
-  
-
- 

@@ -17,13 +17,17 @@ class Pista:
   cantidad = 0 
 
   def __str__( self ):
-    # Esto es para verbose print level 1
-    o = 'PISTA ' + str( self.numero) + ': '+ str( self.nombre  )
+    o  = 'PISTA ' + str( self.numero) + ': '+ str( self.nombre  )
+    return o
 
-    # Esto es para verbose print level 2
-    o +=  '\n#\torden\tnivel\trecur\tnombre\n'
-    for e in self.elementos:
-      o += str(e) + '\n'
+  def verbose( self, lvl = 0 ):
+    o = str(self)
+    o += '\n' + '=' * 60
+    if lvl > 1:
+      # Esto es para verbose print level 2
+      o += '\n#\torden\tnivel\trecur\tnombre\n'
+      for e in self.elementos:
+        o += e.verbose( lvl ) + '\n'
     return o
 
   def __init__( 
@@ -38,20 +42,6 @@ class Pista:
     self.paleta = paleta
     self.forma = forma 
 
-    # hacer uno para todas las pistas
-    # Segmento 0, inicial sacar de la cuenta general
-    # puede heredar de 'base'
-    #Pista.defacto = Segmento(
-    #  pista = self,
-    #  nombre = 'Segmento Inicial',
-    #  nivel = None,
-    #  orden = None,
-    #  recurrencia = None,
-    #  propiedades = {
-    #    **Segmento.defactos
-    #  }
-    #)
-
     self.secciones = []
     self.segmentos = []
     self.seccionar( self.forma )
@@ -62,10 +52,6 @@ class Pista:
       self.secciones + self.segmentos,
       key=lambda x: x.numero
     )
-
-  #@property
-  def precedente( self, n  ):
-    return self.segmentos[ n - 1]
 
   """ Organiza unidades según relacion de referencia """
   def seccionar( 
@@ -112,8 +98,9 @@ class Pista:
               }
             )
             if referente: 
-              # registrar  q numero de recurrencia/id o de cual es clonnn
-              segmento.referente = referente.nombre
+              # registrar q numero de recurrencia/id o de cual es
+              # clonnn
+              segmento.referente = referente
             self.segmentos.append( segmento )
           else:
             seccion = Seccion(
@@ -125,7 +112,10 @@ class Pista:
                 [ 1 for e in self.secciones if e.nombre == unidad ]
               ),
             )
-            # registrar  q numero de recurrencia/id o de cual es clonnn
+
+            # registrar  q numero de recurrencia/id o de cual es
+            # clonnn
+
             seccion.referidos = original['forma'] 
             self.secciones.append( seccion )
             elemento = seccion

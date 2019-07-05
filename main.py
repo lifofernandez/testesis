@@ -17,8 +17,8 @@ def leer_yamls():
       y = yaml.load( data ) 
       defs.append( y )
     except Exception as e:
-      print(e)
-      print( "=" * 80)
+      print( e )
+      print( "=" * 80 )
   return defs
 DEFS = leer_yamls()
 
@@ -36,7 +36,9 @@ for d in DEFS:
 """ Generar canal MIDI a partir de cada pista """
 EVENTOS = []
 for pista in PISTAS:
-  verbose(pista)
+  # Encapsular Opus?   
+  # Esto es verbose level 1
+  print( pista.verbose( args.verbose ) )
   momento = 0
   track = pista.numero
 
