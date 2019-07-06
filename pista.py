@@ -21,13 +21,15 @@ class Pista:
     return o
 
   def verbose( self, lvl = 0 ):
-    o = str(self)
-    o += '\n' + '=' * 60
+    o = str( self ) + ' '
+    o +=  '#' * ( 60 - len( o ))
     if lvl > 1:
       # Esto es para verbose print level 2
-      o += '\n#\torden\tnivel\trecur\tnombre\n'
+      o += '\nELEM\t#\torden\tnivel\trecur\tnombre\n'
       for e in self.elementos:
-        o += e.verbose( lvl ) + '\n'
+        #o += '\n'
+        o += e.verbose( lvl ) 
+        o += '\n'
     return o
 
   def __init__( 

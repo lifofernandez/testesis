@@ -11,11 +11,12 @@ class Elemento():
 
   def __str__( self ):
     o  = str( self.numero ) + '\t' 
+    # TODO numero de elemento, orden en la pista y orden en la SECCION
     o += str( self.orden ) + '\t' 
     o += str( self.nivel )  + '\t'
     o += str( self.recurrencia ) + '\t' 
     o += '+' + str( '-' * ( self.nivel ) ) 
-    o += self.nombre + '\t'
+    o += self.nombre  
     return o  
 
   def __init__( 

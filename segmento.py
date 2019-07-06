@@ -54,15 +54,17 @@ class Segmento( Elemento ):
     'controles'    : None,
   }
 
-  def __str__( self):
-    o = Elemento.__str__( self )
-    o += self.tipo + ' '
-    o += str( self.numero_segmento) + '\t' 
-    return o  
+  #def __str__( self):
+  #  o = Elemento.__str__( self )
+  #  o += self.tipo + ' '
+  #  o += str( self.numero_segmento) + '\t' 
+  #  return o  
 
   def verbose( self, verbose = 0 ):
-    o = str(self)
-    o += '\n' + '=' * 60
+    o = self.tipo + ' '
+    o += str( self.numero_segmento) + '\t' 
+    o += str( self ) + ' '
+    o += '-' * ( 18 - (len( self.nombre ) + self.nivel))
     if verbose > 2:
       o += '\nARTICULACIONES\n'
       o += '#\tord\tbpm\tdur\tdin\talt\tton\tctrs\n' 
@@ -89,7 +91,7 @@ class Segmento( Elemento ):
     )
     self.numero_segmento = Segmento.cantidad 
     Segmento.cantidad += 1
-    self.tipo = 'SEGMENTO'
+    self.tipo = 'SGMT'
     self.props = propiedades 
 
     """ PRE PROCESO DE UNIDAD """
