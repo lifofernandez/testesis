@@ -47,8 +47,9 @@ class Segmento( Elemento ):
     'programas'    : [ 1 ],
     'duraciones'   : [ 1 ],
     'dinamicas'    : [ 1 ],
-    'registracion'   : [ 1 ],
+    'registracion' : [ 1 ],
     'alturas'      : [ 1 ],
+    'letras'       : [ None ], 
     'tonos'        : [ 0 ],
     'voces'        : None,
     'controles'    : None,
@@ -67,7 +68,7 @@ class Segmento( Elemento ):
     o += '-' * ( 18 - (len( self.nombre ) + self.nivel))
     if verbose > 2:
       o += '\nARTICULACIONES\n'
-      o += '#\tord\tbpm\tdur\tdin\talt\tton\tctrs\n' 
+      o += '#\tord\tbpm\tdur\tdin\talt\tltr\tton\tctrs\n' 
       for a in self.articulaciones:
         o += str( a )
     return o
@@ -128,6 +129,7 @@ class Segmento( Elemento ):
     self.BPMs              = self.props[ 'BPMs' ]
     self.dinamicas         = self.props[ 'dinamicas' ]
     self.alturas           = self.props[ 'alturas' ]
+    self.letras            = self.props[ 'letras' ]
     self.tonos             = self.props[ 'tonos' ]
     self.voces             = self.props[ 'voces' ]
     self.capas             = self.props[ 'controles' ]
@@ -202,6 +204,7 @@ class Segmento( Elemento ):
       self.dinamicas,
       self.duraciones,
       self.alturas,
+      self.letras,
       self.tonos,
       self.BPMs,
       self.programas,
@@ -213,9 +216,9 @@ class Segmento( Elemento ):
 
     """ Consolidad "articulacion" 
     combinar parametros: altura, duracion, dinamica, etc. """
-    bpm       = 0 
-    programa  = 0 
-    tono      = 0 
+    #bpm       = 0 
+    #programa  = 0 
+    #tono      = 0 
     for paso in range( self.cantidad_pasos ):
       """ Alturas, voz y superposición voces. """
       altura = self.alturas[ paso % len( self.alturas ) ]
@@ -251,6 +254,7 @@ class Segmento( Elemento ):
          dinamica  = self.dinamicas[ paso % len( self.dinamicas ) ] * self.fluctuacion,
          nota      = nota,
          acorde    = acorde,
+         letra     = self.letras[ paso % len( self.letras ) ],
          controles = controles,
       )
       o.append( articulacion )

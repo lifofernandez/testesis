@@ -61,6 +61,7 @@ for pista in PISTAS:
 
   """ Loop principal: Genera una secuencia de eventos MIDI lista de
   articulaciones.  """
+
   for segmento in  pista.segmentos:
     canal = segmento.canal
     momento += segmento.desplazar
@@ -87,12 +88,12 @@ for pista in PISTAS:
     #if  segmento.referente:
     #  texto += segmento.nombre
 
-    EVENTOS.append([
-     'addText',
-      track,
-      momento,
-      texto
-    ])
+    #EVENTOS.append([
+    # 'addText',
+    #  track,
+    #  momento,
+    #  texto
+    #])
 
     """ Agregar propiedades de segmento.
     inserta etiquetas y modificadores de unidad (desplazar)."""
@@ -202,7 +203,7 @@ for pista in PISTAS:
 
       """ Agrega cualquier cambio de parametro, 
       comparar cada uno con la articulacion previa. """
-      if articulacion.cambia('bpm'):
+      if articulacion.cambia( 'bpm' ):
         EVENTOS.append([
           'addTempo',
           track,
@@ -210,7 +211,7 @@ for pista in PISTAS:
           articulacion.bpm,
         ])
 
-      if articulacion.cambia('programa'):
+      if articulacion.cambia( 'programa' ):
         EVENTOS.append([
            'addProgramChange',
            track,
@@ -218,10 +219,15 @@ for pista in PISTAS:
            momento, 
            articulacion.programa
         ])
-        # midi_bits.addText(
-        #  pista.numero, momento , 'prgm : #' + str( programa )
-        #)
 
+      #if articulacion.cambia( 'letra' ):
+      if articulacion.letra:
+        EVENTOS.append([
+         'addText',
+          track,
+          momento,
+          articulacion.letra
+        ])
       if articulacion.tono:
         EVENTOS.append([
            'addPitchWheelEvent',

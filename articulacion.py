@@ -14,6 +14,7 @@ class Articulacion:
     o += str( self.duracion) + '\t' 
     o += str( self.dinamica) + '\t' 
     o += str( self.altura) + '\t' 
+    o += str( self.letra ) + '\t' 
     o += str( self.tono) + '\t' 
     o += str( self.controles) + '\n' 
     return o  
@@ -29,6 +30,7 @@ class Articulacion:
     nota,
     acorde,
     tono,
+    letra,
     controles,
   ):
     self.numero = Articulacion.cantidad 
@@ -43,6 +45,7 @@ class Articulacion:
     self.duracion  = duracion
     self.controles = controles
     self.altura    = nota
+    self.letra     = letra
     self.acorde    = acorde
 
   @property
