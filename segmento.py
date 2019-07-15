@@ -55,12 +55,6 @@ class Segmento( Elemento ):
     'controles'    : None,
   }
 
-  #def __str__( self):
-  #  o = Elemento.__str__( self )
-  #  o += self.tipo + ' '
-  #  o += str( self.numero_segmento) + '\t' 
-  #  return o  
-
   def verbose( self, verbose = 0 ):
     o = self.tipo + ' '
     o += str( self.numero_segmento) + '\t' 

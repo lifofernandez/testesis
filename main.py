@@ -3,42 +3,40 @@ from argumentos import args, verbose, Excepcion
 import yaml
 import pprint
 from pista import Pista
-from datetime import datetime, timedelta
 
-formato_tiempo =  '%H:%M:%S'
-
-""" Lee ficheros YAML declarados argumentos posicionales """
 def leer_yamls():
+  """ Lee ficheros YAML declarados argumentos posicionales """
   defs = []
   for archivo in args.archivos:
     data = open( archivo.name, 'r' )
     try:
-      #y = yaml.load( data, Loader = yaml.FullLoader ) 
-      y = yaml.load( data ) 
+      y = yaml.load( data, Loader = yaml.FullLoader ) 
+      #y = yaml.load( data ) 
       defs.append( y )
     except Exception as e:
       print( e )
       print( "=" * 80 )
   return defs
+
 DEFS = leer_yamls()
 
 """ A partir de cada definicion agrega una Pista """
-PISTAS = []
-registro = []
+#PISTAS = []
+EVENTOS = []
 for d in DEFS:
   pista = Pista(
     d[ 'nombre' ],
     d[ 'unidades' ],
     d[ 'forma' ],
   )
-  PISTAS.append( pista )
+  # TODO ver si eshay q guardarlas 
+  #PISTAS.append( pista )
 
-""" Generar canal MIDI a partir de cada pista """
-EVENTOS = []
-for pista in PISTAS:
-  # Encapsular Opus?   
-  # Esto es verbose level 1
-  print( pista.verbose( args.verbose ) )
+  if args.verbose:
+    print( pista.verbose( args.verbose ) )
+
+  """ Generar canal MIDI a partir de cada pista """
+
   momento = 0
   track = pista.numero
 
@@ -62,7 +60,7 @@ for pista in PISTAS:
   """ Loop principal: Genera una secuencia de eventos MIDI lista de
   articulaciones.  """
 
-  for segmento in  pista.segmentos:
+  for segmento in pista.segmentos:
     canal = segmento.canal
     momento += segmento.desplazar
 
@@ -70,34 +68,9 @@ for pista in PISTAS:
      raise ValueError( 'No se puede desplazar antes q el inicio' ) 
      pass
 
-    """ Compone texto de la etiqueta a partir de nombre de unidad,
-    numero de iteración y referentes """ 
-
-    texto = segmento.nombre
-
-    #ers = [ ( 0, 0 ) ]
-    #if segmento.referente:
-    #  ers = segmento.referir( segmento.referente ) 
-    #prs = [ ( 0, 0 ) ]
-    #if segmento.precedente.referente:
-    #  prs = segmento.referir( segmento.precedente.referente )
-    #for er, pr in zip( ers , prs ):
-    #  if er != pr: 
-    #    texto += str( er[ 0 ] ) + ' #' + str( er[ 1 ] ) + '\n' 
-    ##texto += segmento.nombre
-    #if  segmento.referente:
-    #  texto += segmento.nombre
-
-    #EVENTOS.append([
-    # 'addText',
-    #  track,
-    #  momento,
-    #  texto
-    #])
-
     """ Agregar propiedades de segmento.
     inserta etiquetas y modificadores de unidad (desplazar)."""
-    #if segmento.precedente.metro != segmento.metro:
+
     if segmento.cambia( 'metro' ):
       EVENTOS.append([
         'addTimeSignature',
@@ -108,7 +81,7 @@ for pista in PISTAS:
         segmento.metro['relojes_por_tick'], 
         segmento.metro['notas_por_pulso']
       ])
-    #if segmento.precedente.bpm != segmento.bpm:
+
     if segmento.cambia( 'bpm' ):
       EVENTOS.append([
         'addTempo',
@@ -116,7 +89,7 @@ for pista in PISTAS:
         momento,
         segmento.bpm,
       ])
-    #if segmento.precedente.clave != segmento.clave:
+
     if segmento.cambia( 'clave' ):
       EVENTOS.append([
         'addKeySignature',
@@ -146,6 +119,7 @@ for pista in PISTAS:
         segmento.afinacionBanco[ 'banco' ],
         segmento.afinacionBanco[ 'ordenar' ],
       ])
+
     if segmento.afinacionPrograma:
       EVENTOS.append([ 
         'changeTuningProgram',
@@ -155,6 +129,7 @@ for pista in PISTAS:
         segmento.afinacionPrograma[ 'programa' ],
         segmento.afinacionPrograma[ 'ordenar' ],
       ])
+
     if segmento.sysEx:
       EVENTOS.append([
        'addSysEx',
@@ -163,6 +138,7 @@ for pista in PISTAS:
         segmento.sysEx[ 'fabricante' ],
         segmento.sysEx[ 'playload' ],
       ])
+
     if segmento.uniSysEx:
       EVENTOS.append([
        'addUniversalSysEx',
@@ -174,6 +150,7 @@ for pista in PISTAS:
         segmento.uniSysEx[ 'canal' ],
         segmento.uniSysEx[ 'tiempoReal' ],
       ])
+
     if segmento.NRPN:
       EVENTOS.append([
        'makeNRPNCall',
@@ -186,6 +163,7 @@ for pista in PISTAS:
         segmento.NRPN[ 'data_lsb' ],
         segmento.NRPN[ 'ordenar' ],
       ])
+
     if segmento.RPN:
       EVENTOS.append([
        'makeRPNCall',
@@ -203,6 +181,7 @@ for pista in PISTAS:
 
       """ Agrega cualquier cambio de parametro, 
       comparar cada uno con la articulacion previa. """
+
       if articulacion.cambia( 'bpm' ):
         EVENTOS.append([
           'addTempo',
@@ -220,7 +199,6 @@ for pista in PISTAS:
            articulacion.programa
         ])
 
-      #if articulacion.cambia( 'letra' ):
       if articulacion.letra:
         EVENTOS.append([
          'addText',
@@ -228,6 +206,7 @@ for pista in PISTAS:
           momento,
           articulacion.letra
         ])
+
       if articulacion.tono:
         EVENTOS.append([
            'addPitchWheelEvent',
@@ -261,8 +240,9 @@ for pista in PISTAS:
           articulacion.duracion, 
           dinamica,
         ])
-      """ Agregar cambios de control """
+
       if articulacion.controles:
+        """ Agregar cambios de control """
         for control in articulacion.controles:
           for control, valor in control.items():
             EVENTOS.append([

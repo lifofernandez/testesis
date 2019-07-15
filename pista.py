@@ -4,7 +4,6 @@ from elemento import Elemento
 from seccion  import Seccion
 from segmento import Segmento
 
-#from elemento import Elemento, Seccion, Segmento
 
 import random
 import sys
@@ -20,17 +19,17 @@ class Pista:
     o  = 'PISTA ' + str( self.numero) + ': '+ str( self.nombre  )
     return o
 
-  def verbose( self, lvl = 0 ):
-    o = str( self ) + ' '
-    o +=  '#' * ( 60 - len( o ))
-    if lvl > 1:
-      # Esto es para verbose print level 2
-      o += '\nELEM\t#\torden\tnivel\trecur\tnombre\n'
-      for e in self.elementos:
-        #o += '\n'
-        o += e.verbose( lvl ) 
-        o += '\n'
-    return o
+  def verbose( self, verbose = 0 ):
+    if verbose > 0:
+      o = str( self ) + ' '
+      o = str( self ) + ' '
+      o +=  '#' * ( 60 - len( o ))
+      if verbose > 1:
+        o += '\nELEM\t#\torden\tnivel\trecur\tnombre\n'
+        for e in self.elementos:
+          o += e.verbose( verbose ) 
+          o += '\n'
+      return o
 
   def __init__( 
     self,
