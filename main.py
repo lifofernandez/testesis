@@ -190,14 +190,17 @@ for d in DEFS:
           articulacion.bpm,
         ])
 
+      #if ( articulacion.cambia( 'programa' ) and articulacion.programa is not None):
       if articulacion.cambia( 'programa' ):
-        EVENTOS.append([
-           'addProgramChange',
-           track,
-           canal, 
-           momento, 
-           articulacion.programa
-        ])
+        print(articulacion.programa)
+        # TODO Revisar q no mande nada si no hay programa decladaro
+        #EVENTOS.append([
+        #   'addProgramChange',
+        #   track,
+        #   canal, 
+        #   momento, 
+        #   articulacion.programa
+        #])
 
       if articulacion.letra:
         EVENTOS.append([

@@ -1,6 +1,3 @@
-#from argumentos import args, verboseprint, Excepcion
-#import pprint
-
 class Elemento():
   """
   Pista > ELEMENTOS

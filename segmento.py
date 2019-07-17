@@ -44,7 +44,8 @@ class Segmento( Elemento ):
 
     # Propiedades de Articulacion 
     'BPMs'         : [ 60 ],
-    'programas'    : [ 1 ],
+    # TODO revisar esto
+    'programas'    : [ None ],
     'duraciones'   : [ 1 ],
     'dinamicas'    : [ 1 ],
     'registracion' : [ 1 ],
@@ -134,7 +135,7 @@ class Segmento( Elemento ):
   @property
   def precedente( self ):
     n = self.orden
-    o = self.pista.segmentos[ n - 1]
+    o = self.pista.segmentos[ n - 1 ]
     return o 
 
   def obtener( self, key ):
@@ -230,7 +231,10 @@ class Segmento( Elemento ):
         if self.voces:
           for v in self.voces:
             voz = ( altura + ( v[ paso % len( v ) ] ) - 1 ) + self.transponer
-            acorde += [ self.transportar +  self.registracion[ voz % len( self.registracion ) ]  ]
+            acorde += [ 
+              self.transportar + 
+              self.registracion[ voz % len( self.registracion ) ] 
+            ]
       """ Cambios de control. """
       controles = []
       if self.capas:

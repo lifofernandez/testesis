@@ -1,4 +1,3 @@
-#from argumentos import args, verboseprint, Excepcion
 from elemento import Elemento
 
 class Seccion( Elemento ):

@@ -11,13 +11,15 @@ base: &base
   duraciones: [ 1.5, 2.5 ]
   BPMs: [ 100 ]
   metro: 4/4
-  dinamicas: [ 1 ]
-  canal: 11
-  programas: [ 2 ] 
-  voces:
+  dinamicas: [ .3 ]
+  canal: 0
+  programa: 3
+  voces: 
     - [ 0 ]
     - [ -3 ]
     - [ -5 ]
+
+      #programa:  1
 unidades: 
   a:
     <<: *base
