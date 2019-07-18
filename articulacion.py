@@ -1,6 +1,4 @@
-# TODO subcribir a Elemento()
 from argumentos import args, verbose, Excepcion
-
 class Articulacion:
   """
   Pista > Segmentos > ARTICULACIONES
@@ -64,11 +62,17 @@ class Articulacion:
         return e
 
   def cambia( self, key ):
-      if self.segmento.orden == 0 and self.orden == 0:
-        return True
-      anterior = self.precedente.obtener( key )
       este = self.obtener( key ) 
-      return anterior != este
+      if este:
+        anterior = self.precedente.obtener( key )
+        return anterior != este
+      elif (
+        self.segmento.orden == 0 
+        and self.orden == 0
+        and este
+       ):
+        return True
+      
 
   @property
   def dinamica(

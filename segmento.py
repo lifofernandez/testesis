@@ -11,40 +11,35 @@ class Segmento( Elemento ):
   cantidad = 0
 
   defactos = {
-    # TO DO Meta Track
-    # Agrupar/Revisar/Avisar propiedades "Globales" 
-    # que NO refieren a un canal en particualr
-    #'addTrackName',
-    #'addCopyright',
-    #'addTempo',
-    #'addTimeSignature',
-    #'addKeySignature',
-    #'changeNoteTuning',
-    #'addSysEx',
-    #'addUniversalSysEx',
 
     # Propiedades de Segmento 
     'canal'             : 1,
-    'desplazar'         : 0,
+    'revertir'          : None,
+    'referente'         : None,
+
+    'NRPN'              : None,
+    'RPN'               : None,
+
+    # Parametros que NO son de Canal
+    # Deberian ir a META track?
     'metro'             : '4/4',
     'clave'             : { 'alteraciones' : 0, 'modo' : 0 },
-    'fluctuacion'       : { 'min' : 1, 'max' : 1 },
-    'transportar'       : 0,
-    'transponer'        : 0,
-    'reiterar'          : 1,
-    'referente'         : None,
-    'revertir'          : None,
     'afinacionNota'     : None,
     'afinacionBanco'    : None,
     'afinacionPrograma' : None,
     'sysEx'             : None,
     'uniSysEx'          : None,
-    'NRPN'              : None,
-    'RPN'               : None,
+
+
+    # Procesos de Segmento
+    'transportar'       : 0,
+    'transponer'        : 0,
+    'reiterar'          : 1,
+    'desplazar'         : 0, # ¿momento?
+    'fluctuacion'       : { 'min' : 1, 'max' : 1 },
 
     # Propiedades de Articulacion 
     'BPMs'         : [ 60 ],
-    # TODO revisar esto
     'programas'    : [ None ],
     'duraciones'   : [ 1 ],
     'dinamicas'    : [ 1 ],
@@ -54,6 +49,7 @@ class Segmento( Elemento ):
     'tonos'        : [ 0 ],
     'voces'        : None,
     'controles'    : None,
+
   }
 
   def verbose( self, verbose = 0 ):
@@ -88,8 +84,10 @@ class Segmento( Elemento ):
     self.numero_segmento = Segmento.cantidad 
     Segmento.cantidad += 1
     self.tipo = 'SGMT'
-    self.props = propiedades 
-
+    self.props = {
+        **Segmento.defactos,
+        **propiedades 
+    }
     """ PRE PROCESO DE UNIDAD """
     """ Cambia el sentido de los parametros de articulacion """
     self.revertir = self.props[ 'revertir' ]
@@ -146,11 +144,15 @@ class Segmento( Elemento ):
         return e
 
   def cambia( self, key ):
-      if self.orden == 0:
-        return True
-      anterior = self.precedente.obtener( key )
       este = self.obtener( key ) 
-      return anterior != este
+      if este:
+        anterior = self.precedente.obtener( key )
+        return anterior != este
+      elif (
+        self.orden == 0
+        and este
+       ):
+        return True
 
   @property
   def duracion( self ):
@@ -209,11 +211,8 @@ class Segmento( Elemento ):
     ganador = max( candidatos, key = len )
     self.cantidad_pasos = len( ganador )
 
-    """ Consolidad "articulacion" 
+    """ Consolidar "articulacion" 
     combinar parametros: altura, duracion, dinamica, etc. """
-    #bpm       = 0 
-    #programa  = 0 
-    #tono      = 0 
     for paso in range( self.cantidad_pasos ):
       """ Alturas, voz y superposición voces. """
       altura = self.alturas[ paso % len( self.alturas ) ]

@@ -13,13 +13,12 @@ base: &base
   metro: 4/4
   dinamicas: [ .3 ]
   canal: 0
-  programa: 3
   voces: 
     - [ 0 ]
     - [ -3 ]
     - [ -5 ]
+   # programas: [ 3 ]
 
-      #programa:  1
 unidades: 
   a:
     <<: *base
@@ -27,6 +26,7 @@ unidades:
   b:
     <<: *base
     alturas: [ 10, 9 ] 
+    #programas: [4,6]
   vuelta:
     forma: [ 'a', 'b' ]
 forma: [

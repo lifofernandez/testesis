@@ -1,5 +1,4 @@
 from argumentos import args, verbose, Excepcion
-
 import yaml
 import pprint
 from pista import Pista
@@ -29,7 +28,7 @@ for d in DEFS:
     d[ 'unidades' ],
     d[ 'forma' ],
   )
-  # TODO ver si eshay q guardarlas 
+  # TODO ver si es hay q guardarlas 
   #PISTAS.append( pista )
 
   if args.verbose:
@@ -190,17 +189,14 @@ for d in DEFS:
           articulacion.bpm,
         ])
 
-      #if ( articulacion.cambia( 'programa' ) and articulacion.programa is not None):
       if articulacion.cambia( 'programa' ):
-        print(articulacion.programa)
-        # TODO Revisar q no mande nada si no hay programa decladaro
-        #EVENTOS.append([
-        #   'addProgramChange',
-        #   track,
-        #   canal, 
-        #   momento, 
-        #   articulacion.programa
-        #])
+        EVENTOS.append([
+           'addProgramChange',
+           track,
+           canal, 
+           momento, 
+           articulacion.programa
+        ])
 
       if articulacion.letra:
         EVENTOS.append([

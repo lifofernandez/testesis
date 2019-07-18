@@ -93,10 +93,7 @@ class Pista:
               recurrencia = sum( 
                 [ 1 for e in self.segmentos if e.nombre == unidad ]
               ),
-              propiedades = {
-                **Segmento.defactos,
-                **sucesion,
-              }
+              propiedades = sucesion,
             )
             if referente: 
               # registrar q numero de recurrencia/id o de cual es
