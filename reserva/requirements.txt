@@ -1,0 +1,6 @@
+pyyaml
+midiutil
+music21
+networkx
+matplotlib
+pygraphviz

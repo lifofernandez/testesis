@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from argumentos import args
-from main import EVENTOS
+from obra import EVENTOS
 from pista import Pista
 from midiutil import MIDIFile
 
@@ -18,6 +18,7 @@ with open( nombre_archivo + ".mid", "wb" ) as archivo_midi:
 
 """
 TO DO:
+    [ ]  
     [ ] Excepciones main
     [ ] Parar tempo a canal global, propiedad de  no canal specifico
     [ ] YAML validation 
@@ -31,3 +32,8 @@ TO DO:
     [x] terminar midiUTIL 
     [x] Agregar: Segmento (grupo de articulaciones) 
 """
+# https://docs.python.org/3/reference/import.html#regular-packages
+# https://realpython.com/run-python-scripts/
+# https://setuptools.readthedocs.io/en/latest/setuptools.html
+# https://docs.python.org/3/reference/import.html#namespace-packages
+# https://stackoverflow.com/questions/1471994/what-is-setup-py
