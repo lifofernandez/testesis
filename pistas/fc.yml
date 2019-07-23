@@ -12,11 +12,17 @@ base: &base
   alturas: [ 1 ] 
   transportar: 72 
   duraciones: [ 1.5 ]
-  bpm: 60  
+  BPMs: [100]
   metro: 3/4
   dinamicas: [ 1 ]
   canal: 1 
-  programas: [ 5 ]
+  programas: [ 1,2,3,4,]
+
+forma: [
+  'espera',
+  'estrofa',
+  'estribo',
+]
 
 unidades: 
   espera:
@@ -31,6 +37,7 @@ unidades:
   b: &b 
     <<: *base
     #BPMs: [ 62 ]
+    programas: [ 5,6]
     alturas: [ 8, 7 ] 
     duraciones: [ 1, 2 ]
     letras: [ 'fe', 'liz.' ]
@@ -64,24 +71,18 @@ unidades:
 
   estrofa: 
     forma: [
-    'A',
-    'A`',
-  ]
-    #reiterar: 4
+      'A',
+      'A`',
+    ]
   estribo: 
     forma: [
-    'B',
-    'A``',
-  ]
+      'B',
+      'A``',
+    ]
   perro: 
     forma: [
-    'estrofa',
-  ]
+     'estrofa',
+    ]
 
-forma: [
-  'espera',
-  'estrofa',
-  'estribo',
-]
 
 

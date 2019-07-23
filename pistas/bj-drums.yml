@@ -1,13 +1,12 @@
 nombre: 'Billie Jean: Drum'
 base: &base 
-  registracion: [ 42,35,38 ]
+  registracion: [ 42,36,38 ]
   alturas: [ 1 ] 
   transportar: 0 
   duraciones: [ .5 ]
   BPMs: [ 100 ]
   metro: 4/4
   dinamicas: [ 1 ]
-  dinamicas: [ .5 ]
   canal: 9 
 unidades: 
   a:
@@ -21,10 +20,74 @@ unidades:
     alturas: [ 1, 1 ]
     voces:
       - [ 0 ]
+      #- [ 1, 0 ]
       - [ 2, 0 ]
   vuelta:
     forma: [ 'a', 'b' ]
     reiterar: 4
 forma: [
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
    'vuelta',
 ]

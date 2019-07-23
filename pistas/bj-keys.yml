@@ -17,7 +17,6 @@ base: &base
     - [ 0 ]
     - [ -3 ]
     - [ -5 ]
-   # programas: [ 3 ]
 
 unidades: 
   a:
@@ -26,10 +25,72 @@ unidades:
   b:
     <<: *base
     alturas: [ 10, 9 ] 
-    #programas: [4,6]
   vuelta:
     forma: [ 'a', 'b' ]
 forma: [
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
    'vuelta',
 ]
 

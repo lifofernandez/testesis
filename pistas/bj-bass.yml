@@ -9,9 +9,8 @@ base: &base
   alturas: [ 1 ] 
   transportar: 35 #B
   duraciones: [ .5 ]
-  BPMs: [ 100 ]
   metro: 4/4
-  dinamicas: [ 1 ]
+  dinamicas: [ 0.5 ]
   canal:  1 
 unidades: 
   a:
@@ -24,5 +23,68 @@ unidades:
     forma: [ 'a', 'b' ]
     reiterar: 2 
 forma: [
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
+   'vuelta',
    'vuelta',
 ]

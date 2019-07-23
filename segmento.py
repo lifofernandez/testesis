@@ -145,14 +145,15 @@ class Segmento( Elemento ):
 
   def cambia( self, key ):
       este = self.obtener( key ) 
-      if este:
-        anterior = self.precedente.obtener( key )
-        return anterior != este
-      elif (
+      anterior = self.precedente.obtener( key )
+      #if este:
+      #  return anterior != este
+      if (
         self.orden == 0
-        and este
-       ):
+        #and este
+      ):
         return True
+      return anterior != este
 
   @property
   def duracion( self ):

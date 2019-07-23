@@ -63,15 +63,16 @@ class Articulacion:
 
   def cambia( self, key ):
       este = self.obtener( key ) 
-      if este:
-        anterior = self.precedente.obtener( key )
-        return anterior != este
-      elif (
+      anterior = self.precedente.obtener( key )
+      #if este:
+      #  return anterior != este
+      if (
         self.segmento.orden == 0 
         and self.orden == 0
         and este
        ):
         return True
+      return anterior != este
       
 
   @property
