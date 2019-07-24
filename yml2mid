@@ -22,6 +22,7 @@ TO DO:
     [ ] Excepciones main
     [ ] Parar tempo a canal global, propiedad de  no canal specifico
     [ ] YAML validation 
+    [ ] Procesos de unidad/segmento : "stacato" (acortar notas)
     [x] agregar primer segmento de la pista
     [x] agregar primer  articulacion del segmento
     [x] pasar intervalos a propiedad de segmento/unidad

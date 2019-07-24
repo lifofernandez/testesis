@@ -218,8 +218,10 @@ class Segmento( Elemento ):
       """ Alturas, voz y superposición voces. """
       altura = self.alturas[ paso % len( self.alturas ) ]
       acorde = []
-      nota   = 'S' # Silencio
-      if altura != 0:
+      #nota   = 'S' # Silencio
+      nota   = altura 
+      #if altura != 0:
+      if altura:
         """ Relacion: altura > puntero en el set de registracion;
         Trasponer dentro del set de registracion, luego Transportar,
         sumar a la nota resultante. """

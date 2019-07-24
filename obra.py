@@ -227,9 +227,11 @@ for d in DEFS:
         altura = voz 
         """ Si la articulacion es un silencio (S) agregar nota sin altura ni 
         dinamica.  """
-        if voz == 'S':
-          dinamica = 0
-          altura = 0
+        #if voz == 'S':
+          #revisar "bogus" noteoff 
+          #dinamica = 0
+          #altura = 0
+          #altura = articulacion.altura
         EVENTOS.append([
           'addNote',
           track, 
