@@ -1,0 +1,71 @@
+nombre: 'Test: Transponer'
+base: &base 
+  clave: 
+    alteraciones: 0
+    modo: 0
+  registracion: [ 
+    -12, -10, -8, -7, -5, -3, -1,
+      0,   2,  4,  5,  7,  9, 11,
+     12,  14, 15, 17, 19, 21, 23,
+     24
+  ]
+  alturas: [ 1 ] 
+  transportar: 72 
+  duraciones: [ 1.5 ]
+  BPMs: [100]
+  metro: 3/4
+  dinamicas: [ 1 ]
+  canal: 0 
+
+forma: [
+  'estrofa',
+  #'estribo',
+]
+
+unidades: 
+  a: &a 
+    <<: *base
+    alturas: [ 1, 2, 3, 1 ] 
+  b: 
+    <<: *a
+    transponer: 1
+  c: 
+    <<: *a
+    transponer: 2
+  d: 
+    <<: *a
+    transponer: 3
+  e: 
+    <<: *a
+    transponer: 4
+  f: 
+    <<: *a
+    transponer: 6
+  g: 
+    <<: *a
+    transponer: 7
+
+  A: 
+    forma: [ 'a', 'b' ] 
+  B: 
+    forma: [ 'c' ,'d' ]
+    canal: 1
+  C: 
+    forma: [ 'e', 'f' ] 
+    canal: 2
+
+  estrofa: 
+    forma: [
+      'A',
+      'B',
+      'C',
+      'g',
+    ]
+  estribo: 
+    forma: [
+      'C',
+      'A',
+    ]
+
+
+
