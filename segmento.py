@@ -220,23 +220,25 @@ class Segmento( Elemento ):
       acorde = []
       #nota   = 'S' # Silencio
       nota   = altura 
-      #if altura != 0:
-      if altura:
-        """ Relacion: altura > puntero en el set de registracion;
-        Trasponer dentro del set de registracion, luego Transportar,
-        sumar a la nota resultante. """
-        n = self.registracion[
-          ( ( altura - 1 ) + self.transponer ) % len( self.registracion )
-        ] 
-        nota = self.transportar + n
-        """ Armar superposicion de voces. """
-        if self.voces:
-          for v in self.voces:
-            voz = ( altura + ( v[ paso % len( v ) ] ) - 1 ) + self.transponer
-            acorde += [ 
-              self.transportar + 
-              self.registracion[ voz % len( self.registracion ) ] 
-            ]
+      #if altura:
+      """ Relacion: altura > puntero en el set de registracion;
+      Trasponer dentro del set de registracion, luego Transportar,
+      sumar a la nota resultante. """
+      n = self.registracion[
+        ( ( altura - 1 ) + self.transponer ) % len( self.registracion )
+      ] 
+      nota = self.transportar + n
+      #silencio = False
+      #if altura == 0:
+      #  silencio = True 
+      """ Armar superposicion de voces. """
+      if self.voces:
+        for v in self.voces:
+          voz = ( altura + ( v[ paso % len( v ) ] ) - 1 ) + self.transponer
+          acorde += [ 
+            self.transportar + 
+            self.registracion[ voz % len( self.registracion ) ] 
+          ]
       """ Cambios de control. """
       controles = []
       if self.capas:
@@ -248,12 +250,15 @@ class Segmento( Elemento ):
          orden     = paso,
          bpm       = self.BPMs[ paso % len( self.BPMs ) ],
          programa  = self.programas[ paso % len( self.programas ) ],
-         tono      = self.tonos[ paso % len( self.tonos ) ],
 
          duracion  = self.duraciones[ paso % len( self.duraciones ) ],
+         #paSAR DINAMICA A PROCESOS DE SEGMENTO,
+         #QUE OPERE EN EL RESULTADO DE LASARTICULACIONES
          dinamica  = self.dinamicas[ paso % len( self.dinamicas ) ] * self.fluctuacion,
          nota      = nota,
          acorde    = acorde,
+         #silencio  = silencio,
+         tono      = self.tonos[ paso % len( self.tonos ) ],
          letra     = self.letras[ paso % len( self.letras ) ],
          controles = controles,
       )

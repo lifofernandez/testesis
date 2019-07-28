@@ -27,6 +27,7 @@ class Articulacion:
     dinamica,
     nota,
     acorde,
+    #silencio,
     tono,
     letra,
     controles,
@@ -43,6 +44,7 @@ class Articulacion:
     self.duracion  = duracion
     self.controles = controles
     self.altura    = nota
+    #self.silecio   = silencio
     self.letra     = letra
     self.acorde    = acorde
 
