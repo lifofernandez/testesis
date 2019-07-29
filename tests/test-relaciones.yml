@@ -1,6 +1,5 @@
 nombre: 'Prueba Relaciones'
 base: &base 
-  canal: 1
   registracion: [ 
     -12, -10, -8, -7, -5, -3, -1,
       0,   2,  4,  5,  7,  9, 11,
@@ -13,7 +12,7 @@ base: &base
   BPMs: !!seq [ 103 ]
   metro: 3/4
   dinamicas: [ 1 ]
-  programas: !!seq [ 103 ]
+  canal: 0
 unidades: 
   a: &a 
     <<: *base

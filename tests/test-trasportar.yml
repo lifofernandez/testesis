@@ -1,0 +1,60 @@
+nombre: 'Test: Transponer'
+base: &base 
+  alteraciones: 1
+  registracion: [ 
+    -12, -10, -8, -7, -5, -3, -1,
+      0,   2,  4,  5,  7,  9, 11,
+     12,  14, 15, 17, 19, 21, 23,
+     24
+  ]
+  alturas: [ 1 ] 
+  transportar: 60 
+  canal: 0 
+forma: [
+  'estrofa',
+]
+unidades: 
+  a: &a 
+    <<: *base
+    alturas: [ 1, 2, 3, 1 ] 
+  b: 
+    <<: *a
+    transportar: 61
+  c: 
+    <<: *a
+    transportar: 62
+  d: 
+    <<: *a
+    transportar: 63
+  e: 
+    <<: *a
+    transportar: 64
+  f: 
+    <<: *a
+    transportar: 66
+  g: 
+    <<: *a
+    transportar: 67
+
+  A: 
+    forma: [ 'a', 'b' ] 
+  B: 
+    forma: [ 'c' ,'d' ]
+  C: 
+    forma: [ 'e', 'f' ] 
+
+  estrofa: 
+    forma: [
+      'A',
+      'B',
+      'C',
+      'g',
+    ]
+  estribo: 
+    forma: [
+      'C',
+      'A',
+    ]
+
+
+

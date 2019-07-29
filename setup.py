@@ -1,4 +1,5 @@
-from setuptools import setup, find_packages
+#from setuptools import setup, find_packages
+from setuptools import setup
 # you may need setuptools instead of distutils
 
 setup(

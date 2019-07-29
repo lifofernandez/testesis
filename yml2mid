@@ -17,21 +17,21 @@ with open( nombre_archivo + ".mid", "wb" ) as archivo_midi:
 
 
 """
-TO DO:
-    [ ]  
-    [ ] Excepciones main
-    [ ] Parar tempo a canal global, propiedad de  no canal specifico
-    [ ] YAML validation 
-    [ ] Procesos de unidad/segmento : "stacato" (acortar notas)
-    [x] agregar primer segmento de la pista
-    [x] agregar primer  articulacion del segmento
-    [x] pasar intervalos a propiedad de segmento/unidad
-    [x] parametros de Segmento = art#0 de la unidad
-    [x] Agregar Letra (texo)
-    [x] Agregar: Registro 
-    [x] revisar metro
-    [x] terminar midiUTIL 
-    [x] Agregar: Segmento (grupo de articulaciones) 
+TODO
+[ ]  
+[ ] Excepciones main
+[ ] Parar tempo a canal global, propiedad de  no canal specifico
+[ ] YAML validation 
+[ ] Procesos de unidad/segmento : "stacato" (acortar notas)
+[x] agregar primer segmento de la pista
+[x] agregar primer  articulacion del segmento
+[x] pasar intervalos a propiedad de segmento/unidad
+[x] parametros de Segmento = art#0 de la unidad
+[x] Agregar Letra (texo)
+[x] Agregar: Registro 
+[x] revisar metro
+[x] terminar midiUTIL 
+[x] Agregar: Segmento (grupo de articulaciones) 
 """
 # https://docs.python.org/3/reference/import.html#regular-packages
 # https://realpython.com/run-python-scripts/

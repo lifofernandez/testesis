@@ -158,8 +158,10 @@ class Segmento( Elemento ):
 
   @property
   def duracion( self ):
-    # TODO, duraciones de pista
+    # TODO duraciones de pista
+    # TODO esto en bpm, pasar a segs
     return sum( self.duraciones ) 
+
 
   @property
   def metro( self ):
