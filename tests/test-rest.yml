@@ -1,0 +1,69 @@
+nombre: 'Test: Silencio'
+base: &base 
+  registracion: [ 
+    -12, -10, -8, -7, -5, -3, -1,
+      0,   2,  4,  5,  7,  9, 11,
+     12,  14, 15, 17, 19, 21, 23,
+     24
+  ]
+  alturas: [ 1 ] 
+  transportar: 72 
+  duraciones: [ 1.5 ]
+  BPMs: [100]
+  metro: 3/4
+  dinamicas: [ 1, 0 ]
+  canal: 0 
+forma: [
+  'espera',
+  'estrofa',
+  'estribo',
+]
+unidades: 
+  espera:
+    <<: *base
+    dinamicas: [ 0 ]
+    duraciones: [ 2 ]
+  a: &a 
+    <<: *base
+    alturas: [ 5, 5, 6, 5 ] 
+    duraciones: [ .75, .25, 1, 1 ]
+    letras: [ 'Que', 'los', 'cum', 'plas,' ]
+  b: &b 
+    <<: *base
+    alturas: [ 8, 7 ] 
+    duraciones: [ 1, 2 ]
+    letras: [ 'fe', 'liz.' ]
+  b`: 
+    <<: *b
+    transponer: 1
+  a`: 
+    <<: *a
+    alturas: [ 5, 5, 12, 10 ] 
+  a``: 
+    <<: *a
+    alturas: [ 8, 8, 7, 6 ] 
+    letras: [ 'que', 'los', 'cum', 'plas,' ]
+  a```: 
+    <<: *a
+    alturas: [ 11, 11, 10, 8 ] 
+    letras: [ 'que', 'los', 'cum', 'plas,' ]
+
+  A: 
+    forma: [ 'a', 'b' ] 
+  A`: 
+    forma: [ 'a' , 'b`' ]
+  B: 
+    forma: [ 'a`', 'a``' ] 
+  A``: 
+    forma: [ 'a```', 'b`' ] 
+
+  estrofa: 
+    forma: [
+      'A',
+      'A`',
+    ]
+  estribo: 
+    forma: [
+      'B',
+      'A``',
+    ]

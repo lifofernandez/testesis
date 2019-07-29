@@ -13,7 +13,7 @@ class Segmento( Elemento ):
   defactos = {
 
     # Propiedades de Segmento 
-    'canal'             : 1,
+    'canal'             : 0,
     'revertir'          : None,
     'referente'         : None,
 
@@ -23,13 +23,14 @@ class Segmento( Elemento ):
     # Parametros que NO son de Canal
     # Deberian ir a META track?
     'metro'             : '4/4',
-    'clave'             : { 'alteraciones' : 0, 'modo' : 0 },
+    #'clave'             : { 'alteraciones' : 0, 'modo' : 0 },
+    'alteraciones'      : 0, 
+    'modo'              : 0,
     'afinacionNota'     : None,
     'afinacionBanco'    : None,
     'afinacionPrograma' : None,
     'sysEx'             : None,
     'uniSysEx'          : None,
-
 
     # Procesos de Segmento
     'transportar'       : 0,
@@ -106,7 +107,9 @@ class Segmento( Elemento ):
     self.transponer        = self.props[ 'transponer' ]
     self.transportar       = self.props[ 'transportar' ]
     self.referente         = self.props[ 'referente' ]
-    self.clave             = self.props[ 'clave' ]
+    #self.clave             = self.props[ 'clave' ]
+    self.alteraciones      = self.props[ 'alteraciones' ]
+    self.modo              = self.props[ 'modo' ]
 
     self.afinacionNota     = self.props[ 'afinacionNota' ]
     self.afinacionBanco    = self.props[ 'afinacionBanco' ]
@@ -146,18 +149,17 @@ class Segmento( Elemento ):
   def cambia( self, key ):
       este = self.obtener( key ) 
       anterior = self.precedente.obtener( key )
-      #if este:
-      #  return anterior != este
       if (
         self.orden == 0
-        #and este
+        and este
       ):
         return True
       return anterior != este
 
   @property
   def duracion( self ):
-    return sum(self.duraciones) 
+    # TODO, duraciones de pista
+    return sum( self.duraciones ) 
 
   @property
   def metro( self ):
@@ -173,17 +175,25 @@ class Segmento( Elemento ):
     }
 
   @property
+  def clave( self ):
+    return { 
+      'alteraciones' : self.alteraciones,
+      'modo' : self.modo
+    }
+
+  @property
   def fluctuacion( self ):
+    # fluctuacion a cualquier parametro de la articulacion
     fluctuacion = self.props['fluctuacion']
     rand_min = 0
     if 'min' in fluctuacion:
-        rand_min = fluctuacion['min'] 
+      rand_min = fluctuacion['min'] 
     rand_max = 0
     if 'max' in fluctuacion:
-        rand_max = fluctuacion['max']
+      rand_max = fluctuacion['max']
     f = random.uniform( 
-        rand_min,
-        rand_max 
+      rand_min,
+      rand_max 
     ) if rand_min or rand_max else 1
     return f 
     
@@ -218,9 +228,7 @@ class Segmento( Elemento ):
       """ Alturas, voz y superposición voces. """
       altura = self.alturas[ paso % len( self.alturas ) ]
       acorde = []
-      #nota   = 'S' # Silencio
       nota   = altura 
-      #if altura:
       """ Relacion: altura > puntero en el set de registracion;
       Trasponer dentro del set de registracion, luego Transportar,
       sumar a la nota resultante. """
@@ -228,9 +236,6 @@ class Segmento( Elemento ):
         ( ( altura - 1 ) + self.transponer ) % len( self.registracion )
       ] 
       nota = self.transportar + n
-      #silencio = False
-      #if altura == 0:
-      #  silencio = True 
       """ Armar superposicion de voces. """
       if self.voces:
         for v in self.voces:
@@ -252,16 +257,16 @@ class Segmento( Elemento ):
          programa  = self.programas[ paso % len( self.programas ) ],
 
          duracion  = self.duraciones[ paso % len( self.duraciones ) ],
-         #paSAR DINAMICA A PROCESOS DE SEGMENTO,
-         #QUE OPERE EN EL RESULTADO DE LASARTICULACIONES
-         dinamica  = self.dinamicas[ paso % len( self.dinamicas ) ] * self.fluctuacion,
+         # PASAR FLUCTUACION A PROCESOS DE SEGMENTO,
+         # QUE OPERE EN EL RESULTADO DE LASARTICULACIONES
+         dinamica  = self.dinamicas[
+           paso % len( self.dinamicas )
+         ] * self.fluctuacion,
          nota      = nota,
          acorde    = acorde,
-         #silencio  = silencio,
          tono      = self.tonos[ paso % len( self.tonos ) ],
          letra     = self.letras[ paso % len( self.letras ) ],
          controles = controles,
       )
       o.append( articulacion )
     return o
-

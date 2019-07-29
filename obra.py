@@ -10,7 +10,6 @@ def leer_yamls():
     data = open( archivo.name, 'r' )
     try:
       y = yaml.load( data, Loader = yaml.FullLoader ) 
-      #y = yaml.load( data ) 
       defs.append( y )
     except Exception as e:
       print( e )
@@ -28,6 +27,7 @@ for d in DEFS:
     d[ 'unidades' ],
     d[ 'forma' ],
   )
+  # TODO Crear "Obra" abstraccion / modulo 
   # TODO ver si es hay q guardarlas 
   #PISTAS.append( pista )
 
@@ -42,7 +42,6 @@ for d in DEFS:
   """ Parametros de Pista Primer articulación de la parte, agregar
   eventos fundamentales: pulso, armadura de clave, compás y programa.
   """
-
   EVENTOS.append([
     'addTrackName',
     track,

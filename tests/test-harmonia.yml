@@ -1,8 +1,6 @@
-nombre: 'Feliz Cumple'
+nombre: 'Test: Harmonia'
 base: &base 
-  clave: 
-    alteraciones: 0
-    modo: 0
+  alteraciones: 0
   registracion: [ 
     -12, -10, -8, -7, -5, -3, -1,
       0,   2,  4,  5,  7,  9, 11,
@@ -14,8 +12,12 @@ base: &base
   duraciones: [ 1.5 ]
   BPMs: [100]
   metro: 3/4
-  dinamicas: [ 1,0 ]
+  dinamicas: [ 1 ]
   canal: 1 
+  voces:
+    - [ 4 ]
+    - [ 2 ]
+    - [ 0 ]
 
 forma: [
   'espera',
@@ -26,9 +28,7 @@ forma: [
 unidades: 
   espera:
     <<: *base
-    # revisar "bogus" noteoff
-    # alturas: [ 0 ] 
-    dinamicas: [ 0 ]
+    dinamicas: [ 0 ] 
     duraciones: [ 2 ]
   a: &a 
     <<: *base
@@ -40,12 +40,9 @@ unidades:
     alturas: [ 8, 7 ] 
     duraciones: [ 1, 2 ]
     letras: [ 'fe', 'liz.' ]
-    #reiterar: 1
   b`: 
     <<: *b
-    #metro: '2/4'
     transponer: 1
-    #reiterar: 0
   a`: 
     <<: *a
     alturas: [ 5, 5, 12, 10 ] 
@@ -63,7 +60,6 @@ unidades:
   A`: 
     forma: [ 'a' , 'b`' ]
   B: 
-    #desplazar: -0.5
     forma: [ 'a`', 'a``' ] 
   A``: 
     forma: [ 'a```', 'b`' ] 
@@ -78,10 +74,3 @@ unidades:
       'B',
       'A``',
     ]
-  perro: 
-    forma: [
-     'estrofa',
-    ]
-
-
-

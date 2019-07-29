@@ -7,15 +7,17 @@ nombre: !!str
   'Pista ejemplo 1'
   
 base: &base !!map
-  # Parametros por defecto para todas las unidades, pueden ser sobrescritos
+  # Parametros por defecto para todas las unidades,
+  # pueden ser sobrescritos
   # <<: *base (Para que otra pista herede estas propiedades)
 
-  clave: !!map
-    # https://midiutil.readthedocs.io/en/1.2.1/class.html#midiutil.MidiFile.MIDIFile.addKeySignature
+  alteraciones:
     # Catidad de alteraciones en la armadura de clave,  
     # -2 = Bb, -1 = F, 0 = C, 1 = G, 2 = D,
-    alteraciones: -2
-    modo: 0 # Modo de la escala, 0 = Mayor o 1 = Menor
+    2
+  modo:
+    # Modo de la escala, 0 = Mayor o 1 = Menor
+    1
 
   registracion: !!seq 
     # Secuencia de intervalos 

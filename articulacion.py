@@ -66,8 +66,6 @@ class Articulacion:
   def cambia( self, key ):
       este = self.obtener( key ) 
       anterior = self.precedente.obtener( key )
-      #if este:
-      #  return anterior != este
       if (
         self.segmento.orden == 0 
         and self.orden == 0
