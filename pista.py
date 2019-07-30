@@ -1,12 +1,11 @@
 from argumentos import args, verbose, Excepcion
-import pprint
 from elemento import Elemento
 from seccion  import Seccion
 from segmento import Segmento
 
-
-import random
-import sys
+#import pprint
+#import random
+#import sys
 
 class Pista:
   """
@@ -51,8 +50,12 @@ class Pista:
   def elementos( self ):
     return sorted( 
       self.secciones + self.segmentos,
-      key=lambda x: x.numero
+      key = lambda x: x.numero
     )
+
+  @property
+  def segundos( self ):
+    return sum( [ s.segundos for s in self.segmentos ] ) 
 
   """ Organiza unidades según relacion de referencia """
   def seccionar( 
@@ -69,7 +72,6 @@ class Pista:
 
     for unidad in forma:  
       try:
-        #revisar
         if unidad not in self.paleta:
           error = "PISTA: \"" + self.nombre + "\""
           error += " NO ENCUENTRO: \"" + unidad + "\"  "  
@@ -96,8 +98,8 @@ class Pista:
               propiedades = sucesion,
             )
             if referente: 
-              # registrar q numero de recurrencia/id o de cual es
-              # clonnn
+              # TODO registrar q numero de recurrencia/id 
+              # y de cual es clonnn
               segmento.referente = referente
             self.segmentos.append( segmento )
           else:
@@ -111,7 +113,7 @@ class Pista:
               ),
             )
 
-            # registrar  q numero de recurrencia/id o de cual es
+            # TODO registrar  q numero de recurrencia/id o de cual es
             # clonnn
 
             seccion.referidos = original['forma'] 

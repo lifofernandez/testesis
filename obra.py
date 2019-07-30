@@ -176,7 +176,6 @@ for d in DEFS:
       ])
 
     for articulacion in segmento.articulaciones:
-
       """ Agrega cualquier cambio de parametro, 
       comparar cada uno con la articulacion previa. """
 
@@ -221,23 +220,16 @@ for d in DEFS:
       if articulacion.acorde:
         voces = articulacion.acorde 
 
-      dinamica = articulacion.dinamica
       for voz in voces:
-        altura = voz 
-        """ Si la articulacion es un silencio (S) agregar nota sin altura ni 
-        dinamica.  """
-        #if articulacion.silecio:
-        #  print('descanso')
-        #  #revisar "bogus" noteoff 
-        #  dinamica = 0
+        #altura = voz 
         EVENTOS.append([
           'addNote',
           track, 
           canal, 
-          altura, 
+          voz, 
           momento, 
           articulacion.duracion, 
-          dinamica,
+          articulacion.dinamica
         ])
 
       if articulacion.controles:

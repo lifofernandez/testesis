@@ -74,11 +74,17 @@ class Articulacion:
         return True
       return anterior != este
       
+  @property
+  def ratio( self ):
+      return 60 / self.bpm
 
   @property
-  def dinamica(
-    self
-  ):
+  def segundos( self ):
+    return self.duracion * self.ratio
+
+
+  @property
+  def dinamica( self ):
     viejo_valor = self._dinamica 
     viejo_min = 0 
     viejo_max = 1 

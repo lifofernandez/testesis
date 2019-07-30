@@ -157,10 +157,8 @@ class Segmento( Elemento ):
       return anterior != este
 
   @property
-  def duracion( self ):
-    # TODO duraciones de pista
-    # TODO esto en bpm, pasar a segs
-    return sum( self.duraciones ) 
+  def segundos( self ):
+    return sum( [a.segundos for a in self.articulaciones] ) 
 
 
   @property
@@ -257,7 +255,6 @@ class Segmento( Elemento ):
          orden     = paso,
          bpm       = self.BPMs[ paso % len( self.BPMs ) ],
          programa  = self.programas[ paso % len( self.programas ) ],
-
          duracion  = self.duraciones[ paso % len( self.duraciones ) ],
          # PASAR FLUCTUACION A PROCESOS DE SEGMENTO,
          # QUE OPERE EN EL RESULTADO DE LASARTICULACIONES
