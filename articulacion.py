@@ -78,7 +78,7 @@ class Articulacion:
       return 60 / self.bpm
 
   @property
-  def lapso( self ):
+  def tiempo( self ):
     # duracion en segundos
     return self.duracion * self.relacion
 

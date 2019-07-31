@@ -18,6 +18,7 @@ class Seccion( Elemento ):
     nivel,
     orden,
     recurrencia,
+    referente
   ):
     Elemento.__init__( 
       self,
@@ -25,7 +26,8 @@ class Seccion( Elemento ):
       nombre,
       nivel,
       orden,
-      recurrencia
+      recurrencia,
+      referente
     )
     self.numero_seccion = Seccion.cantidad 
     Seccion.cantidad += 1

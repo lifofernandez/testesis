@@ -11,19 +11,16 @@ class Segmento( Elemento ):
   cantidad = 0
 
   defactos = {
-
     # Propiedades de Segmento 
     'canal'             : 0,
     'revertir'          : None,
-    'referente'         : None,
-
     'NRPN'              : None,
     'RPN'               : None,
 
-    # Parametros que NO son de Canal
-    # Deberian ir a META track?
+    # Props. que NO refieren a Canal especifico
+    # ¿Deberian ir a META track?
+    # Igualmente midiutil las manda a canal 16...
     'metro'             : '4/4',
-    #'clave'             : { 'alteraciones' : 0, 'modo' : 0 },
     'alteraciones'      : 0, 
     'modo'              : 0,
     'afinacionNota'     : None,
@@ -31,11 +28,11 @@ class Segmento( Elemento ):
     'afinacionPrograma' : None,
     'sysEx'             : None,
     'uniSysEx'          : None,
-
-    # Procesos de Segmento
     'transportar'       : 0,
     'transponer'        : 0,
     'reiterar'          : 1,
+
+    # Procesos de Segmento
     'desplazar'         : 0, # ¿momento?
     'fluctuacion'       : { 'min' : 1, 'max' : 1 },
 
@@ -72,6 +69,7 @@ class Segmento( Elemento ):
     nivel,
     orden,
     recurrencia,
+    referente,
     propiedades
   ):
     Elemento.__init__( 
@@ -80,7 +78,8 @@ class Segmento( Elemento ):
       nombre,
       nivel,
       orden,
-      recurrencia
+      recurrencia,
+      referente
     )
     self.numero_segmento = Segmento.cantidad 
     Segmento.cantidad += 1
@@ -89,7 +88,7 @@ class Segmento( Elemento ):
         **Segmento.defactos,
         **propiedades 
     }
-    """ PRE PROCESO DE UNIDAD """
+    """ PRE PROCESO DE SEGMENTO """
     """ Cambia el sentido de los parametros de articulacion """
     self.revertir = self.props[ 'revertir' ]
     if self.revertir:
@@ -106,11 +105,8 @@ class Segmento( Elemento ):
     self.desplazar         = self.props[ 'desplazar' ]
     self.transponer        = self.props[ 'transponer' ]
     self.transportar       = self.props[ 'transportar' ]
-    self.referente         = self.props[ 'referente' ]
-    #self.clave             = self.props[ 'clave' ]
     self.alteraciones      = self.props[ 'alteraciones' ]
     self.modo              = self.props[ 'modo' ]
-
     self.afinacionNota     = self.props[ 'afinacionNota' ]
     self.afinacionBanco    = self.props[ 'afinacionBanco' ]
     self.afinacionPrograma = self.props[ 'afinacionPrograma' ]
@@ -119,7 +115,6 @@ class Segmento( Elemento ):
     self.NRPN              = self.props[ 'NRPN' ]
     self.RPN               = self.props[ 'RPN' ]
     self.registracion      = self.props[ 'registracion' ]
-
     self.programas         = self.props[ 'programas' ]
     self.duraciones        = self.props[ 'duraciones' ]
     self.BPMs              = self.props[ 'BPMs' ]
@@ -129,7 +124,6 @@ class Segmento( Elemento ):
     self.tonos             = self.props[ 'tonos' ]
     self.voces             = self.props[ 'voces' ]
     self.capas             = self.props[ 'controles' ]
-
     self.bpm = self.BPMs[0]
     self.programa = self.programas[0]
 
@@ -157,9 +151,9 @@ class Segmento( Elemento ):
       return anterior != este
 
   @property
-  def duracion( self ):
+  def tiempo( self ):
     # duracion en segundos
-    return sum( [ a.lapso for a in self.articulaciones ] ) 
+    return sum( [ a.tiempo for a in self.articulaciones ] ) 
 
 
   @property
@@ -240,7 +234,9 @@ class Segmento( Elemento ):
       """ Armar superposicion de voces. """
       if self.voces:
         for v in self.voces:
-          voz = ( altura + ( v[ paso % len( v ) ] ) - 1 ) + self.transponer
+          voz = ( 
+            altura + ( v[ paso % len( v ) ] ) - 1 
+          ) + self.transponer
           acorde += [ 
             self.transportar + 
             self.registracion[ voz % len( self.registracion ) ] 

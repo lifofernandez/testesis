@@ -3,14 +3,10 @@ from elemento import Elemento
 from seccion  import Seccion
 from segmento import Segmento
 
-#import pprint
-#import random
-#import sys
-
 class Pista:
   """
   Clase para cada definicion de a partir de archivos .yml
-  PISTA > Secuencia > Secciones > Segmentos > Articulaciones
+  PISTA > Secciones > Segmentos > Articulaciones
   """
   cantidad = 0 
 
@@ -37,13 +33,13 @@ class Pista:
     forma
   ):
     self.nombre     = nombre
+    self.paleta     = paleta
+    self.forma      = forma 
     self.numero     = Pista.cantidad 
     Pista.cantidad += 1
-    self.paleta = paleta
-    self.forma = forma 
 
-    self.secciones = []
-    self.segmentos = []
+    self.secciones  = []
+    self.segmentos  = []
     self.seccionar( self.forma )
 
   @property
@@ -54,9 +50,9 @@ class Pista:
     )
 
   @property
-  def duracion( self ):
+  def tiempo( self ):
     # duracion en segundos
-    return sum( [ s.duracion for s in self.segmentos ] ) 
+    return sum( [ s.tiempo for s in self.segmentos ] ) 
 
   """ Organiza unidades según relacion de referencia """
   def seccionar( 
@@ -96,12 +92,9 @@ class Pista:
               recurrencia = sum( 
                 [ 1 for e in self.segmentos if e.nombre == unidad ]
               ),
+              referente = referente,
               propiedades = sucesion,
             )
-            if referente: 
-              # TODO registrar q numero de recurrencia/id 
-              # y de cual es clonnn
-              segmento.referente = referente
             self.segmentos.append( segmento )
           else:
             seccion = Seccion(
@@ -112,11 +105,8 @@ class Pista:
               recurrencia = sum( 
                 [ 1 for e in self.secciones if e.nombre == unidad ]
               ),
+              referente   = referente,
             )
-
-            # TODO registrar  q numero de recurrencia/id o de cual es
-            # clonnn
-
             seccion.referidos = original['forma'] 
             self.secciones.append( seccion )
             elemento = seccion

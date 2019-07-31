@@ -4,11 +4,8 @@ class Elemento():
   Clase base para, Secciones, Segmentos y Articulaciones
   """
   cantidad = 0 
-  # TODO, agregar func/prop registre mayor de recurrencia nivel
-
   def __str__( self ):
     o  = str( self.numero ) + '\t' 
-    # TODO numero de elemento, orden en la pista y orden en la SECCION
     o += str( self.orden ) + '\t' 
     o += str( self.nivel )  + '\t'
     o += str( self.recurrencia ) + '\t' 
@@ -22,13 +19,15 @@ class Elemento():
     nombre,
     nivel,
     orden,
-    recurrencia
+    recurrencia,
+    referente,
   ):
     self.pista  = pista 
     self.nombre = nombre
     self.nivel = nivel
     self.orden = orden
     self.recurrencia = recurrencia
+    self.referente = referente
     self.numero = Elemento.cantidad 
     Elemento.cantidad += 1
 
