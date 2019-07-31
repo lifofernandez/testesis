@@ -38,6 +38,7 @@ class Pista:
   ):
     self.nombre     = nombre
     self.numero     = Pista.cantidad 
+    #print(nombre, Pista.cantidad)
     Pista.cantidad += 1
     self.paleta = paleta
     self.forma = forma 

@@ -27,7 +27,6 @@ class Articulacion:
     dinamica,
     nota,
     acorde,
-    #silencio,
     tono,
     letra,
     controles,
@@ -79,7 +78,7 @@ class Articulacion:
       return 60 / self.bpm
 
   @property
-  def segundos( self ):
+  def delta( self ):
     return self.duracion * self.ratio
 
 

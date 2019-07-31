@@ -1,18 +1,33 @@
 #!/usr/bin/env python
 from argumentos import args
-from obra import EVENTOS
-from pista import Pista
+import yaml
+from secuencia import Secuencia
+#from pista import Pista
 from midiutil import MIDIFile
 
 """
  Salida MIDI
 """
-nombre_archivo = args.output
-pistas_cantidad = Pista.cantidad 
-midi_tracks = MIDIFile( pistas_cantidad ) 
-for m in EVENTOS:
-  mu = getattr( midi_tracks, m[0] )( *m[1:] )
-with open( nombre_archivo + ".mid", "wb" ) as archivo_midi:
+
+""" Lee ficheros YAML declarados argumentos posicionales """
+defs = []
+for archivo in args.archivos:
+  data = open( archivo.name, 'r' )
+  try:
+    y = yaml.load( data, Loader = yaml.FullLoader ) 
+    defs.append( y )
+  except Exception as e:
+    print( e )
+    print( "=" * 80 )
+
+secuencia = Secuencia( defs )
+
+midi_tracks = MIDIFile( len( secuencia.pistas ) )
+
+for evento in secuencia.eventos:
+  mu = getattr( midi_tracks, evento[0] )( *evento[1:] )
+
+with open( args.output + ".mid", "wb" ) as archivo_midi:
    midi_tracks.writeFile( archivo_midi )
 
 
