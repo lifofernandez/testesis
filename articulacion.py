@@ -8,10 +8,10 @@ class Articulacion:
   def __str__( self ):
     o  = str( self.numero ) + '\t' 
     o += str( self.orden ) + '\t' 
-    o += str( self.bpm)  + '\t'
-    o += str( self.duracion) + '\t' 
-    o += str( self.dinamica) + '\t' 
-    o += str( self.altura) + '\t' 
+    o += str( self.bpm ) + '\t'
+    o += str( self.duracion ) + '\t' 
+    o += str( self.dinamica ) + '\t' 
+    o += str( self.altura ) + '\t' 
     o += str( self.letra ) + '\t' 
     o += str( self.tono) + '\t' 
     o += str( self.controles) + '\n' 
@@ -74,12 +74,13 @@ class Articulacion:
       return anterior != este
       
   @property
-  def ratio( self ):
+  def relacion( self ):
       return 60 / self.bpm
 
   @property
-  def delta( self ):
-    return self.duracion * self.ratio
+  def lapso( self ):
+    # duracion en segundos
+    return self.duracion * self.relacion
 
 
   @property

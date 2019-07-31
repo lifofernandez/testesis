@@ -38,7 +38,6 @@ class Pista:
   ):
     self.nombre     = nombre
     self.numero     = Pista.cantidad 
-    #print(nombre, Pista.cantidad)
     Pista.cantidad += 1
     self.paleta = paleta
     self.forma = forma 
@@ -55,8 +54,9 @@ class Pista:
     )
 
   @property
-  def segundos( self ):
-    return sum( [ s.segundos for s in self.segmentos ] ) 
+  def duracion( self ):
+    # duracion en segundos
+    return sum( [ s.duracion for s in self.segmentos ] ) 
 
   """ Organiza unidades según relacion de referencia """
   def seccionar( 

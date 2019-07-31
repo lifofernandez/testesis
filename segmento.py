@@ -157,8 +157,9 @@ class Segmento( Elemento ):
       return anterior != este
 
   @property
-  def segundos( self ):
-    return sum( [ a.segundos for a in self.articulaciones ] ) 
+  def duracion( self ):
+    # duracion en segundos
+    return sum( [ a.lapso for a in self.articulaciones ] ) 
 
 
   @property
