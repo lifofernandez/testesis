@@ -1,7 +1,10 @@
-import random
+import os
+import importlib.util as importar
 import math
 from elemento import Elemento
 from articulacion import Articulacion
+
+dir_actual = os.getcwd() 
 
 class Segmento( Elemento ):
   """
@@ -12,10 +15,10 @@ class Segmento( Elemento ):
 
   defactos = {
     # Propiedades de Segmento 
-    'canal'             : 0,
-    'revertir'          : None,
-    'NRPN'              : None,
-    'RPN'               : None,
+    'canal'    : 0,
+    'revertir' : None,
+    'NRPN'     : None,
+    'RPN'      : None,
 
     # Props. que NO refieren a Canal especifico
     # ¿Deberian ir a META track?
@@ -28,13 +31,15 @@ class Segmento( Elemento ):
     'afinacionPrograma' : None,
     'sysEx'             : None,
     'uniSysEx'          : None,
-    'transportar'       : 0,
-    'transponer'        : 0,
-    'reiterar'          : 1,
 
     # Procesos de Segmento
-    'desplazar'         : 0, # ¿momento?
-    'fluctuacion'       : { 'min' : 1, 'max' : 1 },
+    'transportar' : 0,
+    'transponer'  : 0,
+    'reiterar'    : 1,
+
+    # Procesos de Usuario
+    'desplazar'   : 0, # ¿compenzar?
+    #'fluctuar'    : { 'min' : 1, 'max' : 1 },
 
     # Propiedades de Articulacion 
     'BPMs'         : [ 60 ],
@@ -127,6 +132,8 @@ class Segmento( Elemento ):
     self.bpm = self.BPMs[0]
     self.programa = self.programas[0]
 
+    self.enchufes()
+
   @property
   def precedente( self ):
     n = self.orden
@@ -155,7 +162,6 @@ class Segmento( Elemento ):
     # duracion en segundos
     return sum( [ a.tiempo for a in self.articulaciones ] ) 
 
-
   @property
   def metro( self ):
     metro = self.props[ 'metro' ].split( '/' ) 
@@ -176,22 +182,47 @@ class Segmento( Elemento ):
       'modo' : self.modo
     }
 
-  @property
-  def fluctuacion( self ):
-    # fluctuacion a cualquier parametro de la articulacion
-    fluctuacion = self.props['fluctuacion']
-    rand_min = 0
-    if 'min' in fluctuacion:
-      rand_min = fluctuacion['min'] 
-    rand_max = 0
-    if 'max' in fluctuacion:
-      rand_max = fluctuacion['max']
-    f = random.uniform( 
-      rand_min,
-      rand_max 
-    ) if rand_min or rand_max else 1
-    return f 
-    
+  #@property
+  #def fluctuar( self ):
+  #  # fluctuar a cualquier parametro de la articulacion
+  #  fluctuar = self.props['fluctuar']
+  #  rand_min = 0
+  #  if 'min' in fluctuar:
+  #    rand_min = fluctuar['min'] 
+  #  rand_max = 0
+  #  if 'max' in fluctuar:
+  #    rand_max = fluctuar['max']
+  #  f = random.uniform( 
+  #    rand_min,
+  #    rand_max 
+  #  ) if rand_min or rand_max else 1
+  #  return f 
+
+  def fluctuar( self ):
+    if 'fluctuar' in self.props:
+      fluctuar = self.props[ 'fluctuar' ]
+      for f in fluctuar.keys():
+        #print( f, ':', fluctuar[ f ] )
+        propiedad = getattr( self, f )
+        #print( propiedad )
+
+  def enchufes( self, e = 'procesos'):
+    if e in self.props: # chekear?
+      spec = importar.spec_from_file_location(
+        e,
+        dir_actual + '/' + e + '.py'
+      )
+      paquete = importar.module_from_spec( spec )
+      spec.loader.exec_module( paquete )
+      modulo = self.props[ e ]
+      for r in modulo.keys():
+        if hasattr( paquete, r ):
+          rutina = modulo[ r ]
+          for p in rutina.keys():
+            propiedad = rutina[ p ]
+            resultado = getattr( paquete, r )( propiedad )
+            print( resultado )
+
   @property
   def articulaciones( self ):
     o = []
@@ -216,6 +247,7 @@ class Segmento( Elemento ):
     ]
     ganador = max( candidatos, key = len )
     self.cantidad_pasos = len( ganador )
+
 
     """ Consolidar "articulacion" 
     combinar parametros: altura, duracion, dinamica, etc. """
@@ -253,11 +285,12 @@ class Segmento( Elemento ):
          bpm       = self.BPMs[ paso % len( self.BPMs ) ],
          programa  = self.programas[ paso % len( self.programas ) ],
          duracion  = self.duraciones[ paso % len( self.duraciones ) ],
-         # PASAR FLUCTUACION A PROCESOS DE SEGMENTO,
-         # QUE OPERE EN EL RESULTADO DE LASARTICULACIONES
-         dinamica  = self.dinamicas[
-           paso % len( self.dinamicas )
-         ] * self.fluctuacion,
+         # FLUCTUAR A PROCESOS DE SEGMENTO,
+         # QUE OPERE EN EL RESULTADO DE LAS ARTICULACIONES
+         #dinamica  = self.dinamicas[
+         #  paso % len( self.dinamicas )
+         #] * self.fluctuar,
+         dinamica  = self.dinamicas[ paso % len( self.dinamicas ) ],
          nota      = nota,
          acorde    = acorde,
          tono      = self.tonos[ paso % len( self.tonos ) ],
@@ -266,3 +299,4 @@ class Segmento( Elemento ):
       )
       o.append( articulacion )
     return o
+    

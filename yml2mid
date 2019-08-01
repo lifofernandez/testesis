@@ -25,7 +25,8 @@ secuencia = Secuencia( defs )
 midi_tracks = MIDIFile( len( secuencia.pistas ) )
 
 for evento in secuencia.eventos:
-  mu = getattr( midi_tracks, evento[0] )( *evento[1:] )
+  #evento puede ser un dic: nombredefuncion, args
+  getattr( midi_tracks, evento[0] )( *evento[1:] )
 
 with open( args.output + ".mid", "wb" ) as archivo_midi:
    midi_tracks.writeFile( archivo_midi )

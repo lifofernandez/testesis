@@ -214,7 +214,6 @@ class Secuencia:
             voces = articulacion.acorde 
     
           for voz in voces:
-            #altura = voz 
             EVENTOS.append([
               'addNote',
               track, 

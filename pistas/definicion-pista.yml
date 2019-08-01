@@ -169,6 +169,28 @@ base: &base !!map
     canal: !!int 14
     tiempoReal: !!bool False
 
+  # Procesos de ususario
+  # propiedad: amount
+
+  fluctuar: 
+    dinamicas: .5
+    duraciones: .3
+  #desplazar: 
+  #  - altura: -3
+
+  #paquete: 
+    # metodo:
+      # propiedad_a_modificar1: valor
+      # propiedad_a_modificar2: valor
+    # metodo2:
+      # argumento1: valor
+      # argumento2: valor
+
+  fluctuar: 
+    dinamicas: .5
+    duraciones: .3
+    
+
 unidades: !!map
   # Paleta de unidades para secuenciar
 
@@ -187,14 +209,11 @@ unidades: !!map
     voces: 0
     controles: Null
     transponer: 3
-    clave: 
-      alteraciones: 3
-      modo: 1 
-    fluctuacion: 
-      min: .1
-      max: .4 
-    desplazar: -1
+    alteraciones: 3
+    modo: 1 
     programa: [ 3 ]
+
+      
 
   b^: 
     <<: *b
