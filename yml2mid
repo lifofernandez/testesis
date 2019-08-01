@@ -1,15 +1,10 @@
 #!/usr/bin/env python
+
 from argumentos import args
 import yaml
 from secuencia import Secuencia
-#from pista import Pista
 from midiutil import MIDIFile
 
-"""
- Salida MIDI
-"""
-
-""" Lee ficheros YAML declarados argumentos posicionales """
 defs = []
 for archivo in args.archivos:
   data = open( archivo.name, 'r' )
@@ -34,7 +29,6 @@ with open( args.output + ".mid", "wb" ) as archivo_midi:
 
 """
 TODO
-[ ]  
 [ ] Excepciones main
 [ ] Parar tempo a canal global, propiedad de  no canal specifico
 [ ] YAML validation 

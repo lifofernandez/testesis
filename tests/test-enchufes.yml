@@ -1,0 +1,94 @@
+nombre: 'Feliz Cumple'
+base: &base 
+  clave: 
+    alteraciones: 0
+    modo: 0
+  registracion: [ 
+    -12, -10, -8, -7, -5, -3, -1,
+      0,   2,  4,  5,  7,  9, 11,
+     12,  14, 15, 17, 19, 21, 23,
+     24
+  ]
+  alturas: [ 1 ] 
+  transportar: 72 
+  duraciones: [ 1.5 ]
+  BPMs: [ 60 ]
+  metro: 3/4
+  dinamicas: [ 1 ]
+  canal: 1 
+  procesos:
+    fluctuar:
+      dinamicas: .5
+      alturas:  3
+    desplazar:
+      duraciones: 2
+    acortar:
+      duraciones: .25
+
+forma: [
+  'espera',
+  'estrofa',
+  'estribo',
+]
+
+unidades: 
+  espera:
+    <<: *base
+    # revisar "bogus" noteoff
+    alturas: [ 0 ] 
+    duraciones: [ 2 ]
+  a: &a 
+    <<: *base
+    alturas: [ 5, 5, 6, 5 ] 
+    duraciones: [ .75, .25, 1, 1 ]
+    letras: [ 'Que', 'los', 'cum', 'plas,' ]
+  b: &b 
+    <<: *base
+    alturas: [ 8, 7 ] 
+    duraciones: [ 1, 2 ]
+    letras: [ 'fe', 'liz.' ]
+    #reiterar: 1
+  b`: 
+    <<: *b
+    #metro: '2/4'
+    transponer: 1
+    #reiterar: 0
+  a`: 
+    <<: *a
+    alturas: [ 5, 5, 12, 10 ] 
+  a``: 
+    <<: *a
+    alturas: [ 8, 8, 7, 6 ] 
+    letras: [ 'que', 'los', 'cum', 'plas,' ]
+  a```: 
+    <<: *a
+    alturas: [ 11, 11, 10, 8 ] 
+    letras: [ 'que', 'los', 'cum', 'plas,' ]
+
+  A: 
+    forma: [ 'a', 'b' ] 
+  A`: 
+    forma: [ 'a' , 'b`' ]
+  B: 
+    #desplazar: -0.5
+    forma: [ 'a`', 'a``' ] 
+  A``: 
+    forma: [ 'a```', 'b`' ] 
+
+  estrofa: 
+    forma: [
+      'A',
+      'A`',
+    ]
+  estribo: 
+    forma: [
+      'B',
+      'A``',
+    ]
+  perro: 
+    forma: [
+     'estrofa',
+    ]
+
+
+

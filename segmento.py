@@ -1,4 +1,4 @@
-import os
+import os, sys
 import importlib.util as importar
 import math
 from elemento import Elemento
@@ -206,22 +206,28 @@ class Segmento( Elemento ):
         propiedad = getattr( self, f )
         #print( propiedad )
 
-  def enchufes( self, e = 'procesos'):
-    if e in self.props: # chekear?
-      spec = importar.spec_from_file_location(
-        e,
-        dir_actual + '/' + e + '.py'
-      )
+  def enchufes(
+    self,
+    enchufe = 'procesos'
+    ):
+    """ Plugines de usuario """
+    spec = importar.spec_from_file_location(
+        enchufe,
+        dir_actual + '/' + enchufe + '.py'
+    )
+    if enchufe in self.props and spec: 
       paquete = importar.module_from_spec( spec )
       spec.loader.exec_module( paquete )
-      modulo = self.props[ e ]
+      modulo = self.props[ enchufe ]
       for r in modulo.keys():
         if hasattr( paquete, r ):
           rutina = modulo[ r ]
           for p in rutina.keys():
             propiedad = rutina[ p ]
-            resultado = getattr( paquete, r )( propiedad )
-            print( resultado )
+            if hasattr( self, p ):
+              original = getattr( self, p )
+              modificado = getattr( paquete, r )( original )
+              setattr( self, p, modificado )
 
   @property
   def articulaciones( self ):
