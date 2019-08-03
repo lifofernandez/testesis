@@ -4,6 +4,9 @@ import math
 from .elemento import Elemento
 from .articulacion import Articulacion
 
+#from . import *
+#print(sys.modules)
+
 dir_actual = os.getcwd() 
 
 class Segmento( Elemento ):
@@ -202,13 +205,11 @@ class Segmento( Elemento ):
     if 'fluctuar' in self.props:
       fluctuar = self.props[ 'fluctuar' ]
       for f in fluctuar.keys():
-        #print( f, ':', fluctuar[ f ] )
         propiedad = getattr( self, f )
-        #print( propiedad )
 
   def enchufes(
-    self,
-    enchufe = 'procesos'
+      self,
+      enchufe = 'procesos'
     ):
     """ Plugines de usuario """
     spec = importar.spec_from_file_location(

@@ -11,11 +11,11 @@ procesos:
     propiedad_a_modificar2: args
 """
 
-def desplazar( entrada = 'eo' ):
+def probar( entrada = 1):
   salida = entrada * 7
   return salida
 
-def fluctuar( entrada = [3] ):
+def fluctuar( entrada = [1] ):
   salida = entrada + [2,3]
   #fluctuar = self.props['fluctuar']
   #rand_min = 0

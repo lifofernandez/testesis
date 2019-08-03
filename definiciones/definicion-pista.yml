@@ -5,7 +5,9 @@
 nombre: !!str 
   # Título de la pista
   'Pista ejemplo 1'
-enchue: './procesos.py'  
+
+complementos: 'procesos.py'  
+
 base: &base !!map
   # Parametros por defecto para todas las unidades,
   # pueden ser sobrescritos

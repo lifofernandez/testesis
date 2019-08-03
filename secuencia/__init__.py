@@ -1,21 +1,52 @@
 from argumentos import args, verbose, Excepcion
+import importlib.util as importar
+import os
 from .pista import Pista
 
+complementos = ['eo']
+
 class Secuencia:
+  comps = ['eo']
 
   def __init__( 
-     self,
-     defs
+      self,
+      defs
     ):
     self.pistas = []
+    self.paquetes = []
+    
     for d in defs:
       pista = Pista(
         d[ 'nombre' ],
         d[ 'unidades' ],
         d[ 'forma' ],
-        #d[ 'complementos' ],
       )
       self.pistas.append( pista )
+
+      if 'complementos' in d:
+        if isinstance(d[ 'complementos' ], list):
+          self.paquetes.extend( d[ 'complementos' ] )
+        else:
+          self.paquetes.append( d[ 'complementos' ] )
+      self.paquetes= list( set(self.paquetes) )
+    print(self.paquetes)
+
+    for p in self.paquetes:
+      if os.path.exists( p ):
+        n = p.split('.')[0]
+        spec = importar.spec_from_file_location(
+          n,
+          p
+        )
+        if spec: 
+          paquete = importar.module_from_spec( spec )
+          spec.loader.exec_module( paquete )
+          # TODO import motodos globali
+          # comparar con propiedades y ver si hay qe usarlos
+          #global sepc
+          complementos.append(paquete)
+          print( paquete.fluctuar([6,6,6]))
+    print(complementos)
 
   @property
   def eventos( 

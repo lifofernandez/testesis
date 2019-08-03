@@ -1,4 +1,6 @@
 nombre: 'Feliz Cumple'
+complementos: [ 'enchufes.py', 'procesos', 'pep.py']
+
 base: &base 
   clave: 
     alteraciones: 0
