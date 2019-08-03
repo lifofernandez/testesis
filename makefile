@@ -9,7 +9,7 @@ test:
 	done;	
 compartir:
 	cp tests /home/lf/ -r
-probar:
+prueba:
 	make test
 	make compartir
 
@@ -20,4 +20,4 @@ todos:
 		cat "$$i" | grep TODO; \
 	done;	
 	
-# ./reserva/utiles/mid2asc output.mid | grep Key
+# ./recursos/utiles/mid2asc output.mid | grep Key

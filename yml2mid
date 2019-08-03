@@ -29,9 +29,11 @@ with open( args.output + ".mid", "wb" ) as archivo_midi:
 
 """
 TODO
+[ ] estructurar: Bottom-up
 [ ] Excepciones main
 [ ] Parar tempo a canal global, propiedad de  no canal specifico
 [ ] YAML validation 
+[x] enchufes de unidad/segmento 
 [ ] Procesos de unidad/segmento : "stacato" (acortar notas)
 [x] agregar primer segmento de la pista
 [x] agregar primer  articulacion del segmento

@@ -1,8 +1,8 @@
 import os, sys
 import importlib.util as importar
 import math
-from elemento import Elemento
-from articulacion import Articulacion
+from .elemento import Elemento
+from .articulacion import Articulacion
 
 dir_actual = os.getcwd() 
 

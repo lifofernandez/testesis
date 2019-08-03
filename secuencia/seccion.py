@@ -1,4 +1,4 @@
-from elemento import Elemento
+from .elemento import Elemento
 
 class Seccion( Elemento ):
   cantidad = 0
