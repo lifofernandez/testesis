@@ -1,6 +1,10 @@
 TESTS := $(shell find tests -name '*.yml') 
 TODOS := $(shell find . -name '*.py') 
+CURRENT := $(shell pwd)
 
+install:
+	pip install -r requirements.txt
+	ln -s $(CURRENT)/yml2mid /usr/bin/
 test:
 	for i in $(TESTS); \
 	do \

@@ -20,33 +20,11 @@ secuencia = Secuencia( defs )
 midi_tracks = MIDIFile( len( secuencia.pistas ) )
 
 for evento in secuencia.eventos:
-  #evento puede ser un dic: nombredefuncion, args
+  # evento puede ser un dic: nombredefuncion, args
   getattr( midi_tracks, evento[0] )( *evento[1:] )
 
 with open( args.output + ".mid", "wb" ) as archivo_midi:
    midi_tracks.writeFile( archivo_midi )
 
-
-"""
-TODO
-[ ] estructurar: Bottom-up
-[ ] Excepciones main
-[ ] Parar tempo a canal global, propiedad de  no canal specifico
-[ ] YAML validation 
-[x] enchufes de unidad/segmento 
-[ ] Procesos de unidad/segmento : "stacato" (acortar notas)
-[x] agregar primer segmento de la pista
-[x] agregar primer  articulacion del segmento
-[x] pasar intervalos a propiedad de segmento/unidad
-[x] parametros de Segmento = art#0 de la unidad
-[x] Agregar Letra (texo)
-[x] Agregar: Registro 
-[x] revisar metro
-[x] terminar midiUTIL 
-[x] Agregar: Segmento (grupo de articulaciones) 
-"""
-# https://docs.python.org/3/reference/import.html#regular-packages
-# https://realpython.com/run-python-scripts/
 # https://setuptools.readthedocs.io/en/latest/setuptools.html
-# https://docs.python.org/3/reference/import.html#namespace-packages
 # https://stackoverflow.com/questions/1471994/what-is-setup-py
