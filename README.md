@@ -7,7 +7,7 @@ $ pip install -r requirements.txt
 
 Uso
 ```
-$ ./yml2mid.py pistas/* -vvv 
+$ ./yml2mid definiciones/definicion-pista.yml -vvv 
 ```
 
 Ayuda
