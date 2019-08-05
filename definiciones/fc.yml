@@ -1,9 +1,6 @@
 nombre: 'Feliz Cumple'
 #complementos: 'enchufes.py'
 base: &base 
-  clave: 
-    alteraciones: 0
-    modo: 0
   registracion: [ 
     -12, -10, -8, -7, -5, -3, -1,
       0,   2,  4,  5,  7,  9, 11,
@@ -16,7 +13,7 @@ base: &base
   BPMs: [ 60 ]
   metro: 3/4
   dinamicas: [ 1 ]
-  canal: 1 
+  canal: 0
 
 forma: [
   'espera',
@@ -41,12 +38,9 @@ unidades:
     alturas: [ 8, 7 ] 
     duraciones: [ 1, 2 ]
     letras: [ 'fe', 'liz.' ]
-    #reiterar: 1
   b`: 
     <<: *b
-    #metro: '2/4'
     transponer: 1
-    #reiterar: 0
   a`: 
     <<: *a
     alturas: [ 5, 5, 12, 10 ] 
