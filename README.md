@@ -12,5 +12,5 @@ $ ./yml2mid definiciones/definicion-pista.yml -vvv
 
 Ayuda
 ```
-$ ./yml2mid.py -h 
+$ ./yml2mid -h 
 ```
