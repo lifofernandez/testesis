@@ -7,11 +7,11 @@ test:
 		echo "secuenciando: $$i"; \
 		yml2mid "$$i" -o "$$i"; \
 	done;	
-compartir:
+copiar:
 	cp tests /home/lf/ -r
 prueba:
 	make test
-	make compartir
+	make copiar
 
 todos:
 	for i in $(TODOS); \

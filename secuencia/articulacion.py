@@ -1,8 +1,8 @@
 from argumentos import args, verbose, Excepcion
 class Articulacion:
-  """
-  Pista > Segmentos > ARTICULACIONES
-  """
+
+  """ Pista > Segmentos > ARTICULACIONES """
+
   cantidad = 0 
  
   def __str__( self ):
@@ -43,7 +43,6 @@ class Articulacion:
     self.duracion  = duracion
     self.controles = controles
     self.altura    = nota
-    #self.silecio   = silencio
     self.letra     = letra
     self.acorde    = acorde
 

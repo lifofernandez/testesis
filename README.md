@@ -2,12 +2,12 @@
 
 Instalación
 ```
-$ pip3 install -r requirements.txt
+$ pip install -r requirements.txt
 ```
 
 Uso
 ```
-$ ./yml2mid.py pistas/* -f text -v 1
+$ ./yml2mid.py pistas/* -vvv 
 ```
 
 Ayuda

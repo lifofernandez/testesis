@@ -1,52 +1,41 @@
-from argumentos import args, verbose, Excepcion
-import importlib.util as importar
 import os
+from argumentos import args, verbose, Excepcion
 from .pista import Pista
-
-complementos = ['eo']
+from .complementos import Complemento
 
 class Secuencia:
-  comps = ['eo']
 
   def __init__( 
       self,
       defs
     ):
+    self.defs = defs 
     self.pistas = []
-    self.paquetes = []
+    #self.complementos = []
     
     for d in defs:
       pista = Pista(
-        d[ 'nombre' ],
-        d[ 'unidades' ],
-        d[ 'forma' ],
+        nombre = d[ 'nombre' ],
+        paleta = d[ 'unidades' ],
+        forma = d[ 'forma' ],
+        secuencia = self,
       )
       self.pistas.append( pista )
 
+  @property
+  def complementos(
+      self,
+    ):
+    complementos = []
+    for d in self.defs:
       if 'complementos' in d:
-        if isinstance(d[ 'complementos' ], list):
-          self.paquetes.extend( d[ 'complementos' ] )
-        else:
-          self.paquetes.append( d[ 'complementos' ] )
-      self.paquetes= list( set(self.paquetes) )
-    print(self.paquetes)
-
-    for p in self.paquetes:
-      if os.path.exists( p ):
-        n = p.split('.')[0]
-        spec = importar.spec_from_file_location(
-          n,
-          p
-        )
-        if spec: 
-          paquete = importar.module_from_spec( spec )
-          spec.loader.exec_module( paquete )
-          # TODO import motodos globali
-          # comparar con propiedades y ver si hay qe usarlos
-          #global sepc
-          complementos.append(paquete)
-          print( paquete.fluctuar([6,6,6]))
-    print(complementos)
+       p = d[ 'complementos' ] 
+       if os.path.exists( p ):
+         #and p not in Complemento.registro:
+         Complemento.registro.append( p )
+         c = Complemento( p )
+         complementos.append( c )
+    return complementos
 
   @property
   def eventos( 
@@ -85,7 +74,7 @@ class Secuencia:
     
       for segmento in pista.segmentos:
         canal = segmento.canal
-        delta += segmento.desplazar
+        #delta += segmento.desplazar
     
         if delta < 0:
          raise ValueError( 'No se puede desplazar antes q el inicio' ) 

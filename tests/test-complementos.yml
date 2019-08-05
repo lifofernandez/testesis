@@ -1,4 +1,5 @@
 nombre: 'Feliz Cumple'
+complementos: 'enchufes.py'
 base: &base 
   clave: 
     alteraciones: 0
@@ -16,14 +17,6 @@ base: &base
   metro: 3/4
   dinamicas: [ 1 ]
   canal: 1 
-  procesos:
-    fluctuar:
-      dinamicas: .5
-      alturas:  3
-    desplazar:
-      duraciones: 2
-    acortar:
-      duraciones: .25
 
 forma: [
   'espera',
@@ -34,14 +27,21 @@ forma: [
 unidades: 
   espera:
     <<: *base
-    # revisar "bogus" noteoff
-    alturas: [ 0 ] 
+    dinamicas: [ 0 ] 
     duraciones: [ 2 ]
+    #desplzar: 
+    #  duraciones: 1
   a: &a 
     <<: *base
     alturas: [ 5, 5, 6, 5 ] 
     duraciones: [ .75, .25, 1, 1 ]
     letras: [ 'Que', 'los', 'cum', 'plas,' ]
+    fluctuar: 
+      dinamicas: .5
+      duraciones: .3
+    desplazar:
+      duraciones:  .25
+
   b: &b 
     <<: *base
     alturas: [ 8, 7 ] 
@@ -70,7 +70,6 @@ unidades:
   A`: 
     forma: [ 'a' , 'b`' ]
   B: 
-    #desplazar: -0.5
     forma: [ 'a`', 'a``' ] 
   A``: 
     forma: [ 'a```', 'b`' ] 
@@ -84,10 +83,6 @@ unidades:
     forma: [
       'B',
       'A``',
-    ]
-  perro: 
-    forma: [
-     'estrofa',
     ]
 
 

@@ -6,7 +6,10 @@ nombre: !!str
   # Título de la pista
   'Pista ejemplo 1'
 
-complementos: 'procesos.py'  
+complementos: !!str
+  # Ubicacion del fichero con modulos de usuario
+  'enchufes.py'  
+
 
 base: &base !!map
   # Parametros por defecto para todas las unidades,
@@ -65,19 +68,10 @@ base: &base !!map
     # Clave de compás
     3/4
 
-  desplazar: !!float
-    # Ajuste temporal 
-    # momento, cuando ocurre o acontence
-    # offset : + / - offset con la "posicion" original 
-    # 0 es que donde debe acontecer originalmente
-    # Ejemplo: "-2" anticipar 2 pulsos o ".5" demorar medio pulso
-    # En desarrollo, pruebas
-    0
-
   reiterar: !!int
     # Catidad de veces q se toca esta unidad 
     # Reiterarse a si misma,
-    # no es trasferible, no se hereda, caso contrario se reterarian los referidos
+    # no es trasferible, no se hereda,
     1
 
   dinamicas: !!seq 
@@ -172,25 +166,18 @@ base: &base !!map
     tiempoReal: !!bool False
 
   # Procesos de ususario
-  # propiedad: amount
+  # metodo: (en modulo de usuario)
+    # propiedad_a_modificar1: valor
+    # propiedad_a_modificar2: valor
+  # metodo2:
+    # propiedad_a_modificar1: valor
+    # propiedad_a_modificar2: valor
 
   fluctuar: 
     dinamicas: .5
     duraciones: .3
-  #desplazar: 
-  #  - altura: -3
-
-  #paquete: 
-    # metodo:
-      # propiedad_a_modificar1: valor
-      # propiedad_a_modificar2: valor
-    # metodo2:
-      # argumento1: valor
-      # argumento2: valor
-
-  fluctuar: 
-    dinamicas: .5
-    duraciones: .3
+  desplazar: 
+    alturas: 3
     
 
 unidades: !!map
@@ -202,6 +189,13 @@ unidades: !!map
     BPMs: [35]
     alturas: [ 1,  5 ]
     duraciones: [  1, 1 ]
+    ##desplazar: 3
+    fluctuar: 
+      dinamicas: .5
+      duraciones: .3
+    desplazar:
+      duraciones:  .25
+      duraciones: .5
 
   b: &b 
     <<: *base
@@ -253,7 +247,8 @@ unidades: !!map
     forma: [ 'B' ]
     prueba: 4
     metro: '12/8'
-
+    fluctuar:
+      dinamicas: .5
   estrofa: 
     forma: [ 'A', 'B', 'B^' ]
 

@@ -30,11 +30,13 @@ class Pista:
     nombre,
     paleta,
     forma,
+    secuencia
     #complementos
   ):
     self.nombre     = nombre
     self.paleta     = paleta
     self.forma      = forma 
+    self.secuencia  = secuencia
     self.numero     = Pista.cantidad 
     Pista.cantidad += 1
 

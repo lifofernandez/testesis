@@ -1,13 +1,12 @@
-import os, sys
-import importlib.util as importar
+#import os, sys
+#import importlib.util as importar
+
 import math
 from .elemento import Elemento
 from .articulacion import Articulacion
+from .complementos import Complemento
 
-#from . import *
-#print(sys.modules)
-
-dir_actual = os.getcwd() 
+#dir_actual = os.getcwd() 
 
 class Segmento( Elemento ):
   """
@@ -41,7 +40,7 @@ class Segmento( Elemento ):
     'reiterar'    : 1,
 
     # Procesos de Usuario
-    'desplazar'   : 0, # ¿compenzar?
+    #'desplazar'   : 0, # ¿compenzar?
     #'fluctuar'    : { 'min' : 1, 'max' : 1 },
 
     # Propiedades de Articulacion 
@@ -97,7 +96,11 @@ class Segmento( Elemento ):
         **propiedades 
     }
     """ PRE PROCESO DE SEGMENTO """
-    """ Cambia el sentido de los parametros de articulacion """
+
+
+
+    """ Cambia el sentido de los parametros de
+    articulacion """
     self.revertir = self.props[ 'revertir' ]
     if self.revertir:
       if isinstance( self.revertir , list ): 
@@ -110,7 +113,7 @@ class Segmento( Elemento ):
 
     self.canal             = self.props[ 'canal' ]
     self.reiterar          = self.props[ 'reiterar' ]
-    self.desplazar         = self.props[ 'desplazar' ]
+    #self.desplazar         = self.props[ 'desplazar' ]
     self.transponer        = self.props[ 'transponer' ]
     self.transportar       = self.props[ 'transportar' ]
     self.alteraciones      = self.props[ 'alteraciones' ]
@@ -132,10 +135,28 @@ class Segmento( Elemento ):
     self.tonos             = self.props[ 'tonos' ]
     self.voces             = self.props[ 'voces' ]
     self.capas             = self.props[ 'controles' ]
+
     self.bpm = self.BPMs[0]
     self.programa = self.programas[0]
 
-    self.enchufes()
+
+    """ COMPLEMENTOS
+        Pasar propiedades por metodos de usuario
+    """
+    for c in self.pista.secuencia.complementos:
+       for m in dir( c.modulo ):
+         if m in self.props:
+           for k in self.props[ m ]:
+             original = getattr( self, k )
+             valor = self.props[ m ][ k ]
+             print( m, ':', k, valor )
+             modificado = getattr(
+                c.modulo, 
+                m,
+             )( original, valor )
+             setattr( self, k, modificado )
+             check  = getattr( self, k )
+
 
   @property
   def precedente( self ):
@@ -150,15 +171,18 @@ class Segmento( Elemento ):
       except AttributeError as e:
         return e
 
-  def cambia( self, key ):
-      este = self.obtener( key ) 
-      anterior = self.precedente.obtener( key )
-      if (
-        self.orden == 0
-        and este
-      ):
-        return True
-      return anterior != este
+  def cambia(
+      self,
+      key
+    ):
+    este = self.obtener( key ) 
+    anterior = self.precedente.obtener( key )
+    if (
+      self.orden == 0
+      and este
+    ):
+      return True
+    return anterior != este
 
   @property
   def tiempo( self ):
@@ -201,38 +225,9 @@ class Segmento( Elemento ):
   #  ) if rand_min or rand_max else 1
   #  return f 
 
-  def fluctuar( self ):
-    if 'fluctuar' in self.props:
-      fluctuar = self.props[ 'fluctuar' ]
-      for f in fluctuar.keys():
-        propiedad = getattr( self, f )
-
-  def enchufes(
-      self,
-      enchufe = 'procesos'
-    ):
-    """ Plugines de usuario """
-    spec = importar.spec_from_file_location(
-        enchufe,
-        dir_actual + '/' + enchufe + '.py'
-    )
-    if enchufe in self.props and spec: 
-      paquete = importar.module_from_spec( spec )
-      spec.loader.exec_module( paquete )
-      modulo = self.props[ enchufe ]
-      for r in modulo.keys():
-        if hasattr( paquete, r ):
-          rutina = modulo[ r ]
-          for p in rutina.keys():
-            propiedad = rutina[ p ]
-            if hasattr( self, p ):
-              original = getattr( self, p )
-              modificado = getattr( paquete, r )( original )
-              setattr( self, p, modificado )
-
   @property
-  def articulaciones( self ):
-    o = []
+  def ganador( self ):
+    """ Evaluar que propiedad lista es el que mas valores tiene.  """
     self.ganador_voces = [ 0 ]
     if self.voces:
       self.ganador_voces = max( self.voces, key = len) 
@@ -240,7 +235,6 @@ class Segmento( Elemento ):
     if self.capas:
       self.ganador_capas = max( self.capas , key = len) 
 
-    """ Evaluar que parametro lista es el que mas valores tiene.  """
     candidatos = [ 
       self.dinamicas,
       self.duraciones,
@@ -252,12 +246,18 @@ class Segmento( Elemento ):
       self.ganador_voces,
       self.ganador_capas,
     ]
-    ganador = max( candidatos, key = len )
-    self.cantidad_pasos = len( ganador )
+    return  max( candidatos, key = len )
 
+  @property
+  def cantidad_pasos( self ):
+    return len( self.ganador )
+
+  @property
+  def articulaciones( self ):
 
     """ Consolidar "articulacion" 
     combinar parametros: altura, duracion, dinamica, etc. """
+    o = []
     for paso in range( self.cantidad_pasos ):
       """ Alturas, voz y superposición voces. """
       altura = self.alturas[ paso % len( self.alturas ) ]
