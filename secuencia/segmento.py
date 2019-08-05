@@ -143,19 +143,18 @@ class Segmento( Elemento ):
     """ COMPLEMENTOS
         Pasar propiedades por metodos de usuario
     """
-    for c in self.pista.secuencia.complementos:
-       for m in dir( c.modulo ):
-         if m in self.props:
-           for k in self.props[ m ]:
-             original = getattr( self, k )
-             valor = self.props[ m ][ k ]
-             print( m, ':', k, valor )
+    for complemento in self.pista.secuencia.complementos:
+       for metodo in dir( complemento.modulo ):
+         if metodo in self.props:
+           for clave in self.props[ metodo ]:
+             original = getattr( self, clave )
+             argumentos = self.props[ metodo ][ clave ]
+             #print( metodo, ':', clave, argumentos )
              modificado = getattr(
-                c.modulo, 
-                m,
-             )( original, valor )
-             setattr( self, k, modificado )
-             check  = getattr( self, k )
+                complemento.modulo, 
+                metodo,
+             )( original, argumentos )
+             setattr( self, clave, modificado )
 
 
   @property
@@ -292,11 +291,6 @@ class Segmento( Elemento ):
          bpm       = self.BPMs[ paso % len( self.BPMs ) ],
          programa  = self.programas[ paso % len( self.programas ) ],
          duracion  = self.duraciones[ paso % len( self.duraciones ) ],
-         # FLUCTUAR A PROCESOS DE SEGMENTO,
-         # QUE OPERE EN EL RESULTADO DE LAS ARTICULACIONES
-         #dinamica  = self.dinamicas[
-         #  paso % len( self.dinamicas )
-         #] * self.fluctuar,
          dinamica  = self.dinamicas[ paso % len( self.dinamicas ) ],
          nota      = nota,
          acorde    = acorde,

@@ -2,18 +2,30 @@ import importlib.util as importar
 
 class Complemento:
 
-    """ Interfaz minimalista para complementos de usuario
+    """ Interfaz minimalista para complementos de usuario.
 
-        metodo: 
-           metodo:
-           # propiedad_a_modificar1: valor
-           # propiedad_a_modificar2: valor
-         # metodo2:
-           # argumento1: valor
-           # argumento2: valor
-      """
+        Declarar ubicación del paquete en propiedades de track.
+        complementos: 'enchufes.py'
+
+        En propiedades de segmento invocar metodo y subscribir, propiedad y
+        argumentos.
+
+        metodo: # en: enchufes.py
+          propiedad_a_manipular1: argumentos
+          propiedad_a_manipular2: argumentos
+        fluctuar:
+          dinamicas: .5 
+          alturas: 2 
+    """
+
     cantidad = 0
     registro = []
+
+    def __str__(
+      self,
+    ):
+      return self.nombre
+
     def __init__(
       self,
       path
@@ -30,7 +42,3 @@ class Complemento:
        spec.loader.exec_module( modulo )
        self.modulo = modulo
 
-    def __str__(
-      self,
-    ):
-      return self.nombre

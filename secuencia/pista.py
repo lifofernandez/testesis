@@ -1,4 +1,4 @@
-from argumentos import args, verbose, Excepcion
+from argumentos import Excepcion
 from .seccion  import Seccion
 from .segmento import Segmento
 
@@ -31,7 +31,6 @@ class Pista:
     paleta,
     forma,
     secuencia
-    #complementos
   ):
     self.nombre     = nombre
     self.paleta     = paleta

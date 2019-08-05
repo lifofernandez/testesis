@@ -25,6 +25,3 @@ for evento in secuencia.eventos:
 
 with open( args.output + ".mid", "wb" ) as archivo_midi:
    midi_tracks.writeFile( archivo_midi )
-
-# https://setuptools.readthedocs.io/en/latest/setuptools.html
-# https://stackoverflow.com/questions/1471994/what-is-setup-py
