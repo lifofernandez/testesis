@@ -41,14 +41,14 @@ class Secuencia:
   def eventos( 
       self
     ):
-    """ A partir de cada definicion agrega una Pista """
+    """ A partir de cada definicion agrega una Pista. """
     EVENTOS = []
     for pista in self.pistas:
 
       if args.verbose:
         print( pista.verbose( args.verbose ) )
     
-      """ Generar track MIDI a partir de cada pista """
+      """ Generar track p/c pista """
     
       delta = 0
       track = pista.numero
@@ -80,18 +80,17 @@ class Secuencia:
          raise ValueError( 'No se puede desplazar antes q el inicio' ) 
          pass
     
-        """ Agregar propiedades de segmento.
-        inserta etiquetas y modificadores de unidad (desplazar)."""
+        """ Agregar propiedades de segmento. """
     
         if segmento.cambia( 'metro' ):
           EVENTOS.append([
             'addTimeSignature',
             track,
             delta,
-            segmento.metro['numerador'],
-            segmento.metro['denominador'],
-            segmento.metro['relojes_por_tick'], 
-            segmento.metro['notas_por_pulso']
+            segmento.metro[ 'numerador' ],
+            segmento.metro[ 'denominador' ],
+            segmento.metro[ 'relojes_por_tick' ], 
+            segmento.metro[ 'notas_por_pulso' ]
           ])
     
         if segmento.cambia( 'bpm' ):
@@ -260,6 +259,3 @@ class Secuencia:
     
           delta += articulacion.duracion
     return EVENTOS
-
-
-

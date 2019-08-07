@@ -37,13 +37,10 @@ parser.add_argument(
 
 args = parser.parse_args()
 
-#verbose = print if args.verbose else lambda *a, **k: None
-
 def verbose( e ):
   if args.verbose:
     print( e )
 
-#print( args.verbose )
 
 class Excepcion( Exception ):
   """Excepción basica para Pifies invocados por """

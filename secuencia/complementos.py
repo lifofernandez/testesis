@@ -31,7 +31,7 @@ class Complemento:
       path
     ):
      self.path = path
-     self.nombre = path.split('.')[0]
+     self.nombre = path.split( '.' )[ 0 ]
      Complemento.cantidad += 1
      spec = importar.spec_from_file_location(
        self.nombre,

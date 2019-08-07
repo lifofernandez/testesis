@@ -1,4 +1,3 @@
-#from argumentos import args, verbose, Excepcion
 class Articulacion:
 
   """ Pista > Segmentos > ARTICULACIONES """

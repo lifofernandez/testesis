@@ -1,12 +1,8 @@
-#import os, sys
-#import importlib.util as importar
-
 import math
 from .elemento import Elemento
 from .articulacion import Articulacion
 from .complementos import Complemento
 
-#dir_actual = os.getcwd() 
 
 class Segmento( Elemento ):
   """
@@ -16,6 +12,7 @@ class Segmento( Elemento ):
   cantidad = 0
 
   defactos = {
+
     # Propiedades de Segmento 
     'canal'    : 0,
     'revertir' : None,
@@ -23,8 +20,7 @@ class Segmento( Elemento ):
     'RPN'      : None,
 
     # Props. que NO refieren a Canal especifico
-    # ¿Deberian ir a META track?
-    # Igualmente midiutil las manda a canal 16...
+    # ¿a Meta track?  Igualmente midiutil las manda a canal 16...
     'metro'             : '4/4',
     'alteraciones'      : 0, 
     'modo'              : 0,
@@ -38,10 +34,6 @@ class Segmento( Elemento ):
     'transportar' : 0,
     'transponer'  : 0,
     'reiterar'    : 1,
-
-    # Procesos de Usuario
-    #'desplazar'   : 0, # ¿compenzar?
-    #'fluctuar'    : { 'min' : 1, 'max' : 1 },
 
     # Propiedades de Articulacion 
     'BPMs'         : [ 60 ],
@@ -97,8 +89,6 @@ class Segmento( Elemento ):
     }
     """ PRE PROCESO DE SEGMENTO """
 
-
-
     """ Cambia el sentido de los parametros de
     articulacion """
     self.revertir = self.props[ 'revertir' ]
@@ -113,7 +103,6 @@ class Segmento( Elemento ):
 
     self.canal             = self.props[ 'canal' ]
     self.reiterar          = self.props[ 'reiterar' ]
-    #self.desplazar         = self.props[ 'desplazar' ]
     self.transponer        = self.props[ 'transponer' ]
     self.transportar       = self.props[ 'transportar' ]
     self.alteraciones      = self.props[ 'alteraciones' ]
@@ -207,22 +196,6 @@ class Segmento( Elemento ):
       'alteraciones' : self.alteraciones,
       'modo' : self.modo
     }
-
-  #@property
-  #def fluctuar( self ):
-  #  # fluctuar a cualquier parametro de la articulacion
-  #  fluctuar = self.props['fluctuar']
-  #  rand_min = 0
-  #  if 'min' in fluctuar:
-  #    rand_min = fluctuar['min'] 
-  #  rand_max = 0
-  #  if 'max' in fluctuar:
-  #    rand_max = fluctuar['max']
-  #  f = random.uniform( 
-  #    rand_min,
-  #    rand_max 
-  #  ) if rand_min or rand_max else 1
-  #  return f 
 
   @property
   def ganador( self ):
