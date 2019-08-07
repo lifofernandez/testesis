@@ -1,6 +1,6 @@
 class Articulacion:
 
-  """ Pista > Segmentos > ARTICULACIONES """
+  """ Secuencia > Pistas > Secciones > Segmentos > ARTICULACIONES """
 
   cantidad = 0 
  

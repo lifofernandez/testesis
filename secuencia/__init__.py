@@ -1,5 +1,4 @@
 import os
-#from argumentos import args, verbose
 from .pista import Pista
 from .complementos import Complemento
 
@@ -18,17 +17,15 @@ class Secuencia:
     
     for d in defs:
       pista = Pista(
-        nombre = d[ 'nombre' ],
-        paleta = d[ 'unidades' ],
-        forma = d[ 'forma' ],
+        nombre    = d[ 'nombre' ],
+        paleta    = d[ 'unidades' ],
+        forma     = d[ 'forma' ],
         secuencia = self,
       )
       self.pistas.append( pista )
 
   @property
-  def complementos(
-      self,
-    ):
+  def complementos( self ):
     complementos = []
     for d in self.defs:
       if 'complementos' in d:
@@ -42,9 +39,7 @@ class Secuencia:
     return complementos
 
   @property
-  def eventos( 
-      self
-    ):
+  def eventos( self ):
     """ A partir de cada definicion agrega una Pista. """
     EVENTOS = []
     for pista in self.pistas:
@@ -53,7 +48,6 @@ class Secuencia:
         print( pista.verbose( self.verbose ) )
     
       """ Generar track p/c pista """
-    
       delta = 0
       track = pista.numero
     

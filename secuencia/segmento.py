@@ -6,7 +6,7 @@ from .complementos import Complemento
 
 class Segmento( Elemento ):
   """
-  Pista > Secuencia > Secciones > SEGMENTOS > Articulaciones
+  Secuencia > Pista > Secciones > SEGMENTOS > Articulaciones
   Conjunto de Articulaciones
   """
   cantidad = 0

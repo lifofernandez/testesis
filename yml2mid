@@ -20,7 +20,6 @@ secuencia = Secuencia( defs, args.verbose, args.copyright )
 midi_tracks = MIDIFile( len( secuencia.pistas ) )
 
 for evento in secuencia.eventos:
-  # evento puede ser un dic: nombredefuncion, args
   getattr( midi_tracks, evento[0] )( *evento[1:] )
 
 with open( args.output + ".mid", "wb" ) as archivo_midi:

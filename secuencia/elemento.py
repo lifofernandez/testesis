@@ -1,7 +1,7 @@
 class Elemento():
   """
-  Pista > ELEMENTOS
-  Metaclase base para, Secciones, Segmentos 
+  Secuencia > Pistas > ELEMENTOS 
+  Metaclase base para Secciones, Segmentos 
   """
   cantidad = 0 
   def __str__( self ):

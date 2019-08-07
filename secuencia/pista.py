@@ -5,7 +5,7 @@ from .segmento import Segmento
 class Pista:
   """
   Clase para cada definicion de a partir de archivos .yml
-  PISTA > Secciones > Segmentos > Articulaciones
+  Secuencia > PISTA > Secciones > Segmentos > Articulaciones
   """
   cantidad = 0 
 
