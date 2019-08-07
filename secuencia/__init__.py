@@ -1,5 +1,5 @@
 import os
-from argumentos import args, verbose, Excepcion
+#from argumentos import args, verbose
 from .pista import Pista
 from .complementos import Complemento
 
@@ -7,11 +7,14 @@ class Secuencia:
 
   def __init__( 
       self,
-      defs
+      defs,
+      verbose = False,
+      copyright = False 
     ):
     self.defs = defs 
     self.pistas = []
-    #self.complementos = []
+    self.verbose = verbose
+    self.copyright = copyright
     
     for d in defs:
       pista = Pista(
@@ -31,6 +34,7 @@ class Secuencia:
       if 'complementos' in d:
        p = d[ 'complementos' ] 
        if os.path.exists( p ):
+         # TODO Tirar execpcion
          #and p not in Complemento.registro:
          Complemento.registro.append( p )
          c = Complemento( p )
@@ -45,8 +49,8 @@ class Secuencia:
     EVENTOS = []
     for pista in self.pistas:
 
-      if args.verbose:
-        print( pista.verbose( args.verbose ) )
+      if self.verbose:
+        print( pista.verbose( self.verbose ) )
     
       """ Generar track p/c pista """
     
@@ -62,12 +66,13 @@ class Secuencia:
         delta,
         pista.nombre
       ])
-      EVENTOS.append([
-        'addCopyright',
-        track,
-        delta,
-        args.copyright
-      ])
+      if self.copyright:
+        EVENTOS.append([
+          'addCopyright',
+          track,
+          delta,
+          self.copyright
+        ])
     
       """ Loop principal:
       Genera una secuencia de eventos MIDI lista de articulaciones.  """
