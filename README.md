@@ -14,7 +14,7 @@ Ejemplos de Uso:
 ```
 $ ./yml2mid definiciones/definicion-pista.yml -v
 $ ./yml2mid definiciones/bj-*.yml -vvv
-$ ./yml2mid definiciones/fc.yml -o feliz_cumple.mid 
+$ ./yml2mid definiciones/fc.yml -o feliz_cumple
 ```
 
 Ayuda:
