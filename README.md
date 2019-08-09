@@ -1,16 +1,23 @@
 # Secuenciador musical a partir de archivos texto serializado en formato YAML
 
-Instalación
+Instalación:
 ```
 $ pip install -r requirements.txt
 ```
-
-Uso
+ó
 ```
-$ ./yml2mid definiciones/definicion-pista.yml -vvv 
+make install
 ```
 
-Ayuda
+Ejemplos de Uso:
+
+```
+$ ./yml2mid definiciones/definicion-pista.yml -v
+$ ./yml2mid definiciones/bj-*.yml -vvv
+$ ./yml2mid definiciones/fc.yml -o feliz_cumple.mid 
+```
+
+Ayuda:
 ```
 $ ./yml2mid -h 
 ```
