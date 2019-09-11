@@ -4,12 +4,8 @@ Instalación:
 ```
 $ pip install -r requirements.txt
 ```
-ó
-```
-make install
-```
 
-Ejemplos de Uso:
+Ejemplos de uso:
 
 ```
 $ ./yml2mid definiciones/definicion-pista.yml -v

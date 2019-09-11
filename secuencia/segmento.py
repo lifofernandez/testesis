@@ -263,6 +263,7 @@ class Segmento( Elemento ):
          orden     = paso,
          bpm       = self.BPMs[ paso % len( self.BPMs ) ],
          programa  = self.programas[ paso % len( self.programas ) ],
+         # TODO advertir si lista de duraciones vacias
          duracion  = self.duraciones[ paso % len( self.duraciones ) ],
          dinamica  = self.dinamicas[ paso % len( self.dinamicas ) ],
          nota      = nota,
