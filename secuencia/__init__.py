@@ -7,13 +7,14 @@ class Secuencia:
   def __init__( 
       self,
       defs,
-      verbose = False,
-      copyright = False 
+      args
+      #verbose = False,
+      #copyright = False 
     ):
     self.defs = defs 
     self.pistas = []
-    self.verbose = verbose
-    self.copyright = copyright
+    self.verbose = args.verbose
+    self.copyright = args.copyright
     
     for d in defs:
       pista = Pista(
