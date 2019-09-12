@@ -246,7 +246,7 @@ class Segmento( Elemento ):
       if self.voces:
         for v in self.voces:
           voz = ( 
-            altura + ( v[ paso % len( v ) ] ) - 1 
+            altura + ( v[ paso % len( v ) ] )  
           ) + self.transponer
           acorde += [ 
             self.transportar + 
