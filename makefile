@@ -1,5 +1,4 @@
 TESTS := $(shell find tests -name '*.yml') 
-TODOS := $(shell find . -name '*.py') 
 CURRENT := $(shell pwd)
 
 install:
@@ -17,11 +16,5 @@ prueba:
 	make test
 	make copiar
 
-todos:
-	for i in $(TODOS); \
-	do\
-	        echo "$$i "; \
-		cat "$$i" | grep TODO; \
-	done;	
 	
 # ./recursos/utiles/mid2asc output.mid | grep Key
