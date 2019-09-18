@@ -234,15 +234,18 @@ class Secuencia:
             voces = articulacion.acorde 
     
           for voz in voces:
-            EVENTOS.append([
-              'addNote',
-              track, 
-              canal, 
-              voz, 
-              delta, 
-              articulacion.duracion, 
-              articulacion.dinamica
-            ])
+            if articulacion.dinamica:
+              EVENTOS.append([
+                'addNote',
+                track, 
+                canal, 
+                voz, 
+                delta, 
+                articulacion.duracion, 
+                articulacion.dinamica
+              ])
+            #else:
+            #  print('eo')
     
           if articulacion.controles:
             """ Agregar cambios de control """
