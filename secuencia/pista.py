@@ -30,7 +30,7 @@ class Pista:
     nombre,
     paleta,
     forma,
-    secuencia
+    secuencia,
   ):
     self.nombre     = nombre
     self.paleta     = paleta

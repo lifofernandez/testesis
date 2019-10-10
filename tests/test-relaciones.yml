@@ -1,4 +1,4 @@
-nombre: 'Prueba Relaciones'
+# nombre: 'Prueba Relaciones'
 base: &base 
   registracion: [ 
     -12, -10, -8, -7, -5, -3, -1,

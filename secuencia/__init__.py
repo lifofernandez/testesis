@@ -15,12 +15,25 @@ class Secuencia:
     self.pistas = []
     self.verbose = args.verbose
     self.copyright = args.copyright
+
+    defactos = {
+      'nombre'       : '',
+      'unidades'     : [ None ],
+      'forma'        : [ None ],
+      'complementos' : None,
+    }
+    
     
     for d in defs:
+      r = {
+        **defactos,
+        **d
+      }
       pista = Pista(
-        nombre    = d[ 'nombre' ],
-        paleta    = d[ 'unidades' ],
-        forma     = d[ 'forma' ],
+        #nombre    = r[ 'nombre' ] if 'nombre' in d else '',
+        nombre    = r[ 'nombre' ],
+        paleta    = r[ 'unidades' ],
+        forma     = r[ 'forma' ],
         secuencia = self,
       )
       self.pistas.append( pista )
