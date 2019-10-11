@@ -23,7 +23,6 @@ class Secuencia:
       'complementos' : None,
     }
     
-    
     for d in defs:
       r = {
         **defactos,
