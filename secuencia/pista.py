@@ -9,6 +9,13 @@ class Pista:
   """
   cantidad = 0 
 
+  defactos = {
+    'nombre'       : '',
+    'unidades'     : [ None ],
+    'forma'        : [ None ],
+    'complementos' : None,
+  }
+
   def __str__( self ):
     o  = 'PISTA ' + str( self.numero) + ': '+ str( self.nombre  )
     return o
