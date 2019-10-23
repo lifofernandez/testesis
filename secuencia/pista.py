@@ -1,4 +1,6 @@
+import os
 from argumentos import Excepcion
+from .complementos import Complemento
 from .seccion  import Seccion
 from .segmento import Segmento
 
@@ -24,7 +26,7 @@ class Pista:
     if verbose > 0:
       o = str( self ) + ' '
       o = str( self ) + ' '
-      o +=  '#' * ( 60 - len( o ))
+      o +=  '#' * ( 60 - len( o ) )
       if verbose > 1:
         o += '\nELEM\t#\torden\tnivel\trecur\tnombre\n'
         for e in self.elementos:
@@ -38,17 +40,30 @@ class Pista:
     paleta,
     forma,
     secuencia,
+    ubicacion_complementos,
   ):
     self.nombre     = nombre
     self.paleta     = paleta
     self.forma      = forma 
     self.secuencia  = secuencia
+    self.uc = ubicacion_complementos 
     self.numero     = Pista.cantidad 
     Pista.cantidad += 1
 
     self.secciones  = []
     self.segmentos  = []
     self.seccionar( self.forma )
+
+  @property
+  def complemento( self ):
+    ubicacion = self.uc
+    c = None 
+    if ubicacion and os.path.exists( ubicacion ):
+      # TODO Tirar excepción
+      # and p not in Complemento.registro:
+      Complemento.registro.append( ubicacion )
+      c = Complemento( ubicacion )
+    return c
 
   @property
   def elementos( self ):

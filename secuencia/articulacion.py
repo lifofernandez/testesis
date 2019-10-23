@@ -67,7 +67,7 @@ class Articulacion:
         self.segmento.orden == 0 
         and self.orden == 0
         and este
-       ):
+      ):
         return True
       return anterior != este
       
@@ -80,7 +80,6 @@ class Articulacion:
     # duracion en segundos
     return self.duracion * self.relacion
 
-
   @property
   def dinamica( self ):
     viejo_valor = self._dinamica 
@@ -92,4 +91,3 @@ class Articulacion:
       ( viejo_valor - viejo_min ) / ( viejo_max - viejo_min )
     ) * ( nuevo_max - nuevo_min) + nuevo_min
     return int( min( max( nuevo_valor, nuevo_min ), nuevo_max ) )
-

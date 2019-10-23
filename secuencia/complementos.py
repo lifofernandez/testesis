@@ -2,7 +2,7 @@ import importlib.util as importar
 
 class Complemento:
 
-    """ Interfaz minimalista para complementos de usuario.
+    """ Interfaz para complementos de usuario.
 
         Declarar ubicación del paquete en propiedades de track.
         complementos: 'enchufes.py'
@@ -22,20 +22,20 @@ class Complemento:
     registro = []
 
     def __str__(
-      self,
+      ubicacion,
     ):
       return self.nombre
 
     def __init__(
       self,
-      path
+      ubicacion
     ):
-     self.path = path
-     self.nombre = path.split( '.' )[ 0 ]
+     self.ubicacion = ubicacion
+     self.nombre = ubicacion.split( '.' )[ 0 ]
      Complemento.cantidad += 1
      spec = importar.spec_from_file_location(
        self.nombre,
-       self.path
+       self.ubicacion
      )
      if spec: 
        modulo = importar.module_from_spec( spec )

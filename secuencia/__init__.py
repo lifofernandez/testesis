@@ -1,6 +1,6 @@
-import os
+#import os
+#from .complementos import Complemento
 from .pista import Pista
-from .complementos import Complemento
 
 class Secuencia:
 
@@ -24,26 +24,27 @@ class Secuencia:
       }
 
       pista = Pista(
-        nombre    = r[ 'nombre' ],
-        paleta    = r[ 'unidades' ],
-        forma     = r[ 'forma' ],
+        nombre     = r[ 'nombre' ],
+        paleta     = r[ 'unidades' ],
+        forma      = r[ 'forma' ],
+        ubicacion_complementos = r[ 'complementos' ],
         secuencia = self,
       )
       self.pistas.append( pista )
 
-  @property
-  def complementos( self ):
-    complementos = []
-    for d in self.defs:
-      if 'complementos' in d:
-       p = d[ 'complementos' ] 
-       if os.path.exists( p ):
-         # TODO Tirar execpcion
-         #and p not in Complemento.registro:
-         Complemento.registro.append( p )
-         c = Complemento( p )
-         complementos.append( c )
-    return complementos
+  #@property
+  #def complementos( self ):
+  #  complementos = []
+  #  for d in self.defs:
+  #    if 'complementos' in d:
+  #     p = d[ 'complementos' ] 
+  #     if os.path.exists( p ):
+  #       # TODO Tirar excepción
+  #       # and p not in Complemento.registro:
+  #       Complemento.registro.append( p )
+  #       c = Complemento( p )
+  #       complementos.append( c )
+  #  return complementos
 
   @property
   def eventos( self ):
