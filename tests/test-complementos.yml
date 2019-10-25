@@ -38,7 +38,7 @@ unidades:
     letras: [ 'Que', 'los', 'cum', 'plas,' ]
     fluctuar: 
       dinamicas: .5
-      duraciones: .3
+      duraciones: .7
     desplazar:
       duraciones:  .25
 

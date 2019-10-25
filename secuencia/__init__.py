@@ -68,6 +68,7 @@ class Secuencia:
         delta,
         pista.nombre
       ])
+
       if self.copyright:
         EVENTOS.append([
           'addCopyright',
