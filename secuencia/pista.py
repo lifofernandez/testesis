@@ -22,15 +22,15 @@ class Pista:
     o  = 'PISTA ' + str( self.numero) + ': '+ str( self.nombre  )
     return o
 
-  def verbose( self, verbose = 0 ):
-    if verbose > 0:
+  def verbose( self, verbosidad = 0 ):
+    if verbosidad > 0:
       o = str( self ) + ' '
       o = str( self ) + ' '
-      o +=  '#' * ( 60 - len( o ) )
-      if verbose > 1:
-        o += '\nELEM\t#\torden\tnivel\trecur\tnombre\n'
+      o +=  '#' * ( 70 - len( o ) )
+      if verbosidad > 1:
+        o += '\nELEM\tid\t#\tNIVEL\tRECUR\tNOMBRE\n'
         for e in self.elementos:
-          o += e.verbose( verbose ) 
+          o += e.verbose( verbosidad ) 
           o += '\n'
       return o
 

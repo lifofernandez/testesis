@@ -4,11 +4,12 @@ class Seccion( Elemento ):
   cantidad = 0
   """ Pista > SECCION > Segmentos > Articulaciones """
 
-  def verbose( self, verbose = 0 ):
-    o = self.tipo + ' '
+  def verbose( self, vebosidad = 0 ):
+    o =  ('=' * 70 ) + '\n'
+    o += self.tipo + ''
     o += str( self.numero_seccion ) + '\t' 
     o += str( self ) + ' '
-    o += '=' * ( 18 - ( len( self.nombre ) + self.nivel ) )
+    o += '=' * ( 28 - ( len( self.nombre ) + self.nivel ) )
     return o
 
   def __init__( 

@@ -5,14 +5,14 @@ class Articulacion:
   cantidad = 0 
  
   def __str__( self ):
-    o  = str( self.numero ) + '\t' 
+    o  = 'ART' + str( self.numero ) + '\t' 
     o += str( self.orden ) + '\t' 
     o += str( self.bpm ) + '\t'
-    o += str( self.duracion ) + '\t' 
+    o += str( round(self.duracion, 2) ) + '\t' 
     o += str( self.dinamica ) + '\t' 
     o += str( self.altura ) + '\t' 
     o += str( self.letra ) + '\t' 
-    o += str( self.tono) + '\t' 
+    #o += str( self.tono) + '\t' 
     o += str( self.controles) + '\n' 
     return o  
 

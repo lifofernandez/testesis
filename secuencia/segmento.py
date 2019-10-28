@@ -48,14 +48,14 @@ class Segmento( Elemento ):
 
   }
 
-  def verbose( self, verbose = 0 ):
-    o = self.tipo + ' '
+  def verbose( self, vebosidad = 0 ):
+    o = self.tipo + ''
     o += str( self.numero_segmento) + '\t' 
     o += str( self ) + ' '
-    o += '-' * ( 18 - (len( self.nombre ) + self.nivel))
-    if verbose > 2:
-      o += '\nARTICULACIONES\n'
-      o += '#\tord\tbpm\tdur\tdin\talt\tltr\tton\tctrs\n' 
+    o += '-' * ( 28 - (len( self.nombre ) + self.nivel))
+    if vebosidad > 2:
+      o +=  '\n' + ('.' * 70 )  
+      o += '\n\tORD\tBPM\tDUR\tDIN\tALT\tLTR\tTON\tCTR\n' 
       for a in self.articulaciones:
         o += str( a )
     return o
