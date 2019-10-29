@@ -1,7 +1,7 @@
 import math
 from .elemento import Elemento
 from .articulacion import Articulacion
-from .complementos import Complemento
+from .complemento import Complemento
 
 
 class Segmento( Elemento ):
@@ -82,12 +82,13 @@ class Segmento( Elemento ):
     self.numero_segmento = Segmento.cantidad 
     Segmento.cantidad += 1
     self.tipo = 'SGMT'
-    self.props = {
-        **Segmento.defactos,
-        **propiedades 
-    }
-    """ PRE PROCESO DE SEGMENTO """
 
+    self.props = {
+      **Segmento.defactos,
+      **propiedades 
+    }
+
+    """ PRE PROCESO DE SEGMENTO """
     """ Cambia el sentido de los parametros de
     articulacion """
     self.revertir = self.props[ 'revertir' ]

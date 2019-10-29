@@ -8,8 +8,6 @@ class Secuencia:
       self,
       defs,
       args
-      #verbose = False,
-      #copyright = False 
     ):
     self.defs = defs 
     self.pistas = []
@@ -31,20 +29,6 @@ class Secuencia:
         secuencia = self,
       )
       self.pistas.append( pista )
-
-  #@property
-  #def complementos( self ):
-  #  complementos = []
-  #  for d in self.defs:
-  #    if 'complementos' in d:
-  #     p = d[ 'complementos' ] 
-  #     if os.path.exists( p ):
-  #       # TODO Tirar excepción
-  #       # and p not in Complemento.registro:
-  #       Complemento.registro.append( p )
-  #       c = Complemento( p )
-  #       complementos.append( c )
-  #  return complementos
 
   @property
   def eventos( self ):

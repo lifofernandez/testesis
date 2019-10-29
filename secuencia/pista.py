@@ -1,6 +1,6 @@
 import os
 from argumentos import Excepcion
-from .complementos import Complemento
+from .complemento import Complemento
 from .seccion  import Seccion
 from .segmento import Segmento
 
