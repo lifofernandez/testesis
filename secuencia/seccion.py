@@ -5,8 +5,8 @@ class Seccion( Elemento ):
   """ Pista > SECCION > Segmentos > Articulaciones """
 
   def verbose( self, vebosidad = 0 ):
-    o =  ('=' * 70 ) + '\n'
-    o += self.tipo + ''
+    #o =  ('=' * 70 ) + '\n'
+    o = self.tipo + ''
     o += str( self.numero_seccion ) + '\t' 
     o += str( self ) + ' '
     o += '=' * ( 28 - ( len( self.nombre ) + self.nivel ) )

@@ -39,14 +39,14 @@ class Pista:
     nombre,
     paleta,
     forma,
+    plugin,
     secuencia,
-    ubicacion_complementos,
   ):
     self.nombre     = nombre
     self.paleta     = paleta
     self.forma      = forma 
     self.secuencia  = secuencia
-    self.uc = ubicacion_complementos 
+    self.plugin     = plugin
     self.numero     = Pista.cantidad 
     Pista.cantidad += 1
 
@@ -56,7 +56,7 @@ class Pista:
 
   @property
   def complemento( self ):
-    ubicacion = self.uc
+    ubicacion = self.plugin
     c = None 
     if ubicacion and os.path.exists( ubicacion ):
       # TODO Tirar excepción

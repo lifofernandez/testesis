@@ -1,31 +1,29 @@
-#import os
-#from .complementos import Complemento
 from .pista import Pista
 
 class Secuencia:
 
   def __init__( 
       self,
-      defs,
-      args
+      definiciones,
+      verbose,
+      copy
     ):
-    self.defs = defs 
+    self.definiciones = definiciones
     self.pistas = []
-    self.verbose = args.verbose
-    self.copyright = args.copyright
+    self.verbose = verbose
+    self.copyright = copy
 
     
-    for d in defs:
+    for d in self.definiciones:
       r = {
         **Pista.defactos,
         **d
       }
-
       pista = Pista(
-        nombre     = r[ 'nombre' ],
-        paleta     = r[ 'unidades' ],
-        forma      = r[ 'forma' ],
-        ubicacion_complementos = r[ 'complementos' ],
+        nombre    = r[ 'nombre' ],
+        paleta    = r[ 'unidades' ],
+        forma     = r[ 'forma' ],
+        plugin    = r[ 'complementos' ],
         secuencia = self,
       )
       self.pistas.append( pista )

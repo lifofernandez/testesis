@@ -58,6 +58,7 @@ class Segmento( Elemento ):
       o += '\n\tORD\tBPM\tDUR\tDIN\tALT\tLTR\tTON\tCTR\n' 
       for a in self.articulaciones:
         o += str( a )
+      o +=  ('.' * 70 )  
     return o
 
   def __init__( 

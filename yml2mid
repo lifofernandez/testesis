@@ -16,10 +16,10 @@ for archivo in args.archivos:
     print( "=" * 80 )
 
 secuencia = Secuencia(
-  defs,
-  args
-  #args.verbose,
-  #args.copyright
+  definiciones = defs,
+  # argumentos
+  verbose = args.verbose,
+  copy = args.copyright
 )
 
 midi_tracks = MIDIFile( len( secuencia.pistas ) )
