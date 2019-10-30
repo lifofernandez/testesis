@@ -134,7 +134,6 @@ class Segmento( Elemento ):
     """ COMPLEMENTOS
         Pasar propiedades por metodos de usuario
     """
-    #for complemento in self.pista.complemento:
     if self.pista.complemento:
       for metodo in dir( self.pista.complemento.modulo ):
         if metodo in self.props:

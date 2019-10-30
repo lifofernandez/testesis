@@ -28,14 +28,14 @@ class Complemento:
 
     def __init__(
       self,
-      ubicacion
+      ruta
     ):
-     self.ubicacion = ubicacion
-     self.nombre = ubicacion.split( '.' )[ 0 ]
+     self.ruta = ruta 
+     self.nombre = ruta.split( '.' )[ 0 ]
      Complemento.cantidad += 1
      spec = importar.spec_from_file_location(
        self.nombre,
-       self.ubicacion
+       self.ruta
      )
      if spec: 
        modulo = importar.module_from_spec( spec )

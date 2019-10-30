@@ -56,13 +56,13 @@ class Pista:
 
   @property
   def complemento( self ):
-    ubicacion = self.plugin
+    ruta = self.plugin
     c = None 
-    if ubicacion and os.path.exists( ubicacion ):
+    if ruta and os.path.exists( ruta ):
       # TODO Tirar excepción
       # and p not in Complemento.registro:
-      Complemento.registro.append( ubicacion )
-      c = Complemento( ubicacion )
+      Complemento.registro.append( ruta )
+      c = Complemento( ruta )
     return c
 
   @property
