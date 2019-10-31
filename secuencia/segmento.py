@@ -89,18 +89,19 @@ class Segmento( Elemento ):
       **propiedades 
     }
 
-    """ PRE PROCESO DE SEGMENTO """
-    """ Cambia el sentido de los parametros de
-    articulacion """
-    self.revertir = self.props[ 'revertir' ]
-    if self.revertir:
-      if isinstance( self.revertir , list ): 
-        for r in self.revertir:
-          if r in self.props:
-            self.props[ r ].reverse() 
-      elif isinstance( self.revertir , str ):
-        if revertir in self.props:
-          self.props[ self.revertir ].reverse() 
+    """ Preparar Segmento """
+
+    # """ Cambia el sentido de los parámetros de
+    # articulación """
+    # self.revertir = self.props[ 'revertir' ]
+    # if self.revertir:
+    #   if isinstance( self.revertir , list ): 
+    #     for r in self.revertir:
+    #       if r in self.props:
+    #         self.props[ r ].reverse() 
+    #   elif isinstance( self.revertir , str ):
+    #     if revertir in self.props:
+    #       self.props[ self.revertir ].reverse() 
 
     self.canal             = self.props[ 'canal' ]
     self.reiterar          = self.props[ 'reiterar' ]
@@ -176,7 +177,7 @@ class Segmento( Elemento ):
 
   @property
   def tiempo( self ):
-    # duracion en segundos
+    # duración en segundos
     return sum( [ a.tiempo for a in self.articulaciones ] ) 
 
   @property
@@ -228,18 +229,17 @@ class Segmento( Elemento ):
 
   @property
   def articulaciones( self ):
-
-    """ Consolidar "articulacion" 
-    combinar parametros: altura, duracion, dinamica, etc. """
+    """ Consolidar "Articulaciones" 
+    combinar parámetros: altura, duración, dinámica, etc. """
     o = []
     for paso in range( self.cantidad_pasos ):
       """ Alturas, voz y superposición voces. """
       altura = self.alturas[ paso % len( self.alturas ) ]
       acorde = []
       nota   = altura 
-      """ Relacion: altura > puntero en el set de registracion;
-      Trasponer dentro del set de registracion, luego Transportar,
-      sumar a la nota resultante. """
+      """ Trasponer puntero dentro el set de registración.
+        transportar la nota resultante.
+      """
       n = self.registracion[
         ( ( altura - 1 ) + self.transponer ) % len( self.registracion )
       ] 
