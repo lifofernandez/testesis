@@ -17,15 +17,14 @@ for archivo in args.archivos:
 
 secuencia = Secuencia(
   definiciones = defs,
-  # argumentos
   verbose = args.verbose,
   copy = args.copyright
 )
 
 midi_tracks = MIDIFile( len( secuencia.pistas ) )
 
-for evento in secuencia.eventos:
-  getattr( midi_tracks, evento[0] )( *evento[1:] )
+for llamada in secuencia.llamadas:
+  getattr( midi_tracks, llamada[0] )( *llamada[1:] )
 
-with open( args.output + ".mid", "wb" ) as archivo_midi:
-   midi_tracks.writeFile( archivo_midi )
+with open( args.output + ".mid", "wb" ) as eventos:
+   midi_tracks.writeFile(  eventos )

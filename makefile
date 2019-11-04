@@ -10,11 +10,6 @@ test:
 		echo "secuenciando: $$i"; \
 		yml2mid "$$i" -o "$$i"; \
 	done;	
-copiar:
-	cp tests /home/lf/ -r
-prueba:
-	make test
-	make copiar
 
 	
 # ./recursos/utiles/mid2asc output.mid | grep Key

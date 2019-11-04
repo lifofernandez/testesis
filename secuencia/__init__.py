@@ -29,9 +29,9 @@ class Secuencia:
       self.pistas.append( pista )
 
   @property
-  def eventos( self ):
+  def llamadas( self ):
     """ A partir de cada definicion agrega una Pista. """
-    EVENTOS = []
+    llamadas = []
     for pista in self.pistas:
 
       if self.verbose:
@@ -44,7 +44,7 @@ class Secuencia:
       """ Parametros de Pista Primer articulación de la parte, agregar
       eventos fundamentales: pulso, armadura de clave, compás y programa.
       """
-      EVENTOS.append([
+      llamadas.append([
         'addTrackName',
         track,
         delta,
@@ -52,7 +52,7 @@ class Secuencia:
       ])
 
       if self.copyright:
-        EVENTOS.append([
+        llamadas.append([
           'addCopyright',
           track,
           delta,
@@ -73,7 +73,7 @@ class Secuencia:
         """ Agregar propiedades de segmento. """
     
         if segmento.cambia( 'metro' ):
-          EVENTOS.append([
+          llamadas.append([
             'addTimeSignature',
             track,
             delta,
@@ -84,7 +84,7 @@ class Secuencia:
           ])
     
         if segmento.cambia( 'bpm' ):
-          EVENTOS.append([
+          llamadas.append([
             'addTempo',
             track,
             delta,
@@ -92,7 +92,7 @@ class Secuencia:
           ])
     
         if segmento.cambia( 'clave' ):
-          EVENTOS.append([
+          llamadas.append([
             'addKeySignature',
             track,
             delta,
@@ -102,7 +102,7 @@ class Secuencia:
           ])
     
         if segmento.afinacionNota:
-          EVENTOS.append([
+          llamadas.append([
            'changeNoteTuning',
             track, 
             segmento.afinacionNota[ 'afinaciones' ],
@@ -112,7 +112,7 @@ class Secuencia:
           ])
     
         if segmento.afinacionBanco:
-          EVENTOS.append([
+          llamadas.append([
             'changeTuningBank',
             track, 
             canal,
@@ -122,7 +122,7 @@ class Secuencia:
           ])
     
         if segmento.afinacionPrograma:
-          EVENTOS.append([ 
+          llamadas.append([ 
             'changeTuningProgram',
             track, 
             canal,
@@ -132,7 +132,7 @@ class Secuencia:
           ])
     
         if segmento.sysEx:
-          EVENTOS.append([
+          llamadas.append([
            'addSysEx',
             track, 
             delta, 
@@ -141,7 +141,7 @@ class Secuencia:
           ])
     
         if segmento.uniSysEx:
-          EVENTOS.append([
+          llamadas.append([
            'addUniversalSysEx',
             track, 
             delta, 
@@ -153,7 +153,7 @@ class Secuencia:
           ])
     
         if segmento.NRPN:
-          EVENTOS.append([
+          llamadas.append([
            'makeNRPNCall',
             track, 
             canal, 
@@ -166,7 +166,7 @@ class Secuencia:
           ])
     
         if segmento.RPN:
-          EVENTOS.append([
+          llamadas.append([
            'makeRPNCall',
             track, 
             canal, 
@@ -183,7 +183,7 @@ class Secuencia:
           comparar cada uno con la articulacion previa. """
     
           if articulacion.cambia( 'bpm' ):
-            EVENTOS.append([
+            llamadas.append([
               'addTempo',
               track,
               delta,
@@ -191,7 +191,7 @@ class Secuencia:
             ])
     
           if articulacion.cambia( 'programa' ):
-            EVENTOS.append([
+            llamadas.append([
                'addProgramChange',
                track,
                canal, 
@@ -200,7 +200,7 @@ class Secuencia:
             ])
     
           if articulacion.letra:
-            EVENTOS.append([
+            llamadas.append([
              'addText',
               track,
               delta,
@@ -208,7 +208,7 @@ class Secuencia:
             ])
     
           if articulacion.tono:
-            EVENTOS.append([
+            llamadas.append([
                'addPitchWheelEvent',
                track,
                canal, 
@@ -225,7 +225,7 @@ class Secuencia:
     
           for voz in voces:
             if articulacion.dinamica:
-              EVENTOS.append([
+              llamadas.append([
                 'addNote',
                 track, 
                 canal, 
@@ -241,7 +241,7 @@ class Secuencia:
             """ Agregar cambios de control """
             for control in articulacion.controles:
               for control, valor in control.items():
-                EVENTOS.append([
+                llamadas.append([
                  'addControllerEvent',
                   track, 
                   canal, 
@@ -251,4 +251,4 @@ class Secuencia:
                 ])
     
           delta += articulacion.duracion
-    return EVENTOS
+    return llamadas
