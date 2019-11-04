@@ -1,10 +1,10 @@
 import math
-from .elemento import Elemento
+from .unidad import Unidad
 from .articulacion import Articulacion
 from .complemento import Complemento
 
 
-class Segmento( Elemento ):
+class Segmento( Unidad ):
   """
   Secuencia > Pista > Secciones > SEGMENTOS > Articulaciones
   Conjunto de Articulaciones
@@ -71,7 +71,7 @@ class Segmento( Elemento ):
     referente,
     propiedades
   ):
-    Elemento.__init__( 
+    Unidad.__init__( 
       self,
       pista, 
       nombre,
@@ -131,9 +131,8 @@ class Segmento( Elemento ):
     self.bpm = self.BPMs[0]
     self.programa = self.programas[0]
 
-
     """ COMPLEMENTOS
-        Pasar propiedades por metodos de usuario
+        Pasar propiedades por método de usuario
     """
     if self.pista.complemento:
       for metodo in dir( self.pista.complemento.modulo ):
@@ -147,7 +146,6 @@ class Segmento( Elemento ):
                metodo,
             )( original, argumentos )
             setattr( self, clave, modificado )
-
 
   @property
   def precedente( self ):

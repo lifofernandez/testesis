@@ -1,7 +1,6 @@
-class Elemento():
+class Unidad():
   """
-  Secuencia > Pistas > ELEMENTOS 
-  Metaclase base para Secciones, Segmentos 
+  Meta clase base para Secciones, Segmentos 
   """
   cantidad = 0 
   def __str__( self ):
@@ -28,6 +27,6 @@ class Elemento():
     self.orden = orden
     self.recurrencia = recurrencia
     self.referente = referente
-    self.numero = Elemento.cantidad 
-    Elemento.cantidad += 1
+    self.numero = Unidad.cantidad 
+    Unidad.cantidad += 1
 

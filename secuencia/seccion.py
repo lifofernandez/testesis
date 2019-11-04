@@ -1,6 +1,6 @@
-from .elemento import Elemento
+from .unidad import Unidad
 
-class Seccion( Elemento ):
+class Seccion(  Unidad ):
   cantidad = 0
   """ Pista > SECCION > Segmentos > Articulaciones """
 
@@ -21,7 +21,7 @@ class Seccion( Elemento ):
     recurrencia,
     referente
   ):
-    Elemento.__init__( 
+    Unidad.__init__( 
       self,
       pista, 
       nombre,
