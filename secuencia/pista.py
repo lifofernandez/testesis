@@ -5,10 +5,16 @@ from .seccion  import Seccion
 from .segmento import Segmento
 
 class Pista:
+
+  """ Organiza la estructura de cada instancia desde el nivel macro.
+  Clasifica:
+    Secciones (elementos que refieren a otros)
+    Segmento (no refieren a ningún otro elemento)
+  Gestiona la sucesión de propiedades entre referente y referido.  
+  Resuelve el conjunto de propiedades resultantes de cada elemento y los dispone
+  consecutivamente para ser consumidos en el nivel de abstracción superior.
   """
-  Clase para cada definicion de a partir de archivos .yml
-  Secuencia > PISTA > Secciones > Segmentos > Articulaciones
-  """
+
   cantidad = 0 
 
   defactos = {

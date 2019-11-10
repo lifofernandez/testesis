@@ -1,6 +1,10 @@
 from .pista import Pista
-
 class Secuencia:
+
+  """ Consolida Pistas.
+  Recorre articulaciones y cambios de parámetros entre los elementos.
+  Reúne todos los pronunciamientos en único flujo de instrucciones.
+  """
 
   def __init__( 
       self,

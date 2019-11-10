@@ -1,7 +1,9 @@
 class Unidad():
+
+  """ Meta clase: Secciones y Segmentos 
+  Agrupamiento y registro
   """
-  Meta clase base para Secciones, Segmentos 
-  """
+
   cantidad = 0 
   def __str__( self ):
     o  = str( self.numero ) + ' ' 

@@ -1,8 +1,11 @@
 from .unidad import Unidad
 
 class Seccion(  Unidad ):
+
+  """ Conjuntos de Secciones y/o Segmentos.
+  Conserva relaciones de referencia a nivel lógico  
+  """
   cantidad = 0
-  """ Pista > SECCION > Segmentos > Articulaciones """
 
   def verbose( self, vebosidad = 0 ):
     #o =  ('=' * 70 ) + '\n'

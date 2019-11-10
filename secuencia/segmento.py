@@ -5,10 +5,9 @@ from .complemento import Complemento
 
 
 class Segmento( Unidad ):
-  """
-  Secuencia > Pista > Secciones > SEGMENTOS > Articulaciones
-  Conjunto de Articulaciones
-  """
+
+  """ Mecanismos para preparar y producir Articulaciones. """
+
   cantidad = 0
 
   defactos = {

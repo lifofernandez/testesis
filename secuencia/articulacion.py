@@ -1,6 +1,6 @@
 class Articulacion:
 
-  """ Secuencia > Pistas > Secciones > Segmentos > ARTICULACIONES """
+  """ Pronunciamientos. """
 
   cantidad = 0 
  

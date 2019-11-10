@@ -3,19 +3,16 @@ import importlib.util as importar
 class Complemento:
 
     """ Interfaz para complementos de usuario.
-
-        Declarar ubicación del paquete en propiedades de track.
-        complementos: 'enchufes.py'
-
-        En propiedades de segmento invocar metodo y subscribir, propiedad y
-        argumentos.
-
-        metodo: # en: enchufes.py
-          propiedad_a_manipular1: argumentos
-          propiedad_a_manipular2: argumentos
-        fluctuar:
-          dinamicas: .5 
-          alturas: 2 
+    Declarar ubicación del paquete en propiedades de track.
+    complementos: 'enchufes.py'
+    En propiedades de segmento invocar metodo y subscribir, propiedad y
+    argumentos.
+    metodo: # en: enchufes.py
+      propiedad_a_manipular1: argumentos
+      propiedad_a_manipular2: argumentos
+    fluctuar:
+      dinamicas: .5 
+      alturas: 2 
     """
 
     cantidad = 0
