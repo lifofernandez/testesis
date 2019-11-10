@@ -1,5 +1,4 @@
-nombre: 'Feliz Cumple'
-#complementos: 'enchufes.py'
+nombre: 'Feliz Cumpleaños'
 base: &base 
   registracion: [ 
     -12, -10, -8, -7, -5, -3, -1,
@@ -7,32 +6,20 @@ base: &base
      12,  14, 15, 17, 19, 21, 23,
      24
   ]
-  alturas: [ 1 ] 
-  transportar: 72 
+  transportar: 60
   duraciones: [ 1.5 ]
-  BPMs: [ 60 ]
   metro: 3/4
-  dinamicas: [ 1 ]
-  canal: 0
-
-forma: [
-  'espera',
-  'estrofa',
-  'estribo',
-]
-
+forma: [ 'espera', 'estrofa', 'estribo' ]
 unidades: 
   espera:
     <<: *base
     dinamicas: [ 0 ] 
     duraciones: [ 2 ]
-
   a: &a 
     <<: *base
     alturas: [ 5, 5, 6, 5 ] 
     duraciones: [ .75, .25, 1, 1 ]
     letras: [ 'Que', 'los', 'cum', 'plas,' ]
-
   b: &b 
     <<: *base
     alturas: [ 8, 7 ] 
@@ -52,7 +39,6 @@ unidades:
     <<: *a
     alturas: [ 11, 11, 10, 8 ] 
     letras: [ 'que', 'los', 'cum', 'plas,' ]
-
   A: 
     forma: [ 'a', 'b' ] 
   A`: 
@@ -61,17 +47,10 @@ unidades:
     forma: [ 'a`', 'a``' ] 
   A``: 
     forma: [ 'a```', 'b`' ] 
-
   estrofa: 
-    forma: [
-      'A',
-      'A`',
-    ]
+    forma: [ 'A', 'A`' ]
   estribo: 
-    forma: [
-      'B',
-      'A``',
-    ]
+    forma: [ 'B', 'A``' ]
 
 
 

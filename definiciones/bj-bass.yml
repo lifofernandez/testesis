@@ -6,7 +6,6 @@ base: &base
      12,  14, 15, 17, 19, 21, 22,
      24
   ]
-  alturas: [ 1 ] 
   transportar: 35 #B
   duraciones: [ .5 ]
   metro: 4/4
@@ -21,7 +20,5 @@ unidades:
     alturas: [ 7, 5, 4, 5 ] 
   vuelta:
     forma: [ 'a', 'b' ]
-    reiterar: 2 
-forma: [
-  'vuelta',
-] 
+    reiterar: 2
+forma: [ 'vuelta' ] 

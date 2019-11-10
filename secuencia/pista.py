@@ -26,9 +26,8 @@ class Pista:
     if verbosidad > 0:
       o = str( self ) + ' '
       o = str( self ) + ' '
-      o +=  '#' * ( 70 - len( o ) )
       if verbosidad > 1:
-        o += '\nELEM\tid\t#\tNIVEL\tRECUR\tNOMBRE\n'
+        o += '\n       id #  LVL RCR\n'
         for e in self.elementos:
           o += e.verbose( verbosidad ) 
           o += '\n'

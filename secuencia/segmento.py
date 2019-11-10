@@ -50,9 +50,11 @@ class Segmento( Unidad ):
 
   def verbose( self, vebosidad = 0 ):
     o = self.tipo + ''
-    o += str( self.numero_segmento) + '\t' 
+    o += str( self.numero_segmento) + ' ' 
+    if(self.numero_segmento < 10 ):
+      o += ' ' 
     o += str( self ) + ' '
-    o += '-' * ( 28 - (len( self.nombre ) + self.nivel))
+    o += '-' * (8 - (len( self.nombre ) + self.nivel))
     if vebosidad > 2:
       o +=  '\n' + ('.' * 70 )  
       o += '\n\tORD\tBPM\tDUR\tDIN\tALT\tLTR\tTON\tCTR\n' 

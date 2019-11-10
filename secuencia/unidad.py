@@ -4,10 +4,19 @@ class Unidad():
   """
   cantidad = 0 
   def __str__( self ):
-    o  = str( self.numero ) + '\t' 
-    o += str( self.orden ) + '\t' 
-    o += str( self.nivel )  + '\t'
-    o += str( self.recurrencia ) + '\t' 
+    o  = str( self.numero ) + ' ' 
+    if(self.numero < 10 ):
+      o += ' ' 
+    o += str( self.orden ) + ' ' 
+    if(self.orden < 10 ):
+      o += ' ' 
+    o += str( self.nivel )  + '  '
+    if(self.nivel < 10 ):
+      o += ' ' 
+    o += str( self.recurrencia ) + ' ' 
+    if(self.recurrencia < 10 ):
+      o += ' ' 
+    o += '  ' 
     o += '+' + str( '-' * ( self.nivel ) ) 
     o += self.nombre  
     return o  

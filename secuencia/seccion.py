@@ -7,9 +7,11 @@ class Seccion(  Unidad ):
   def verbose( self, vebosidad = 0 ):
     #o =  ('=' * 70 ) + '\n'
     o = self.tipo + ''
-    o += str( self.numero_seccion ) + '\t' 
+    o += str( self.numero_seccion ) + ' ' 
+    if(self.numero_seccion < 10 ):
+      o += ' ' 
     o += str( self ) + ' '
-    o += '=' * ( 28 - ( len( self.nombre ) + self.nivel ) )
+    o += '=' * ( 8 - ( len( self.nombre ) + self.nivel ) )
     return o
 
   def __init__( 

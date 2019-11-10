@@ -9,15 +9,12 @@ base: &base
   alturas: [ 1 ] 
   transportar: 71 #B
   duraciones: [ 1.5, 2.5 ]
-  BPMs: [ 100 ]
-  metro: 4/4
   dinamicas: [ .3 ]
   canal: 0
   voces: 
     - [ 0 ]
     - [ -3 ]
     - [ -5 ]
-
 unidades: 
   a:
     <<: *base
@@ -27,7 +24,6 @@ unidades:
     alturas: [ 10, 9 ] 
   vuelta:
     forma: [ 'a', 'b' ]
-forma: [
-   'vuelta',
-]
+    reiterar: 2
+forma: [ 'vuelta' ]
 
