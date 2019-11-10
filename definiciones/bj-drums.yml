@@ -1,24 +1,30 @@
 nombre: 'Billie Jean: Drum'
 base: &base 
-  registracion: [ 42,36,38 ]
+  registracion: [ 36,38,44 ]
   transportar: 0 
   duraciones: [ .5 ]
+  dinamicas: [ .5 ]
   BPMs: [ 100 ]
   canal: 9 
 unidades: 
   a:
     <<: *base
-    alturas: [ 1, 1 ]
+    #alturas: [ 1,2,3 ]
+    alturas: [ 3 ]
     voces:
       - [ 0 ]
-      - [ 1, 0 ]
+      - [ -2 ]
   b:
     <<: *base
-    alturas: [ 1, 1 ]
+    alturas: [ 3 ]
+  c:
+    <<: *base
+    alturas: [ 3 ]
     voces:
       - [ 0 ]
-      - [ 2, 0 ]
+      - [ -2 ]
+      - [ -1 ]
   vuelta:
-    forma: [ 'a', 'b' ]
-    reiterar: 2
+    forma: [ 'a', 'b', 'c','b' ]
+    reiterar: 4
 forma: [ 'vuelta' ]

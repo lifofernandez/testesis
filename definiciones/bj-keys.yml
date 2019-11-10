@@ -1,29 +1,29 @@
 nombre: 'Billie Jean: Keys'
 base: &base 
   registracion: [ 
-    -12, -10, -9, -7, -5, -3, -2,
       0,   2,  3,  5,  7,  9, 10,
      12,  14, 15, 17, 19, 21, 22,
-     24
+     24,  26, 27, 29, 31, 35, 38,
+     46
   ]
   alturas: [ 1 ] 
-  transportar: 71 #B
+  transportar: 59 #B
   duraciones: [ 1.5, 2.5 ]
-  dinamicas: [ .3 ]
+  BPMs: [ 100 ]
+  dinamicas: [ .7 ]
   canal: 0
   voces: 
+    - [ 4 ]
+    - [ 2 ]
     - [ 0 ]
-    - [ -3 ]
-    - [ -5 ]
 unidades: 
   a:
     <<: *base
-    alturas: [ 8, 9 ] 
+    alturas: [ 1, 2 ] 
   b:
     <<: *base
-    alturas: [ 10, 9 ] 
+    alturas: [ 3, 2 ] 
   vuelta:
     forma: [ 'a', 'b' ]
-    reiterar: 2
 forma: [ 'vuelta' ]
 

@@ -236,7 +236,7 @@ class Segmento( Unidad ):
       """ Alturas, voz y superposición voces. """
       altura = self.alturas[ paso % len( self.alturas ) ]
       acorde = []
-      nota   = altura 
+      #nota   = altura 
       """ Trasponer puntero dentro el set de registración.
         transportar la nota resultante.
       """
@@ -248,11 +248,11 @@ class Segmento( Unidad ):
       if self.voces:
         for v in self.voces:
           voz = ( 
-            altura + ( v[ paso % len( v ) ] )  
+            altura  + ( v[ paso % len( v ) ] )  
           ) + self.transponer
           acorde += [ 
             self.transportar + 
-            self.registracion[ voz % len( self.registracion ) ] 
+            self.registracion[ (voz - 1) % len( self.registracion ) ] 
           ]
       """ Cambios de control. """
       controles = []

@@ -16,8 +16,7 @@ class Unidad():
     o += str( self.recurrencia ) + ' ' 
     if(self.recurrencia < 10 ):
       o += ' ' 
-    o += '  ' 
-    o += '+' + str( '-' * ( self.nivel ) ) 
+    o += ' +' + str( '-' * ( self.nivel ) ) 
     o += self.nombre  
     return o  
 

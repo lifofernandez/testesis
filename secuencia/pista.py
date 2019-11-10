@@ -28,8 +28,6 @@ class Pista:
       o = str( self ) + ' '
       if verbosidad > 1:
         o += '\n       id #  LVL RCR\n'
-        :q
-        :q
         for e in self.elementos:
           o += e.verbose( verbosidad ) 
           o += '\n'
