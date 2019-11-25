@@ -13,10 +13,7 @@ procesos:
     propiedad_a_modificar2: args
 """
 
-def desplazar(
-    entrada = 1,
-    parametro = 1
-  ):
+def desplazar( entrada = 1, parametro = 1 ):
   return [ a + parametro for a in entrada ]
 
 def fluctuar( entrada = [ 1 ], factor = .5 ):
