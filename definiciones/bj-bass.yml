@@ -12,6 +12,7 @@ base: &base
   metro: 4/4
   dinamicas: [ 0.5 ]
   canal:  1 
+  programas: [ 34 ]
 unidades: 
   a:
     <<: *base

@@ -1,0 +1,44 @@
+nombre: 'Bass'
+base: &base 
+  registracion: [ 
+    -12, -11, -9, -7, -5, -4, -2,
+      0,   1,  3,  5,  7,  8, 10,
+     12,  13, 15, 17, 19, 20, 22,
+     24
+  ]
+  alturas: [ 1 ] 
+  transportar: 42 # F#
+  duraciones: [ .25 ]
+  dinamicas: [ .75 ]
+  canal: 0
+
+unidades: 
+  a:
+    <<: *base
+    alturas: [ 8,8,12,12 ] 
+  b: &b
+    <<: *base
+    alturas: [ 8,8,11,11 ] 
+  b2:
+    <<: *b
+    voces: 
+      - [ 7 ]
+      - [ 3 ]
+      - [ 0 ]
+  c:
+    <<: *base
+    alturas: [ 7,7,9,9] 
+    dinamicas: [ .75,.8,.85,90 ]
+    voces: 
+  A:
+    forma: [ 'a', 'b' ,'b','c']
+  B:
+    forma: [ 'a', 'b' ,'b','b2']
+  vuelta:
+    forma: [ 'A', 'B' ]
+  estrofa:
+    forma: [ 'vuelta' ]
+    reiterar: 32 
+forma: [
+   'estrofa',
+]

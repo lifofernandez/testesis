@@ -1,0 +1,23 @@
+nombre: 'Kick'
+base: &base 
+  registracion: [ 35 ]
+  alturas: [ 1 ] 
+  transportar: 0 
+  duraciones: [ 1 ]
+  BPMs: [ 100 ]
+  metro: 4/4
+  dinamicas: [ 1 ]
+  canal: 9 
+unidades: 
+  a:
+    <<: *base
+    alturas: [ 1 ]
+  vuelta:
+    forma: [ 'a' ]
+    reiterar: 32
+  estrofa:
+    forma: [ 'vuelta' ]
+    reiterar: 8
+forma: [
+  'estrofa'
+]

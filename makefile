@@ -2,10 +2,9 @@ TESTS := $(shell find tests -name '*.yml')
 CURRENT := $(shell pwd)
 
 install:
-	pip install -r requirements.txt
-	ln -s $(CURRENT)/yml2mid /usr/bin/
+	@pip install -r requirements.txt
 test:
-	for i in $(TESTS); \
+	@for i in $(TESTS); \
 	do \
 		echo "secuenciando: $$i"; \
 		yml2mid "$$i" -o "$$i"; \

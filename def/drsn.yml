@@ -1,0 +1,28 @@
+nombre: 'Snare'
+base: &base 
+  registracion: [ 38 ]
+  alturas: [ 1 ] 
+  transportar: 0 
+  duraciones: [ 1 ]
+  metro: 4/4
+  dinamicas: [ 1 ]
+  canal: 9 
+unidades: 
+  a:
+    <<: *base
+    alturas: [ 0, 1 ]
+  b:
+    <<: *base
+    alturas: [ 0, 1 ]
+  c:
+    <<: *base
+    alturas: [ 1, 0 ]
+  vuelta:
+    forma: [ 'a', 'b', 'a', 'b' ]
+    reiterar: 8
+  estrofa:
+    forma: [ 'vuelta' ]
+    reiterar: 8
+forma: [
+  'estrofa'
+]
